@@ -1,0 +1,26 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Application.index()
+
+# POST		/user			controllers.UserController.create()
+# PUT		/user/:email	controllers.UserController.modify()
+
+# POST 		/user/:email/contact 	controllers.ContactController.add()
+# PUT 		/user/:email/contact	controllers.ContactController.modify()
+# DELETE 	/user/:email/contact	controllers.ContactController.delete()
+# GET 		/user/:email/contacts	controllers.ContactController.get()
+
+# GET 		/user/:email/missed		controllers.MissedController.get()
+
+# POST		/user/:email/connection/ws			controllers.ConnectionController.add()
+# DELETE	/user/:email/connection/ws/:id		controllers.ConnectionController.remove()
+# POST		/user/:email/connection/apn 		controllers.ConnectionController.add()
+# DELETE	/user/:email/connection/apn/:id		controllers.ConnectionController.remove()
+# POST		/user/:email/connection/gcm 		controllers.ConnectionController.add()
+# DELETE	/user/:email/connection/gcm/:id 	controllers.ConnectionController.remove()
+
+# POST		/notifications/:to		controllers.NotificationController.add()
+# GET		/notifications/:to		controllers.NotificationController.get()
