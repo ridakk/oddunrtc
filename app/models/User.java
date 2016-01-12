@@ -1,17 +1,13 @@
 package models;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-import com.avaje.ebean.Model;
+import javax.persistence.*;
 
 @Entity
-public class User extends Model {
+public class User {
 
 	@Id
 	public String email;
 	public String password;
 	public String firstName;
 	public String lastName;
-	
 }

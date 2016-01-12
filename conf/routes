@@ -2,25 +2,31 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
-GET     /                           controllers.Application.index()
+GET		/users			controllers.UserController.getAll()
+POST	/users			controllers.UserController.add()
+PUT		/users/:email	controllers.UserController.update(email: String)
+GET		/users/:email	controllers.UserController.get(email: String)
+DELETE	/users/:email	controllers.UserController.remove(email: String)
 
-# POST		/user			controllers.UserController.create()
-# PUT		/user/:email	controllers.UserController.modify()
+# POST 		/user/:email/contacts 		controllers.ContactController.add(email: String)
+# PUT 		/user/:email/contacts/:id	controllers.ContactController.update(email: String, id: String)
+# DELETE 	/user/:email/contacts/:id	controllers.ContactController.delete(email: String, id: String)
+# GET 		/user/:email/contacts		controllers.ContactController.getAll(email: String)
 
-# POST 		/user/:email/contact 	controllers.ContactController.add()
-# PUT 		/user/:email/contact	controllers.ContactController.modify()
-# DELETE 	/user/:email/contact	controllers.ContactController.delete()
-# GET 		/user/:email/contacts	controllers.ContactController.get()
+# GET 		/user/:email/missed		controllers.MissedController.get(email: String)
 
-# GET 		/user/:email/missed		controllers.MissedController.get()
+GET		/user/:email/connection/ws			controllers.ConnectionController.getAll(email: String)
+POST	/user/:email/connection/ws			controllers.ConnectionController.add(email: String)
+GET		/user/:email/connection/ws/:id		controllers.ConnectionController.ws(email: String, id: Long)
 
-# POST		/user/:email/connection/ws			controllers.ConnectionController.add()
-# DELETE	/user/:email/connection/ws/:id		controllers.ConnectionController.remove()
 # POST		/user/:email/connection/apn 		controllers.ConnectionController.add()
-# DELETE	/user/:email/connection/apn/:id		controllers.ConnectionController.remove()
+# DELETE	/user/:email/connection/apn/:id		controllers.ConnectionController.remove(email: String, id: Long)
 # POST		/user/:email/connection/gcm 		controllers.ConnectionController.add()
-# DELETE	/user/:email/connection/gcm/:id 	controllers.ConnectionController.remove()
+# DELETE	/user/:email/connection/gcm/:id 	controllers.ConnectionController.remove(email: String, id: Long)
 
-# POST		/notifications/:to		controllers.NotificationController.add()
-# GET		/notifications/:to		controllers.NotificationController.get()
+# POST		/notifications/:to			controllers.NotificationController.add(to: String)
+# GET		/notifications/:to/:id		controllers.NotificationController.get(to: String, id: Long)
+# DELETE	/notifications/:to/:id		controllers.NotificationController.remove(to: String, id:Long)
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
