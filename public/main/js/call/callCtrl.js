@@ -1,5 +1,9 @@
 angular.module('call')
-.controller('CallCtrl', ["$scope", "$log", "$routeParams", function ($scope, $log, $routeParams) {
-  $log.info("CallCtrl initialized..." + $routeParams.to);
-
-}]);
+  .controller('CallCtrl', ["$scope", "$log", "$routeParams", "callService",
+    function($scope, $log, $routeParams, callService) {
+      $log.info("CallCtrl initialized..." + $routeParams.to);
+      callService.start({
+        to: $routeParams.to
+      });
+    }
+  ]);

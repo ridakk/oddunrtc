@@ -5,6 +5,8 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var ionsp = io.of('/sockets');
 var mongoose = require('mongoose');
+var User = require('./User');
+var UserContacts = require('./UserContacts');
 var uuid = require('node-uuid');
 
 var connections = {};
@@ -13,30 +15,6 @@ var sockets = {};
 require('dotenv').config();
 
 mongoose.connect('mongodb://' + process.env.MONGO_USER + ':' + process.env.MONGO_PASSWORD + process.env.MONGO_URL);
-
-var Schema = mongoose.Schema;
-
-// create a schema
-var userSchema = new Schema({
-  firstName: String,
-  lastName: String,
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  photo: String
-});
-var userContactsSchema = new Schema({
-  email: { type: String, required: true, unique: true },
-  contacts: Array
-});
-
-// the schema is useless so far
-// we need to create a model using it
-var User = mongoose.model('User', userSchema);
-var UserContacts = mongoose.model('UserContacts', userContactsSchema);
-
-// make this available to our users in our Node applications
-module.exports = User;
-module.exports = UserContacts;
 
 app.set('port', (process.env.PORT || 5000));
 
@@ -54,81 +32,85 @@ app.get('/', function(request, response) {
 
 app.post('/users', function(request, response) {
   console.log("/users post from %s", request.body.email);
-  User.findOne({ email: request.body.email }, function(err, user) {
-      if (err) {
-        console.log("%s user query error: %j", request.body.email, err);
-      };
+  User.findOne({
+    email: request.body.email
+  }, function(err, user) {
+    if (err) {
+      console.log("%s user query error: %j", request.body.email, err);
+    };
 
-      if(!user) {
-        console.log("%s user is NOT found, creating user", request.body.email);
-        var newUser = new User(request.body);
-        newUser.save(function(err) {
-          if (err) {
-            console.log(err);
-            response.sendStatus(500);
-            return;
-          };
-
-          console.log("%s user is created: %j", request.body.email, newUser);
-          response.sendStatus(201);
-          return
-        });
-        return;
-      }
-
-      console.log("%s user is found: %j", request.body.email, user);
-      response.status(400).send(JSON.stringify({
-        status: 400,
-        errorCode: 1000,
-        reasonText: request.body.email + " exists"
-      }));
-  });
-});
-
-app.post('/contacts', function(request, response) {
-  console.log("/contacts post from %s", request.body.email);
-  UserContacts.findOne({ email: request.body.email }, function(err, userContacts) {
-      if (err) {
-        console.log("%s contacts is NOT found", request.body.email);
-        var newUserContacts = new UserContacts({
-          email: request.body.email,
-          contacts: [request.body.contact]
-        });
-        newUserContacts.save(function(err) {
-          if (err) {
-            console.log(err);
-            response.sendStatus(500);
-            return;
-          };
-
-          console.log("%s contacts is created", request.body.email);
-          response.sendStatus(201);
-          return
-        });
-
-        return;
-      };
-
-      console.log("%s user is found: %j", request.body.email, userContacts);
-      if (userContacts.contacts.indexOf("request.body.contact") !== -1) {
-        console.log("%s contact exits", request.body.email);
-        response.sendStatus(200);
-        return
-      }
-
-      userContacts.contacts.push(request.body.contact);
-
-      userContacts.save(function(err) {
+    if (!user) {
+      console.log("%s user is NOT found, creating user", request.body.email);
+      var newUser = new User(request.body);
+      newUser.save(function(err) {
         if (err) {
           console.log(err);
           response.sendStatus(500);
           return;
         };
 
-        console.log("%s contacts is updated", request.body.email);
-        response.sendStatus(200);
+        console.log("%s user is created: %j", request.body.email, newUser);
+        response.sendStatus(201);
         return
       });
+      return;
+    }
+
+    console.log("%s user is found: %j", request.body.email, user);
+    response.status(400).send(JSON.stringify({
+      status: 400,
+      errorCode: 1000,
+      reasonText: request.body.email + " exists"
+    }));
+  });
+});
+
+app.post('/contacts', function(request, response) {
+  console.log("/contacts post from %s", request.body.email);
+  UserContacts.findOne({
+    email: request.body.email
+  }, function(err, userContacts) {
+    if (err) {
+      console.log("%s contacts is NOT found", request.body.email);
+      var newUserContacts = new UserContacts({
+        email: request.body.email,
+        contacts: [request.body.contact]
+      });
+      newUserContacts.save(function(err) {
+        if (err) {
+          console.log(err);
+          response.sendStatus(500);
+          return;
+        };
+
+        console.log("%s contacts is created", request.body.email);
+        response.sendStatus(201);
+        return
+      });
+
+      return;
+    };
+
+    console.log("%s user is found: %j", request.body.email, userContacts);
+    if (userContacts.contacts.indexOf("request.body.contact") !== -1) {
+      console.log("%s contact exits", request.body.email);
+      response.sendStatus(200);
+      return
+    }
+
+    userContacts.contacts.push(request.body.contact);
+
+    userContacts.save(function(err) {
+      if (err) {
+        console.log(err);
+        response.sendStatus(500);
+        return;
+      };
+
+      console.log("%s contacts is updated", request.body.email);
+      response.sendStatus(200);
+      return
+    });
   });
 });
 
@@ -136,28 +118,34 @@ app.get('/contacts/:email', function(request, response) {
   var contacts = [];
   console.log("/contacts get from %j", request.params);
 
-  if(!request.params.email) {
+  if (!request.params.email) {
     response.status(200).send(JSON.stringify(contacts));
     return
   }
 
-  UserContacts.findOne({ email: request.params.email }, function(err, userContacts) {
-      if (err) {
-        console.log("%s contacts not found", request.params.email);
-        response.status(200).send(JSON.stringify(contacts));
-        return
-      };
+  UserContacts.findOne({
+    email: request.params.email
+  }, function(err, userContacts) {
+    if (err) {
+      console.log("%s contacts not found", request.params.email);
+      response.status(200).send(JSON.stringify(contacts));
+      return
+    };
 
-      if(!userContacts ||
-          !userContacts.contacts ||
-        !userContacts.contacts.length === 0) {
-        response.status(200).send(JSON.stringify(contacts));
-        return
-      }
+    if (!userContacts ||
+      !userContacts.contacts ||
+      !userContacts.contacts.length === 0) {
+      response.status(200).send(JSON.stringify(contacts));
+      return
+    }
 
-      User.find({$or:[
-        {"email":{"$in":userContacts.contacts}}
-    ]}, function(err, users) {
+    User.find({
+      $or: [{
+        "email": {
+          "$in": userContacts.contacts
+        }
+      }]
+    }, function(err, users) {
       if (err) {
         console.log("RDK FAILED", err);
         return
@@ -166,27 +154,37 @@ app.get('/contacts/:email', function(request, response) {
       console.log("RDK SUCC %j", users);
     });
 
-      console.log("%s contacts found %s", userContacts.contacts);
-      response.status(200).send(JSON.stringify(userContacts.contacts));
+    console.log("%s contacts found %s", userContacts.contacts);
+    response.status(200).send(JSON.stringify(userContacts.contacts));
   });
 });
 
 app.post('/connections', function(request, response) {
-  console.log("/connections get from %s", request.body.email);
-  User.find({ email: request.body.email }, function(err, user) {
-      if (err) {
-        console.log(err);
-        response.sendStatus(403);
-        return;
-      };
+  console.log("/connections post from %s", request.body.email);
+  User.find({
+    email: request.body.email
+  }, function(err, user) {
+    if (err) {
+      console.log(err);
+      response.sendStatus(403);
+      return;
+    };
 
-      if (!connections[request.body.email]) {
-        connections[request.body.email] = uuid.v1();
-      }
+    if (!connections[request.body.email]) {
+      connections[request.body.email] = uuid.v1();
+    }
 
-      // object of the user
-      response.json({"url": "/sockets", "uuid": connections[request.body.email]});
+    // object of the user
+    response.json({
+      "url": "/sockets",
+      "uuid": connections[request.body.email]
+    });
   });
+});
+
+app.post('/call', function(request, response) {
+  console.log("/call post from %j", request.body);
+  ionsp.emit('message', request.body);
 });
 
 io.use(function(socket, next) {
@@ -194,11 +192,10 @@ io.use(function(socket, next) {
 
   console.log("connections: %j", connections);
   console.log("io request from user: %s with uuid: %s", params.user, params.uuid);
-  if (!params.user || !params.uuid || !connections[params.user] || connections[params.user] !== params.uuid){
+  if (!params.user || !params.uuid || !connections[params.user] || connections[params.user] !== params.uuid) {
     console.log("not authorized");
     next(new Error('not authorized'));
-  }
-  else {
+  } else {
     if (!sockets[params.user]) {
       sockets[params.user] = [];
     }
@@ -208,18 +205,18 @@ io.use(function(socket, next) {
   }
 });
 
-ionsp.on('connection', function(socket){
+ionsp.on('connection', function(socket) {
   console.log('a user connected with id %s', socket.id);
   socket.broadcast.emit('hi');
-  socket.on('disconnect', function(){
+  socket.on('disconnect', function() {
     console.log('user disconnected with id %s', socket.id);
   });
 
-  socket.on('message', function(msg){
+  socket.on('message', function(msg) {
     console.log('message to: %s txt: %s', msg.to, msg.text);
     //ionsp.emit('chat message', msg);
     console.log("sockets: %j", sockets);
-    var toSocketUrl = "sockets"+sockets[msg.to][0];
+    var toSocketUrl = "sockets" + sockets[msg.to][0];
     toSocketUrl = toSocketUrl.replace("sockets/", "/sockets");
     console.log("socket of %s is %j", msg.to, toSocketUrl);
 

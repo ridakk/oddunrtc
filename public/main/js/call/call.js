@@ -1,1 +1,1 @@
-angular.module('call', []);
+angular.module('call', ['user']);

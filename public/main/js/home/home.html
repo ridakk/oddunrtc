@@ -1,25 +1,19 @@
-  <!-- Columns start at 50% wide on mobile and bump up to 33.3% wide on desktop -->
-  <div class="row">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-
-      <div ng-repeat="contact in contacts">
-        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
-          <div class="col-md-12 contact-box">
-            <a href="#/call/{{contact}}">
-              <img src="http://lorempixel.com/g/200/200/"/>
-            </a>
-            <div>{{contact}}</div>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
-        <div class="col-md-12 contact-box">
-          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-          <div>Add a contact </div>
-        </div>
-      </div>
-
+<!-- Columns start at 50% wide on mobile and bump up to 33.3% wide on desktop -->
+<div ng-repeat="contact in contacts">
+  <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
+    <div class="col-md-12 contact-box">
+      <a href="#/call/{{contact}}">
+        <img src="http://lorempixel.com/g/200/200/" />
+      </a>
+      <div>{{contact}}</div>
     </div>
   </div>
+</div>
+
+
+<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
+  <div class="col-md-12 contact-box">
+    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+    <div>Add a contact </div>
+  </div>
+</div>
