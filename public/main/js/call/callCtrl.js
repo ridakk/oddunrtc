@@ -9,12 +9,12 @@ angular.module('call')
 
       callService.onLocalStreamAdded = function(stream){
         $log.info("local stream added: ", stream);
-        angular.element("#LocalStream").srcObject = stream;
+        angular.element("#localStream")[0].srcObject = stream;
       };
 
       callService.onRemoteStreamAdded = function(stream){
         $log.info("remote stream added: ", stream);
-        angular.element("#RemoteStream").srcObject = stream;
+        angular.element("#remoteStream")[0].srcObject = stream;
       };
 
       if ($scope.callId !== "undefined") {

@@ -119,68 +119,73 @@ angular.module('call')
         };
 
         getUserMedia({
-          audio: true,
-          video: true
-        }, function(stream) {
-          $log.info("retrieved stream: ", stream);
-          pc = new RTCPeerConnection();
-          pc.addStream(stream);
+              audio: true,
+              video: true
+            }, function(stream) {
+              $log.info("retrieved stream: ", stream);
+              pc = new RTCPeerConnection();
+              pc.addStream(stream);
 
-          pc.setRemoteDescription(internalCallObj.offerDesc, function() {
-            $log.info("set remote description succ");
-            pc.createAnswer(function(desc) {
-              $log.info("create answer succ");
-              httpService.put({
-                url: window.location.origin + "/call/" + params.callId,
-                data: {
-                  type: "call",
-                  from: userService.email,
-                  to: internalCallObj.from,
-                  action: "answer",
-                  data: desc.sdp
-                }
-              }).then(function() {
-                self.onLocalStreamAdded(stream);
+              pc.setRemoteDescription(new RTCSessionDescription({
+                  type: "offer",
+                  sdp: internalCallObj.offerDesc.sdp
+                }),
+                function() {
+                  $log.info("set remote description succ");
+                  pc.createAnswer(function(desc) {
+                    $log.info("create answer succ");
+                    httpService.put({
+                      url: window.location.origin + "/call/" + params.callId,
+                      data: {
+                        type: "call",
+                        from: userService.email,
+                        to: internalCallObj.from,
+                        action: "answer",
+                        data: desc.sdp
+                      }
+                    }).then(function() {
+                      self.onLocalStreamAdded(stream);
 
-                pc.setLocalDescription(desc, function() {
-                  $log.info("set local description succ");
-                }, function() {
-                  $log.info("set local description fail");
-                });
+                      pc.setLocalDescription(desc, function() {
+                        $log.info("set local description succ");
+                      }, function() {
+                        $log.info("set local description fail");
+                      });
 
-                pc.onicecandidate = function(evt) {
-                  httpService.put({
-                    url: window.location.origin + "/call/" + postRes.callId,
-                    data: {
-                      type: "call",
-                      from: userService.email,
-                      to: internalCallObj.from,
-                      action: "canditate",
-                      data: evt.candidate
-                    }
+                      pc.onicecandidate = function(evt) {
+                        httpService.put({
+                          url: window.location.origin + "/call/" + postRes.callId,
+                          data: {
+                            type: "call",
+                            from: userService.email,
+                            to: internalCallObj.from,
+                            action: "canditate",
+                            data: evt.candidate
+                          }
+                        })
+                      };
+
+                      pc.onaddstream = function(evt) {
+                        self.onRemoteStreamAdded(evt.stream);
+                      };
+
+                      deferred.resolve();
+                    });
+                  }, function() {
+                    $log.info("create answer fail");
+                    deferred.reject();
                   })
-                };
-
-                pc.onaddstream = function(evt) {
-                  self.onRemoteStreamAdded(evt.stream);
-                };
-
-                deferred.resolve();
-              });
-            }, function() {
-              $log.info("create answer fail");
-              deferred.reject();
-            })
-          }, function() {
-            $log.info("set remote description fail");
+                },
+                function() {
+                  $log.info("set remote description fail");
+                  deferred.reject();
+                });
+          },
+          function(stream) {
+            $log.info("failed to retrieve stream");
             deferred.reject();
           });
-        }, function(stream) {
-          $log.info("failed to retrieve stream");
-          deferred.reject();
-        });
 
-        return deferred.promise;
-      };
-    }
-  ]);
+      return deferred.promise;
+    };
+  }]);

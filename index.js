@@ -21,7 +21,9 @@ mongoose.connect('mongodb://' + process.env.MONGO_USER + ':' + process.env.MONGO
 app.set('port', (process.env.PORT || 5000));
 
 app.use(express.static(__dirname + '/public'));
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 app.use(bodyParser.json());
 
 // views is directory for all template files
@@ -194,13 +196,17 @@ app.post('/call', function(request, response) {
   }).then(function(params) {
     msg.callId = params.callId;
     console.log("call success %j", params);
-    ionsp.to(Sockets.getSocketUrl({
-      owner: params.to
-    })).emit('message', msg);
 
-    response.status(201).send(JSON.stringify({
-      callId: params.callId
-    }));
+    Sockets.getSocketUrl({
+      owner: params.to
+    }).then(function(socketUrl) {
+      ionsp.to(socketUrl).emit('message', msg);
+      response.status(201).send(JSON.stringify({
+        callId: params.callId
+      }));
+    }, function() {
+      response.status(404).send();
+    });
   });
 });
 
