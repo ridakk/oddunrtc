@@ -1,1 +1,1 @@
-angular.module('home', ['user', 'contacts']);
+angular.module('home', ['user', 'contacts', 'call']);

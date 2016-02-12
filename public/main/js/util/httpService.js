@@ -18,8 +18,18 @@ angular.module('util.http', [])
       return self.request(params);
     };
 
+    self.put = function(params) {
+      params.method = "PUT";
+      return self.request(params);
+    };
+
     self.get = function(params) {
       params.method = "GET";
+      return self.request(params);
+    };
+
+    self.delete = function(params) {
+      params.method = "DELETE";
       return self.request(params);
     };
   }]);

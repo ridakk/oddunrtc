@@ -8,9 +8,11 @@ var mongoose = require('mongoose');
 var User = require('./User');
 var UserContacts = require('./UserContacts');
 var uuid = require('node-uuid');
+var Q = require("q");
+var Call = require('./Call');
+var Sockets = require('./Sockets');
 
 var connections = {};
-var sockets = {};
 
 require('dotenv').config();
 
@@ -183,8 +185,34 @@ app.post('/connections', function(request, response) {
 });
 
 app.post('/call', function(request, response) {
-  console.log("/call post from %j", request.body);
-  ionsp.emit('message', request.body);
+  var msg = request.body;
+  console.log("/call post from %j", msg);
+
+  Call.create({
+    to: msg.to,
+    from: msg.from
+  }).then(function(params) {
+    msg.callId = params.callId;
+    console.log("call success %j", params);
+    ionsp.to(Sockets.getSocketUrl({
+      owner: params.to
+    })).emit('message', msg);
+
+    response.status(201).send(JSON.stringify({
+      callId: params.callId
+    }));
+  });
+});
+
+app.put('/call/:id', function(request, response) {
+  var msg = request.body;
+  console.log("/call/:id put from %j", msg);
+
+  ionsp.to(Sockets.getSocketUrl({
+    owner: msg.to
+  })).emit('message', msg);
+
+  response.status(200).send();
 });
 
 io.use(function(socket, next) {
@@ -196,11 +224,11 @@ io.use(function(socket, next) {
     console.log("not authorized");
     next(new Error('not authorized'));
   } else {
-    if (!sockets[params.user]) {
-      sockets[params.user] = [];
-    }
+    Sockets.add({
+      user: params.user,
+      id: socket.id
+    })
 
-    sockets[params.user].push(socket.id);
     next();
   }
 });
@@ -215,12 +243,10 @@ ionsp.on('connection', function(socket) {
   socket.on('message', function(msg) {
     console.log('message to: %s txt: %s', msg.to, msg.text);
     //ionsp.emit('chat message', msg);
-    console.log("sockets: %j", sockets);
-    var toSocketUrl = "sockets" + sockets[msg.to][0];
-    toSocketUrl = toSocketUrl.replace("sockets/", "/sockets");
-    console.log("socket of %s is %j", msg.to, toSocketUrl);
 
-    socket.broadcast.to(toSocketUrl).emit('chat message', msg.text);
+    socket.broadcast.to(Sockets.getSocketUrl({
+      owner: msg.to
+    })).emit('chat message', msg);
   });
 });
 

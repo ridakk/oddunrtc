@@ -1,1 +1,1 @@
-angular.module('call', ['user']);
+angular.module('call', ['user', 'connection']);
