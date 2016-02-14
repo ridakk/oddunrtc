@@ -31,6 +31,12 @@ angular.module('call')
         pubsubMethod: pubsubMethods.publish,
         mainEvent: pubsubMainEvents.peer_service,
         childEvent: pubsubChildEvents.create_offer
+        params: {
+          createOfferConstraints: {
+            offerToReceiveAudio: 1,
+            offerToReceiveVideo: 1
+          }
+        }
       };
 
 
@@ -55,7 +61,7 @@ angular.module('call')
       function handleFSMEvent(data) {
         var i, j, k, internalCall, callId = data.msg.callId,
           whenList, performList, task;
-          // TODO how to do second transition flow for call
+        // TODO how to do second transition flow for call
         if (!calls[callId]) {
           calls[callId] = {
             trIndex: 0,
@@ -104,6 +110,15 @@ angular.module('call')
       pubsub.subscribe({
         mainEvent: pubsubMainEvents.call_fsm,
         callback: handleFSMEvent
+      });
+
+      pubsub.subscribe({
+        mainEvent: pubsubMainEvents.global,
+        childEvent: pubsubChildEvents.clear_resources,
+        callback: function(data) {
+          $log.info("call fsm: deleting call object: " + data.msg.callId);
+          delete calls[data.msg.callId];
+        }
       });
     }
   ])

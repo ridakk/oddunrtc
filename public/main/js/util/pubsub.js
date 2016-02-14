@@ -23,6 +23,7 @@ angular.module('util.pubsub', [])
 
       self.publish = function(params) {
         setTimeout(function() {
+          $log.info("invoking " + params.mainEvent +" with: " + params.childEvent, params);
           listeners[params.mainEvent](params);
         }, 1);
       };
@@ -39,6 +40,7 @@ angular.module('util.pubsub', [])
           return;
         }
 
+        $log.info("broadcasting event: " + params.childEvent, params);
         for (var i in childListeners) {
           if (childListeners.hasOwnProperty(i)) {
             setTimeout(function() {
@@ -67,5 +69,10 @@ angular.module('util.pubsub', [])
     request_media_permission: "request_media_permission",
     media_permission_granted: "media_permission_granted",
     media_permission_rejected: "media_permission_rejected",
-    create_offer: "create_offer"
+    create_offer: "create_offer",
+    create_offer_success: "create_offer_success",
+    create_offer_failure: "create_offer_failure",
+    on_ice_canditate: "on_ice_canditate",
+    on_local_stream: "on_local_stream",
+    on_remote_stream: "on_remote_stream"
   });

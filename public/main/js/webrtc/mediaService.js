@@ -16,12 +16,12 @@ angular.module('webrtc.mediaService', ['util.pubsub'])
                 callId: data.msg.callId
               }
             });
-          }, function(err) {
+          }, function(error) {
             pubsub.publish({
               mainEvent: pubsubMainEvents.call_fsm,
               childEvent: pubsubChildEvents.media_permission_rejected,
               msg: {
-                error: err,
+                error: error,
                 callId: data.msg.callId
               }
             });
