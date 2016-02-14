@@ -1,1 +1,1 @@
-angular.module('home', ['user', 'contacts', 'call']);
+angular.module('home', ['user', 'contacts', 'call', 'webrtc.mediaService']);

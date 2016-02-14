@@ -1,6 +1,6 @@
 angular.module('connection')
-  .service('connectionService', ["$log", "httpService", "notificationService",
-    function($log, httpService, notificationService) {
+  .service('connectionService', ["$log", "httpService",
+    function($log, httpService) {
       var self = this,
         socket;
 
@@ -19,10 +19,7 @@ angular.module('connection')
           });
           socket.on('message', function(msg) {
             $log.info("message received", msg);
-            notificationService.publish({
-              type: msg.type,
-              msg: msg
-            });
+
           });
         });
       };

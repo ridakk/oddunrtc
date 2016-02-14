@@ -1,1 +1,1 @@
-angular.module('call', ['user', 'connection']);
+angular.module('call', ['user', 'connection', 'util.pubsub']);

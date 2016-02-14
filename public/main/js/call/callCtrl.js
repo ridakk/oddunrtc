@@ -25,8 +25,6 @@ angular.module('call')
       } else {
         callService.start({
           to: $routeParams.target
-        }).then(function(params) {
-          $scope.callId = params.callId;
         });
       }
     }
