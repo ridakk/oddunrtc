@@ -74,5 +74,6 @@ angular.module('util.pubsub', [])
     create_offer_failure: "create_offer_failure",
     on_ice_canditate: "on_ice_canditate",
     on_local_stream: "on_local_stream",
-    on_remote_stream: "on_remote_stream"
+    on_remote_stream: "on_remote_stream",
+    send_call_request: "send_call_request"
   });

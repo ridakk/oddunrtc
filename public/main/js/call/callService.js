@@ -8,7 +8,6 @@ angular.module('call')
       self.onLocalStreamAdded = function() {};
       self.onRemoteStreamAdded = function() {};
 
-
       self.start = function(params) {
         var internallCallId = UUID.generate();
         calls[internallCallId] = {
@@ -45,6 +44,12 @@ angular.module('call')
       self.handleOnIceCandidate = function(data) {
         // TODO implement callHttpService
         // TODO send candidate to remote party
+      };
+
+      self.handleSendCallRequest = function(data) {
+        // TODO send call request to server
+        // if server side call id exits, send put
+        // otherwise send POST
       };
 
       eventHandlers[pubsubChildEvents.on_local_stream] = self.handleOnLocalStream;

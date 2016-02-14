@@ -30,13 +30,18 @@ angular.module('call')
       tasks[callFsmTasks.publish_create_offer] = {
         pubsubMethod: pubsubMethods.publish,
         mainEvent: pubsubMainEvents.peer_service,
-        childEvent: pubsubChildEvents.create_offer
+        childEvent: pubsubChildEvents.create_offer,
         params: {
           createOfferConstraints: {
             offerToReceiveAudio: 1,
             offerToReceiveVideo: 1
           }
         }
+      };
+      tasks[callFsmTasks.publish_send_call_request] = {
+        pubsubMethod: pubsubMethods.publish,
+        mainEvent: pubsubMainEvents.call_service,
+        childEvent: pubsubChildEvents.send_call_request
       };
 
 
@@ -55,6 +60,15 @@ angular.module('call')
         }, {
           childEvent: pubsubChildEvents.media_permission_granted,
           performs: [callFsmTasks.publish_create_offer]
+        }],
+      };
+      transitionsHashTable[pubsubChildEvents.start_call_gui][2] = {
+        when: [{
+          childEvent: pubsubChildEvents.create_offer_failure,
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          childEvent: pubsubChildEvents.create_offer_success,
+          performs: [callFsmTasks.publish_send_call_request]
         }],
       };
 
@@ -131,6 +145,7 @@ angular.module('call')
     publish_state_chage: 0,
     publish_request_media_permission: 1,
     publish_create_offer: 2,
-    broadcast_clear_resources: 3
+    broadcast_clear_resources: 3,
+    publish_send_call_request: 4
   })
   .run(['callFSM', function() {}]);
