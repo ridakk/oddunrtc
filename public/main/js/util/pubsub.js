@@ -69,6 +69,7 @@ angular.module('util.pubsub', [])
   .constant("pubsubEvent", {
     state_change: "state_change",
     start_call_gui: "start_call_gui",
+    end_call_gui: "end_call_gui",
     clear_resources: "clear_resources",
     request_media_permission: "request_media_permission",
     media_permission_granted: "media_permission_granted",
@@ -76,10 +77,23 @@ angular.module('util.pubsub', [])
     create_offer: "create_offer",
     create_offer_success: "create_offer_success",
     create_offer_failure: "create_offer_failure",
+    set_local_offer: "set_local_offer",
+    set_local_offer_success: "set_local_offer_success",
+    set_local_offer_failure: "set_local_offer_failure",
+    set_local_answer: "set_local_answer",
+    set_local_answer_success: "set_local_offer_success",
+    set_local_answer_failure: "set_local_offer_failure",
+    set_remote_answer: "set_remote_answer",
+    set_remote_answer_success: "set_remote_answer_success",
+    set_remote_answer_success: "set_remote_answer_success",
     on_ice_canditate: "on_ice_canditate",
     on_local_stream: "on_local_stream",
     on_remote_stream: "on_remote_stream",
     send_call_request: "send_call_request",
     send_call_request_success: "send_call_request_success",
-    send_call_request_failure: "send_call_request_failure"
+    send_call_request_failure: "send_call_request_failure",
+    call_timeout_notify: "call_timeout_notify",
+    call_end_notify: "call_end_notify",
+    call_accepted_notify: "call_accepted_notify",
+    call_answered_notify: "call_answered_notify"
   });

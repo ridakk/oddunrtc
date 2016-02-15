@@ -95,10 +95,101 @@ angular.module('webrtc.peerService', ['util.pubsub'])
           data.msg.createOfferConstraints);
       };
 
+      self.setDescription = function(data) {
+        data.pc[data.method](new RTCSessionDescription({
+          type: data.sdpType,
+          sdp: data.sdp
+        }), function() {
+          pubsub.publish({
+            publisher: pubsubSubscriber.peer_service,
+            subscriber: pubsubSubscriber.call_fsm,
+            event: data.successEvent,
+            msg: {
+              callId: data.callId
+            }
+          });
+        }, function(error) {
+          pubsub.publish({
+            publisher: pubsubSubscriber.peer_service,
+            subscriber: pubsubSubscriber.call_fsm,
+            event: data.failureEvent,
+            msg: {
+              callId: data.callId,
+              error: error
+            }
+          });
+        });
+      };
+
+      self.handleSetLocalOffer = function(data) {
+        var callId = data.callId,
+          internalCall = calls[callId];
+        self.setDescription({
+          pc: internalCall.pc,
+          method: "setLocalDescription",
+          callId: data.msg.callId,
+          sdpType: "offer",
+          sdp: internalCall.localSdp,
+          successEvent: pubsub.set_local_offer_success,
+          failureEvent: pubsub.set_local_offer_failure
+        });
+      };
+
+      self.handleSetLocalAnswer = function(data) {
+        var callId = data.callId,
+          internalCall = calls[callId];
+        self.setDescription({
+          pc: internalCall.pc,
+          method: "setLocalDescription",
+          callId: data.msg.callId,
+          sdpType: "answer",
+          sdp: data.msg.sdp,
+          successEvent: pubsub.set_local_answer_success,
+          failureEvent: pubsub.set_local_answer_failure
+        });
+      };
+
+      self.handleSetRemoteOffer = function(data) {
+        var callId = data.callId,
+          internalCall = calls[callId];
+        self.setDescription({
+          pc: internalCall.pc,
+          method: "setRemoteDescription",
+          callId: data.msg.callId,
+          sdpType: "offer",
+          sdp: internalCall.localSdp,
+          successEvent: pubsub.set_remote_offer_success,
+          failureEvent: pubsub.set_remote_offer_failure
+        });
+      };
+
+      self.handleSetRemoteAnswer = function(data) {
+        var callId = data.callId,
+          internalCall = calls[callId];
+        self.setDescription({
+          pc: internalCall.pc,
+          method: "setRemoteDescription",
+          callId: data.msg.callId,
+          sdpType: "answer",
+          sdp: data.msg.sdp,
+          successEvent: pubsub.set_remote_answer_success,
+          failureEvent: pubsub.set_remote_answer_failure
+        });
+      };
+
+      eventHandlers[pubsubEvent.create_offer] = self.handleCreateOffer;
+      eventHandlers[pubsubEvent.set_local_offer] = self.handleSetLocalOffer;
+      eventHandlers[pubsubEvent.set_local_answer] = self.handleSetLocalAnswer;
+      eventHandlers[pubsubEvent.set_remote_offer] = self.handleSetRemoteOffer;
+      eventHandlers[pubsubEvent.set_remote_answer] = self.handleSetRemoteAnswer;
+
+      self.handlePeerServiceEvent = function(data) {
+        eventHandlers[data.event](data);
+      };
+
       pubsub.subscribe({
         subscriber: pubsubSubscriber.peer_service,
-        event: pubsubEvent.create_offer,
-        callback: self.handleCreateOffer
+        callback: self.handlePeerServiceEvent
       });
 
       pubsub.subscribe({

@@ -1,30 +1,28 @@
 angular.module('call')
-  .controller('CallCtrl', ["$scope", "$log", "$routeParams", "callService",
+  .controller('CallCtrl', ["$scope", "$log", "$routeParams", "callService", "userService",
+    function($scope, $log, $routeParams, callService, userService) {
+      $log.info("CallCtrl initialized... from: " + $routeParams.from + " to: " + $routeParams.to);
 
-    function($scope, $log, $routeParams, callService) {
-      $log.info("CallCtrl initialized... target: " + $routeParams.target + " call id: " + $routeParams.callId);
-
-      $scope.target = $routeParams.target;
       $scope.callId = $routeParams.callId;
 
-      callService.onLocalStreamAdded = function(stream){
+      callService.onLocalStreamAdded = function(stream) {
         $log.info("local stream added: ", stream);
         angular.element("#localStream")[0].srcObject = stream;
       };
 
-      callService.onRemoteStreamAdded = function(stream){
+      callService.onRemoteStreamAdded = function(stream) {
         $log.info("remote stream added: ", stream);
         angular.element("#remoteStream")[0].srcObject = stream;
       };
 
-      if ($scope.callId !== "undefined") {
+      if ($routeParams.from !== userService.email) {
         callService.answer({
-          to: $routeParams.target,
+          to: $routeParams.to,
           callId: $scope.callId
         });
       } else {
         callService.start({
-          to: $routeParams.target
+          to: $routeParams.to
         });
       }
     }

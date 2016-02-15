@@ -52,7 +52,7 @@ angular.module('call')
         // TODO send call request to server
         httpService.post({
           url: window.location.origin + "/call",
-          timeout: 5000, 
+          //timeout: 30000,
           data: {
             type: "call",
             from: userService.email,

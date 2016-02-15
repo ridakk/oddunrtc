@@ -14,7 +14,7 @@ angular.module('main', ['ngRoute', 'signin', 'login', 'home', 'call'])
           templateUrl: '/main/js/home/home.html',
           controller: 'HomeCtrl'
         })
-        .when('/call/:target/:callId', {
+        .when('/call/:from/:to', {
           templateUrl: '/main/js/call/call.html',
           controller: 'CallCtrl'
         });
