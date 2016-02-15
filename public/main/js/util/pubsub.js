@@ -1,51 +1,55 @@
 angular.module('util.pubsub', [])
-  .service('pubsub', ["$log", "pubsubMainEvents",
-    function($log, pubsubMainEvents) {
+  .service('pubsub', ["$log", "pubsubSubscriber",
+    function($log, pubsubSubscriber) {
       var self = this,
         listeners = {};
 
       self.subscribe = function(params) {
-        if (params.mainEvent === pubsubMainEvents.global) {
-          if (!listeners[pubsubMainEvents.global]) {
-            listeners[pubsubMainEvents.global] = {};
+        if (params.subscriber === pubsubSubscriber.global) {
+          if (!listeners[pubsubSubscriber.global]) {
+            listeners[pubsubSubscriber.global] = {};
           }
 
-          if (!listeners[pubsubMainEvents.global][params.childEvent]) {
-            listeners[pubsubMainEvents.global][params.childEvent] = [];
+          if (!listeners[pubsubSubscriber.global][params.event]) {
+            listeners[pubsubSubscriber.global][params.event] = [];
           }
 
-          listeners[pubsubMainEvents.global][params.childEvent].push(params.callback);
+          listeners[pubsubSubscriber.global][params.event].push(params.callback);
           return;
         }
 
-        listeners[params.mainEvent] = params.callback;
+        listeners[params.subscriber] = params.callback;
       };
 
       self.publish = function(params) {
         setTimeout(function() {
-          $log.info("invoking " + params.mainEvent +" with: " + params.childEvent, params);
-          listeners[params.mainEvent](params);
+          $log.info(params.publisher + "->" + params.subscriber + ": " + params.event /*, params*/ );
+          listeners[params.subscriber](params);
         }, 1);
       };
 
       self.broadcast = function(params) {
-        var i, globalListeners = listeners[pubsubMainEvents.global],
+        var i, globalListeners = listeners[pubsubSubscriber.global],
           childListeners;
         if (!globalListeners) {
           return;
         }
 
-        childListeners = globalListeners[params.childEvent];
+        childListeners = globalListeners[params.event];
         if (!childListeners) {
           return;
         }
 
-        $log.info("broadcasting event: " + params.childEvent, params);
+        function fireEvent(listener, params) {
+          setTimeout(function() {
+            listener(params);
+          }, 1);
+        }
+
+        $log.info("broadcasting event: " + params.event, params);
         for (var i in childListeners) {
           if (childListeners.hasOwnProperty(i)) {
-            setTimeout(function() {
-              childListeners[i](params);
-            }, 1);
+            fireEvent(childListeners[i], params);
           }
         }
       };
@@ -55,14 +59,14 @@ angular.module('util.pubsub', [])
     publish: "publish",
     broadcast: "broadcast"
   })
-  .constant("pubsubMainEvents", {
+  .constant("pubsubSubscriber", {
     global: "global",
     call_fsm: "call_fsm",
     call_service: "call_service",
     media_service: "media_service",
     peer_service: "peer_service"
   })
-  .constant("pubsubChildEvents", {
+  .constant("pubsubEvent", {
     state_change: "state_change",
     start_call_gui: "start_call_gui",
     clear_resources: "clear_resources",
@@ -75,5 +79,7 @@ angular.module('util.pubsub', [])
     on_ice_canditate: "on_ice_canditate",
     on_local_stream: "on_local_stream",
     on_remote_stream: "on_remote_stream",
-    send_call_request: "send_call_request"
+    send_call_request: "send_call_request",
+    send_call_request_success: "send_call_request_success",
+    send_call_request_failure: "send_call_request_failure"
   });

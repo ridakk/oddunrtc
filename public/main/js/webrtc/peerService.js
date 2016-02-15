@@ -1,6 +1,6 @@
 angular.module('webrtc.peerService', ['util.pubsub'])
-  .service('peerService', ["$log", "pubsub", "pubsubMainEvents", "pubsubChildEvents",
-    function($log, pubsub, pubsubMainEvents, pubsubChildEvents) {
+  .service('peerService', ["$log", "pubsub", "pubsubSubscriber", "pubsubEvent",
+    function($log, pubsub, pubsubSubscriber, pubsubEvent) {
       var self = this,
         calls = {};
 
@@ -10,8 +10,9 @@ angular.module('webrtc.peerService', ['util.pubsub'])
 
         pc.onaddstream = function(e) {
           pubsub.publish({
-            mainEvent: pubsubMainEvents.call_service,
-            childEvent: pubsubChildEvents.on_remote_stream,
+            publisher: pubsubSubscriber.peer_service,
+            subscriber: pubsubSubscriber.call_service,
+            event: pubsubEvent.on_remote_stream,
             msg: {
               callId: data.msg.callId,
               stream: e.stream
@@ -21,8 +22,9 @@ angular.module('webrtc.peerService', ['util.pubsub'])
 
         pc.onicecandidate = function(e) {
           pubsub.publish({
-            mainEvent: pubsubMainEvents.call_service,
-            childEvent: pubsubChildEvents.on_ice_canditate,
+            publisher: pubsubSubscriber.peer_service,
+            subscriber: pubsubSubscriber.call_service,
+            event: pubsubEvent.on_ice_canditate,
             msg: {
               callId: data.msg.callId,
               candidate: e.candidate
@@ -34,8 +36,9 @@ angular.module('webrtc.peerService', ['util.pubsub'])
           $log.info("ice connection state: " + pc.iceConnectionState);
           // TODO ice connection state should be handled by fsm, it indicates audio path success/failure
           // pubsub.publish({
-          //   mainEvent: pubsubMainEvents.call_fsm,
-          //   childEvent: pubsubChildEvents.on_ice_connection_state,
+          //   publisher: pubsubSubscriber.peer_service,
+          //   subscriber: pubsubSubscriber.call_fsm,
+          //  event: pubsubEvent.on_ice_connection_state,
           //   msg: {
           //     callId: data.msg.callId,
           //     state: pc.iceConnectionState
@@ -56,10 +59,11 @@ angular.module('webrtc.peerService', ['util.pubsub'])
 
         internalCall.pc = self.createPeer();
 
-        pc.addStream(data.msg.stream);
+        internalCall.pc.addStream(data.msg.stream);
         pubsub.publish({
-          mainEvent: pubsubMainEvents.call_service,
-          childEvent: pubsubChildEvents.on_local_stream,
+          publisher: pubsubSubscriber.peer_service,
+          subscriber: pubsubSubscriber.call_service,
+          event: pubsubEvent.on_local_stream,
           msg: {
             callId: data.msg.callId,
             stream: data.msg.stream
@@ -67,10 +71,11 @@ angular.module('webrtc.peerService', ['util.pubsub'])
         });
 
         internalCall.pc.createOffer(function(desc) {
-            internalCall.createOfferSdp = desc.sdp;
+            internalCall.localSdp = desc.sdp;
             pubsub.publish({
-              mainEvent: pubsubMainEvents.call_fsm,
-              childEvent: pubsubChildEvents.create_offer_success,
+              publisher: pubsubSubscriber.peer_service,
+              subscriber: pubsubSubscriber.call_fsm,
+              event: pubsubEvent.create_offer_success,
               msg: {
                 callId: callId,
                 sdp: desc.sdp
@@ -78,8 +83,9 @@ angular.module('webrtc.peerService', ['util.pubsub'])
             });
           }, function(error) {
             pubsub.publish({
-              mainEvent: pubsubMainEvents.call_fsm,
-              childEvent: pubsubChildEvents.create_offer_failure,
+              publisher: pubsubSubscriber.peer_service,
+              subscriber: pubsubSubscriber.call_fsm,
+              event: pubsubEvent.create_offer_failure,
               msg: {
                 callId: callId,
                 error: error
@@ -90,14 +96,14 @@ angular.module('webrtc.peerService', ['util.pubsub'])
       };
 
       pubsub.subscribe({
-        mainEvent: pubsubMainEvents.peerService,
-        childEvent: pubsubChildEvents.create_offer,
+        subscriber: pubsubSubscriber.peer_service,
+        event: pubsubEvent.create_offer,
         callback: self.handleCreateOffer
       });
 
       pubsub.subscribe({
-        mainEvent: pubsubMainEvents.global,
-        childEvent: pubsubChildEvents.clear_resources,
+        subscriber: pubsubSubscriber.global,
+        event: pubsubEvent.clear_resources,
         callback: function(data) {
           $log.info("peer service: deleting call object: " + data.msg.callId);
           calls[data.msg.callId].pc.onicecandidate = null;
@@ -105,6 +111,9 @@ angular.module('webrtc.peerService', ['util.pubsub'])
           calls[data.msg.callId].pc.onaddstream = null;
 
           // TODO release local stream if peer has one
+          // adaptor shim does not handle media stop
+          calls[data.msg.callId].pc.getLocalStreams()[0].getTracks()[0].stop();
+          calls[data.msg.callId].pc.getLocalStreams()[0].getTracks()[1].stop();
 
           calls[data.msg.callId].pc.close();
           calls[data.msg.callId].pc = null;

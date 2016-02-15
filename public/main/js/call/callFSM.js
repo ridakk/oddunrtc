@@ -1,6 +1,6 @@
 angular.module('call')
-  .service('callFSM', ["$log", "$q", "pubsub", "pubsubMainEvents", "pubsubChildEvents", "pubsubMethods", "callFsmStates", "callFsmTasks",
-    function($log, $q, pubsub, pubsubMainEvents, pubsubChildEvents, pubsubMethods, callFsmStates, callFsmTasks) {
+  .service('callFSM', ["$log", "$q", "pubsub", "pubsubSubscriber", "pubsubEvent", "pubsubMethods", "callFsmStates", "callFsmTasks",
+    function($log, $q, pubsub, pubsubSubscriber, pubsubEvent, pubsubMethods, callFsmStates, callFsmTasks) {
       var self = this,
         calls = {},
         transitionsHashTable = {},
@@ -8,13 +8,13 @@ angular.module('call')
 
       tasks[callFsmTasks.publish_state_chage] = {
         pubsubMethod: pubsubMethods.publish,
-        mainEvent: pubsubMainEvents.call_service,
-        childEvent: pubsubChildEvents.state_change
+        subscriber: pubsubSubscriber.call_service,
+        event: pubsubEvent.state_change
       };
       tasks[callFsmTasks.publish_request_media_permission] = {
         pubsubMethod: pubsubMethods.publish,
-        mainEvent: pubsubMainEvents.media_service,
-        childEvent: pubsubChildEvents.request_media_permission,
+        subscriber: pubsubSubscriber.media_service,
+        event: pubsubEvent.request_media_permission,
         params: {
           constraints: {
             audio: true,
@@ -24,13 +24,13 @@ angular.module('call')
       };
       tasks[callFsmTasks.broadcast_clear_resources] = {
         pubsubMethod: pubsubMethods.broadcast,
-        mainEvent: pubsubMainEvents.global,
-        childEvent: pubsubChildEvents.clear_resources
+        subscriber: pubsubSubscriber.global,
+        event: pubsubEvent.clear_resources
       };
       tasks[callFsmTasks.publish_create_offer] = {
         pubsubMethod: pubsubMethods.publish,
-        mainEvent: pubsubMainEvents.peer_service,
-        childEvent: pubsubChildEvents.create_offer,
+        subscriber: pubsubSubscriber.peer_service,
+        event: pubsubEvent.create_offer,
         params: {
           createOfferConstraints: {
             offerToReceiveAudio: 1,
@@ -40,35 +40,44 @@ angular.module('call')
       };
       tasks[callFsmTasks.publish_send_call_request] = {
         pubsubMethod: pubsubMethods.publish,
-        mainEvent: pubsubMainEvents.call_service,
-        childEvent: pubsubChildEvents.send_call_request
+        subscriber: pubsubSubscriber.call_service,
+        event: pubsubEvent.send_call_request
       };
 
 
       //TODO how to publish state change updates ???
-      transitionsHashTable[pubsubChildEvents.start_call_gui] = {};
-      transitionsHashTable[pubsubChildEvents.start_call_gui][0] = {
+      transitionsHashTable[pubsubEvent.start_call_gui] = {};
+      transitionsHashTable[pubsubEvent.start_call_gui][0] = {
         when: [{
-          childEvent: pubsubChildEvents.start_call_gui,
+          event: pubsubEvent.start_call_gui,
           performs: [callFsmTasks.publish_request_media_permission]
         }],
       };
-      transitionsHashTable[pubsubChildEvents.start_call_gui][1] = {
+      transitionsHashTable[pubsubEvent.start_call_gui][1] = {
         when: [{
-          childEvent: pubsubChildEvents.media_permission_rejected,
+          event: pubsubEvent.media_permission_rejected,
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
-          childEvent: pubsubChildEvents.media_permission_granted,
+          event: pubsubEvent.media_permission_granted,
           performs: [callFsmTasks.publish_create_offer]
         }],
       };
-      transitionsHashTable[pubsubChildEvents.start_call_gui][2] = {
+      transitionsHashTable[pubsubEvent.start_call_gui][2] = {
         when: [{
-          childEvent: pubsubChildEvents.create_offer_failure,
+          event: pubsubEvent.create_offer_failure,
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
-          childEvent: pubsubChildEvents.create_offer_success,
+          event: pubsubEvent.create_offer_success,
           performs: [callFsmTasks.publish_send_call_request]
+        }],
+      };
+      transitionsHashTable[pubsubEvent.start_call_gui][3] = {
+        when: [{
+          event: pubsubEvent.send_call_request_failure,
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.send_call_request_success,
+          performs: [callFsmTasks.unknown]
         }],
       };
 
@@ -79,7 +88,7 @@ angular.module('call')
         if (!calls[callId]) {
           calls[callId] = {
             trIndex: 0,
-            transition: transitionsHashTable[data.childEvent]
+            transition: transitionsHashTable[data.event]
           };
         }
 
@@ -89,7 +98,7 @@ angular.module('call')
 
         for (i in whenList) {
           if (whenList.hasOwnProperty(i)) {
-            if (whenList[i].childEvent === data.childEvent) {
+            if (whenList[i].event === data.event) {
               performList = whenList[i].performs;
 
               for (var j in performList) {
@@ -103,8 +112,9 @@ angular.module('call')
                   }
 
                   pubsub[task.pubsubMethod]({
-                    mainEvent: task.mainEvent,
-                    childEvent: task.childEvent,
+                    publisher: pubsubSubscriber.call_fsm,
+                    subscriber: task.subscriber,
+                    event: task.event,
                     msg: data.msg
                   });
                 }
@@ -122,13 +132,13 @@ angular.module('call')
       };
 
       pubsub.subscribe({
-        mainEvent: pubsubMainEvents.call_fsm,
+        subscriber: pubsubSubscriber.call_fsm,
         callback: handleFSMEvent
       });
 
       pubsub.subscribe({
-        mainEvent: pubsubMainEvents.global,
-        childEvent: pubsubChildEvents.clear_resources,
+        subscriber: pubsubSubscriber.global,
+        event: pubsubEvent.clear_resources,
         callback: function(data) {
           $log.info("call fsm: deleting call object: " + data.msg.callId);
           delete calls[data.msg.callId];
