@@ -143,7 +143,7 @@ angular.module('webrtc.peerService', ['util.pubsub'])
           method: "setLocalDescription",
           callId: data.msg.callId,
           sdpType: "answer",
-          sdp: data.msg.sdp,
+          sdp: internalCall.localSdp,
           successEvent: pubsub.set_local_answer_success,
           failureEvent: pubsub.set_local_answer_failure
         });
@@ -157,7 +157,7 @@ angular.module('webrtc.peerService', ['util.pubsub'])
           method: "setRemoteDescription",
           callId: data.msg.callId,
           sdpType: "offer",
-          sdp: internalCall.localSdp,
+          sdp: data.msg.sdp,
           successEvent: pubsub.set_remote_offer_success,
           failureEvent: pubsub.set_remote_offer_failure
         });
