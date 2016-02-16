@@ -1,6 +1,6 @@
 angular.module('home')
-  .controller('HomeCtrl', ["$scope", "$log", "userService", "contactsService", "callService",
-    function($scope, $log, userService, contactsService, callService) {
+  .controller('HomeCtrl', ["$rootScope", "$scope", "$log", "userService", "contactsService", "pubsub", "pubsubSubscriber", "pubsubEvent",
+    function($rootScope, $scope, $log, userService, contactsService, pubsub, pubsubSubscriber, pubsubEvent) {
       $log.info("HomeCtrl initialized...");
 
       $scope.user = userService;
@@ -9,6 +9,17 @@ angular.module('home')
       contactsService.get(userService.email).then(function(res) {
         $scope.contacts = res;
       });
+
+      $scope.startCallTo = function(contact) {
+        pubsub.publish({
+          publisher: pubsubSubscriber.home_ctrl,
+          subscriber: pubsubSubscriber.call_fsm,
+          event: pubsubEvent.start_call_gui,
+          msg: {
+            target: contact
+          }
+        });
+      };
 
     }
   ]);

@@ -1,9 +1,25 @@
 angular.module('call')
   .controller('CallCtrl', ["$scope", "$log", "$routeParams", "callService", "userService",
     function($scope, $log, $routeParams, callService, userService) {
-      $log.info("CallCtrl initialized... from: " + $routeParams.from + " to: " + $routeParams.to);
+      $log.info("CallCtrl initialized... callId: " + $routeParams.callId);
 
       $scope.callId = $routeParams.callId;
+
+      $scope.answer = function(){
+        $log.info("answer is clicked ");
+        callService.answer({
+          callId: $routeParams.callId
+        });
+        $('#incomingCallModal').modal('hide');
+      };
+
+      $scope.end = function(){
+        $log.info("decline is clicked ");
+        callService.end({
+          callId: $routeParams.callId
+        });
+        $('#incomingCallModal').modal('hide');
+      };
 
       callService.onLocalStreamAdded = function(stream) {
         $log.info("local stream added: ", stream);
@@ -15,15 +31,10 @@ angular.module('call')
         angular.element("#remoteStream")[0].srcObject = stream;
       };
 
-      if ($routeParams.from !== userService.email) {
-        callService.answer({
-          to: $routeParams.to,
-          callId: $scope.callId
-        });
-      } else {
-        callService.start({
-          to: $routeParams.to
-        });
+      if (callService.isIncomingCall({
+        callId: $routeParams.callId
+      })) {
+        $("#incomingCallModal").modal();
       }
     }
   ]);

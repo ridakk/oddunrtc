@@ -64,19 +64,30 @@ angular.module('util.pubsub', [])
     call_fsm: "call_fsm",
     call_service: "call_service",
     media_service: "media_service",
-    peer_service: "peer_service"
+    peer_service: "peer_service",
+    connection_service: "connection_service",
+    location_service: "location_service",
+    home_ctrl: "home_ctrl"
   })
   .constant("pubsubEvent", {
+    create_outgoing_call: "create_outgoing_call",
+    create_incoming_call: "create_incoming_call",
     state_change: "state_change",
     start_call_gui: "start_call_gui",
     end_call_gui: "end_call_gui",
+    answer_call_gui: "answer_call_gui",
     clear_resources: "clear_resources",
     request_media_permission: "request_media_permission",
     media_permission_granted: "media_permission_granted",
     media_permission_rejected: "media_permission_rejected",
+    create_peer: "create_peer",
+    create_peer_completed: "create_peer_completed",
     create_offer: "create_offer",
     create_offer_success: "create_offer_success",
     create_offer_failure: "create_offer_failure",
+    create_answer: "create_answer",
+    create_answer_success: "create_answer_success",
+    create_answer_failure: "create_answer_failure",
     set_local_offer: "set_local_offer",
     set_local_offer_success: "set_local_offer_success",
     set_local_offer_failure: "set_local_offer_failure",
@@ -86,6 +97,9 @@ angular.module('util.pubsub', [])
     set_remote_answer: "set_remote_answer",
     set_remote_answer_success: "set_remote_answer_success",
     set_remote_answer_success: "set_remote_answer_success",
+    set_remote_offer: "set_remote_offer",
+    set_remote_offer_success: "set_remote_offer_success",
+    set_remote_offer_success: "set_remote_offer_success",
     on_ice_canditate: "on_ice_canditate",
     on_local_stream: "on_local_stream",
     on_remote_stream: "on_remote_stream",
@@ -95,5 +109,8 @@ angular.module('util.pubsub', [])
     call_timeout_notify: "call_timeout_notify",
     call_end_notify: "call_end_notify",
     call_accepted_notify: "call_accepted_notify",
-    call_answered_notify: "call_answered_notify"
+    call_answered_notify: "call_answered_notify",
+    on_incoming_call_notify: "on_incoming_call_notify",
+    change_url_to_call: "change_url_to_call",
+    add_local_stream: "add_local_stream"
   });

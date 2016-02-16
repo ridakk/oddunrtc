@@ -2,3 +2,11 @@
   <video class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="localStream" autoplay muted></video>
   <video class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="remoteStream" autoplay></video>
 </div>
+<div id="incomingCallModal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <button ng-click="answer()" class="btn btn-lg btn-primary btn-block" type="submit">Answer</button>
+      <button ng-click="end()" class="btn btn-lg btn-primary btn-block" type="submit">Decline</button>
+    </div>
+  </div>
+</div>

@@ -1,6 +1,6 @@
 angular.module('connection')
-  .service('connectionService', ["$log", "httpService",
-    function($log, httpService) {
+  .service('connectionService', ["$rootScope", "$log", "httpService", "$location", "pubsub", "pubsubSubscriber", "pubsubEvent",
+    function($rootScope, $log, httpService, $location, pubsub, pubsubSubscriber, pubsubEvent) {
       var self = this,
         socket;
 
@@ -20,6 +20,16 @@ angular.module('connection')
           socket.on('message', function(msg) {
             $log.info("message received", msg);
 
+            pubsub.publish({
+              publisher: pubsubSubscriber.connection_service,
+              subscriber: pubsubSubscriber.call_fsm,
+              event: pubsubEvent.on_incoming_call_notify,
+              msg: {
+                target: msg.from,
+                remoteSdp: msg.data.sdp,
+                callId: msg.callId
+              }
+            });
           });
         });
       };

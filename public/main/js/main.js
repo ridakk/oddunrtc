@@ -14,7 +14,7 @@ angular.module('main', ['ngRoute', 'signin', 'login', 'home', 'call'])
           templateUrl: '/main/js/home/home.html',
           controller: 'HomeCtrl'
         })
-        .when('/call/:from/:to', {
+        .when('/call/:callId', {
           templateUrl: '/main/js/call/call.html',
           controller: 'CallCtrl'
         });
@@ -22,5 +22,4 @@ angular.module('main', ['ngRoute', 'signin', 'login', 'home', 'call'])
   ])
   .controller('mainCtrl', ["$scope", "$log", function($scope, $log) {
     $log.info("mainCtrl initialized...");
-
   }]);

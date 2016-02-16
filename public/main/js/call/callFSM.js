@@ -6,6 +6,21 @@ angular.module('call')
         transitionsHashTable = {},
         tasks = {};
 
+      tasks[callFsmTasks.publish_location_change] = {
+        pubsubMethod: pubsubMethods.publish,
+        subscriber: pubsubSubscriber.location_service,
+        event: pubsubEvent.change_url_to_call
+      };
+      tasks[callFsmTasks.publish_create_outgoing_call] = {
+        pubsubMethod: pubsubMethods.publish,
+        subscriber: pubsubSubscriber.call_service,
+        event: pubsubEvent.create_outgoing_call
+      };
+      tasks[callFsmTasks.publish_create_incoming_call] = {
+        pubsubMethod: pubsubMethods.publish,
+        subscriber: pubsubSubscriber.call_service,
+        event: pubsubEvent.create_incoming_call
+      };
       tasks[callFsmTasks.publish_state_chage] = {
         pubsubMethod: pubsubMethods.publish,
         subscriber: pubsubSubscriber.call_service,
@@ -27,14 +42,34 @@ angular.module('call')
         subscriber: pubsubSubscriber.global,
         event: pubsubEvent.clear_resources
       };
+      tasks[callFsmTasks.publish_create_peer] = {
+        pubsubMethod: pubsubMethods.publish,
+        subscriber: pubsubSubscriber.peer_service,
+        event: pubsubEvent.create_peer
+      };
       tasks[callFsmTasks.publish_create_offer] = {
         pubsubMethod: pubsubMethods.publish,
         subscriber: pubsubSubscriber.peer_service,
         event: pubsubEvent.create_offer,
         params: {
-          createOfferConstraints: {
-            offerToReceiveAudio: 1,
-            offerToReceiveVideo: 1
+          constraints: {
+            "mandatory": {
+              "OfferToReceiveAudio": true,
+              "OfferToReceiveVideo": true
+            }
+          }
+        }
+      };
+      tasks[callFsmTasks.publish_create_answer] = {
+        pubsubMethod: pubsubMethods.publish,
+        subscriber: pubsubSubscriber.peer_service,
+        event: pubsubEvent.create_answer,
+        params: {
+          constraints: {
+            "mandatory": {
+              "OfferToReceiveAudio": true,
+              "OfferToReceiveVideo": true
+            }
           }
         }
       };
@@ -58,6 +93,11 @@ angular.module('call')
         subscriber: pubsubSubscriber.call_service,
         event: pubsubEvent.send_call_request
       };
+      tasks[callFsmTasks.publish_add_local_stream] = {
+        pubsubMethod: pubsubMethods.publish,
+        subscriber: pubsubSubscriber.peer_service,
+        event: pubsubEvent.add_local_stream
+      };
       // TODO add send end call request to tasks
 
 
@@ -67,7 +107,12 @@ angular.module('call')
       transitionsHashTable[pubsubEvent.start_call_gui][0] = {
         when: [{
           event: pubsubEvent.start_call_gui,
-          performs: [callFsmTasks.publish_request_media_permission]
+          performs: [
+            callFsmTasks.publish_create_outgoing_call,
+            callFsmTasks.publish_location_change,
+            // TODO may be there is a glare condition between url change and permission request
+            callFsmTasks.publish_request_media_permission
+          ]
         }],
       };
       transitionsHashTable[pubsubEvent.start_call_gui][1] = {
@@ -76,10 +121,16 @@ angular.module('call')
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.media_permission_granted,
-          performs: [callFsmTasks.publish_create_offer]
+          performs: [callFsmTasks.publish_create_peer]
         }],
       };
       transitionsHashTable[pubsubEvent.start_call_gui][2] = {
+        when: [{
+          event: pubsubEvent.create_peer_completed,
+          performs: [callFsmTasks.publish_create_offer]
+        }],
+      };
+      transitionsHashTable[pubsubEvent.start_call_gui][3] = {
         when: [{
           event: pubsubEvent.end_call_gui,
           performs: [callFsmTasks.broadcast_clear_resources]
@@ -91,7 +142,7 @@ angular.module('call')
           performs: [callFsmTasks.publish_send_call_request]
         }],
       };
-      transitionsHashTable[pubsubEvent.start_call_gui][3] = {
+      transitionsHashTable[pubsubEvent.start_call_gui][4] = {
         when: [{
           event: pubsubEvent.end_call_gui,
           // TODO add send call end request task to perfom list
@@ -104,7 +155,7 @@ angular.module('call')
           performs: []
         }],
       };
-      transitionsHashTable[pubsubEvent.start_call_gui][4] = {
+      transitionsHashTable[pubsubEvent.start_call_gui][5] = {
         when: [{
           event: pubsubEvent.end_call_gui,
           // TODO add send call end request task to perfom list
@@ -120,7 +171,7 @@ angular.module('call')
           performs: [callFsmTasks.publish_set_local_offer]
         }],
       };
-      transitionsHashTable[pubsubEvent.start_call_gui][5] = {
+      transitionsHashTable[pubsubEvent.start_call_gui][6] = {
         when: [{
           event: pubsubEvent.end_call_gui,
           // TODO add send call end request task to perfom list
@@ -136,7 +187,7 @@ angular.module('call')
           performs: []
         }],
       };
-      transitionsHashTable[pubsubEvent.start_call_gui][6] = {
+      transitionsHashTable[pubsubEvent.start_call_gui][7] = {
         when: [{
           event: pubsubEvent.end_call_gui,
           // TODO add send call end request task to perfom list
@@ -149,7 +200,7 @@ angular.module('call')
           performs: [callFsmTasks.publish_set_remote_answer]
         }],
       };
-      transitionsHashTable[pubsubEvent.start_call_gui][7] = {
+      transitionsHashTable[pubsubEvent.start_call_gui][8] = {
         when: [{
           event: pubsubEvent.end_call_gui,
           // TODO add send call end request task to perfom list
@@ -166,9 +217,110 @@ angular.module('call')
         }],
       };
 
+      transitionsHashTable[pubsubEvent.on_incoming_call_notify] = {};
+      transitionsHashTable[pubsubEvent.on_incoming_call_notify][0] = {
+        when: [{
+          event: pubsubEvent.on_incoming_call_notify,
+          performs: [
+            callFsmTasks.publish_create_incoming_call,
+            callFsmTasks.publish_location_change,
+            callFsmTasks.publish_create_peer
+          ]
+        }],
+      };
+      transitionsHashTable[pubsubEvent.on_incoming_call_notify][1] = {
+        when: [{
+          event: pubsubEvent.create_peer_completed,
+          performs: []
+        }],
+      };
+      transitionsHashTable[pubsubEvent.on_incoming_call_notify][2] = {
+        when: [{
+          event: pubsubEvent.end_call_gui,
+          // TODO add send call end request task to perfom list
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.answer_call_gui,
+          performs: [callFsmTasks.publish_request_media_permission]
+        }],
+      };
+      transitionsHashTable[pubsubEvent.on_incoming_call_notify][3] = {
+        when: [{
+          event: pubsubEvent.end_call_gui,
+          // TODO add send call end request task to perfom list
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.media_permission_rejected,
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.media_permission_granted,
+          performs: [
+            callFsmTasks.publish_add_local_stream,
+            callFsmTasks.publish_set_remote_offer
+          ]
+        }],
+      };
+      transitionsHashTable[pubsubEvent.on_incoming_call_notify][4] = {
+        when: [{
+          event: pubsubEvent.end_call_gui,
+          // TODO add send call end request task to perfom list
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.call_ended_notify,
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.set_remote_offer_failure,
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.set_remote_offer_success,
+          performs: [callFsmTasks.publish_create_answer]
+        }],
+      };
+      transitionsHashTable[pubsubEvent.on_incoming_call_notify][5] = {
+        when: [{
+          event: pubsubEvent.end_call_gui,
+          // TODO add send call end request task to perfom list
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.call_ended_notify,
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.create_answer_failure,
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.create_answer_success,
+          // TODO send call answer sdp to remote endpoint in this perfom list
+          performs: [callFsmTasks.publish_set_local_answer]
+        }],
+      };
+      transitionsHashTable[pubsubEvent.on_incoming_call_notify][6] = {
+        when: [{
+          event: pubsubEvent.end_call_gui,
+          // TODO add send call end request task to perfom list
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.call_ended_notify,
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.set_local_answer_failure,
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.set_local_answer_success,
+          performs: []
+        }],
+      };
+
       function handleFSMEvent(data) {
-        var i, j, k, internalCall, callId = data.msg.callId,
+        var i, j, k, internalCall, callId,
           whenList, performList, task;
+
+        if (data.msg.callId) {
+          callId = data.msg.callId;
+        } else {
+          callId = UUID.generate();
+          data.msg.callId = callId;
+        }
+
         // TODO how to do second transition flow for call
         if (!calls[callId]) {
           calls[callId] = {
@@ -229,14 +381,20 @@ angular.module('call')
     }
   ])
   .constant("callFsmTasks", {
-    publish_state_chage: 0,
-    publish_request_media_permission: 1,
-    publish_create_offer: 2,
-    broadcast_clear_resources: 3,
-    publish_send_call_request: 4,
-    publish_set_local_offer: 5,
-    publish_set_local_answer: 6,
-    publish_set_remote_offer: 7,
-    publish_set_remote_answer: 8
+    publish_create_outgoing_call: "publish_create_outgoing_call",
+    publish_create_incoming_call: "publish_create_incoming_call",
+    publish_state_chage: "publish_state_chage",
+    publish_request_media_permission: "publish_request_media_permission",
+    publish_create_peer: "publish_create_peer",
+    publish_create_offer: "publish_create_offer",
+    publish_create_answer: "publish_create_answer",
+    broadcast_clear_resources: "broadcast_clear_resources",
+    publish_send_call_request: "publish_send_call_request",
+    publish_set_local_offer: "publish_set_local_offer",
+    publish_set_local_answer: "publish_set_local_answer",
+    publish_set_remote_offer: "publish_set_remote_offer",
+    publish_set_remote_answer: "publish_set_remote_answer",
+    publish_location_change: "publish_location_change",
+    publish_add_local_stream: "publish_add_local_stream"
   })
   .run(['callFSM', function() {}]);

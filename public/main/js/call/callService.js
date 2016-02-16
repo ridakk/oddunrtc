@@ -1,28 +1,12 @@
 angular.module('call')
-  .service('callService', ["$log", "$q", "userService", "httpService", "pubsub", "pubsubSubscriber", "pubsubEvent",
-    function($log, $q, userService, httpService, pubsub, pubsubSubscriber, pubsubEvent) {
+  .service('callService', ["$log", "$q", "userService", "httpService", "pubsub", "pubsubSubscriber", "pubsubEvent", "callType",
+    function($log, $q, userService, httpService, pubsub, pubsubSubscriber, pubsubEvent, callType) {
       var self = this,
         calls = {},
         eventHandlers = {};
 
       self.onLocalStreamAdded = function() {};
       self.onRemoteStreamAdded = function() {};
-
-      self.start = function(params) {
-        var internallCallId = UUID.generate();
-        calls[internallCallId] = {
-          target: params.to
-        };
-
-        pubsub.publish({
-          publisher: pubsubSubscriber.call_service,
-          subscriber: pubsubSubscriber.call_fsm,
-          event: pubsubEvent.start_call_gui,
-          msg: {
-            callId: internallCallId
-          }
-        });
-      };
 
       pubsub.subscribe({
         subscriber: pubsubSubscriber.global,
@@ -34,12 +18,38 @@ angular.module('call')
         }
       });
 
+      self.isIncomingCall = function(data){
+        return calls[data.callId].type === callType.incoming;
+      };
+
+      self.answer = function(data) {
+        pubsub.publish({
+          publisher: pubsubSubscriber.call_service,
+          subscriber: pubsubSubscriber.call_fsm,
+          event: pubsubEvent.answer_call_gui,
+          msg: {
+            callId: data.callId
+          }
+        });
+      };
+
+      self.end = function (data) {
+        pubsub.publish({
+          publisher: pubsubSubscriber.call_service,
+          subscriber: pubsubSubscriber.call_fsm,
+          event: pubsubEvent.end_call_gui,
+          msg: {
+            callId: data.callId
+          }
+        });
+      };
+
       self.handleOnLocalStream = function(data) {
         self.onLocalStreamAdded(data.msg.stream);
       };
 
       self.handleOnRemoteStream = function(data) {
-        self.onLocalRemoteAdded(data.msg.stream);
+        self.onRemoteStreamAdded(data.msg.stream);
       };
 
       self.handleOnIceCandidate = function(data) {
@@ -85,10 +95,30 @@ angular.module('call')
         });
       };
 
+      self.handleCreateCall = function(data) {
+        calls[data.msg.callId] = {
+          type: data.msg.type,
+          serverCallId: data.msg.serverCallId,
+          target: data.msg.target
+        };
+      };
+
+      self.handleCreateOutgoingCall = function(data) {
+        data.msg.type = callType.outgoing;
+        self.handleCreateCall(data);
+      };
+
+      self.handleCreateIncomingCall = function(data) {
+        data.msg.type = callType.incoming;
+        self.handleCreateCall(data);
+      };
+
       eventHandlers[pubsubEvent.on_local_stream] = self.handleOnLocalStream;
       eventHandlers[pubsubEvent.on_remote_stream] = self.handleOnRemoteStream;
       eventHandlers[pubsubEvent.on_ice_canditate] = self.handleOnIceCandidate;
       eventHandlers[pubsubEvent.send_call_request] = self.handleSendCallRequest;
+      eventHandlers[pubsubEvent.create_outgoing_call] = self.handleCreateOutgoingCall;
+      eventHandlers[pubsubEvent.create_incoming_call] = self.handleCreateIncomingCall;
 
       self.handleCallServiceEvent = function(data) {
         eventHandlers[data.event](data);
@@ -100,4 +130,8 @@ angular.module('call')
       });
     }
   ])
+  .constant("callType", {
+    outgoing: "outgoing",
+    incoming: "incoming"
+  })
   .run(['callService', function() {}]);

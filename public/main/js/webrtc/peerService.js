@@ -2,7 +2,8 @@ angular.module('webrtc.peerService', ['util.pubsub'])
   .service('peerService', ["$log", "pubsub", "pubsubSubscriber", "pubsubEvent",
     function($log, pubsub, pubsubSubscriber, pubsubEvent) {
       var self = this,
-        calls = {};
+        calls = {},
+        eventHandlers = {};
 
       // TODO how to pass ice servers, dtls etc...
       self.createPeer = function(data) {
@@ -48,16 +49,9 @@ angular.module('webrtc.peerService', ['util.pubsub'])
         return pc;
       };
 
-      self.handleCreateOffer = function(data) {
+      self.handleAddLocalStream = function(data) {
         var callId = data.msg.callId,
-          internalCall;
-        if (!calls[callId]) {
-          calls[callId] = {};
-        }
-
-        internalCall = calls[callId];
-
-        internalCall.pc = self.createPeer();
+          internalCall = calls[callId];
 
         internalCall.pc.addStream(data.msg.stream);
         pubsub.publish({
@@ -69,15 +63,43 @@ angular.module('webrtc.peerService', ['util.pubsub'])
             stream: data.msg.stream
           }
         });
+      };
 
-        internalCall.pc.createOffer(function(desc) {
-            internalCall.localSdp = desc.sdp;
+      self.handleCreatePeer = function(data) {
+        var callId = data.msg.callId,
+          internalCall;
+        if (!calls[callId]) {
+          calls[callId] = {};
+        }
+
+        internalCall = calls[callId];
+        internalCall.remoteSdp = data.msg.remoteSdp;
+
+        internalCall.pc = self.createPeer(data);
+
+        if (data.msg.stream) {
+          self.handleAddLocalStream(data);
+        }
+
+        pubsub.publish({
+          publisher: pubsubSubscriber.peer_service,
+          subscriber: pubsubSubscriber.call_fsm,
+          event: pubsubEvent.create_peer_completed,
+          msg: {
+            callId: data.msg.callId
+          }
+        });
+      };
+
+      self.handleCreate = function(data) {
+        data.call.pc[data.method](function(desc) {
+            data.call.localSdp = desc.sdp;
             pubsub.publish({
               publisher: pubsubSubscriber.peer_service,
               subscriber: pubsubSubscriber.call_fsm,
-              event: pubsubEvent.create_offer_success,
+              event: data.successEvent,
               msg: {
-                callId: callId,
+                callId: data.callId,
                 sdp: desc.sdp
               }
             });
@@ -85,14 +107,40 @@ angular.module('webrtc.peerService', ['util.pubsub'])
             pubsub.publish({
               publisher: pubsubSubscriber.peer_service,
               subscriber: pubsubSubscriber.call_fsm,
-              event: pubsubEvent.create_offer_failure,
+              event: data.failureEvent,
               msg: {
-                callId: callId,
+                callId: data.callId,
                 error: error
               }
             });
           },
-          data.msg.createOfferConstraints);
+          data.constraints);
+      };
+
+      self.handleCreateOffer = function(data) {
+        var callId = data.msg.callId,
+          internalCall = calls[callId];
+        self.handleCreate({
+          call: internalCall,
+          method: "createOffer",
+          callId: data.msg.callId,
+          constraints: data.msg.constraints,
+          successEvent: pubsubEvent.create_offer_success,
+          failureEvent: pubsubEvent.create_offer_failure
+        });
+      };
+
+      self.handleCreateAnswer = function(data) {
+        var callId = data.msg.callId,
+          internalCall = calls[callId];
+        self.handleCreate({
+          call: internalCall,
+          method: "createAnswer",
+          callId: data.msg.callId,
+          constraints: data.msg.constraints,
+          successEvent: pubsubEvent.create_answer_success,
+          failureEvent: pubsubEvent.create_answer_failure
+        });
       };
 
       self.setDescription = function(data) {
@@ -122,7 +170,7 @@ angular.module('webrtc.peerService', ['util.pubsub'])
       };
 
       self.handleSetLocalOffer = function(data) {
-        var callId = data.callId,
+        var callId = data.msg.callId,
           internalCall = calls[callId];
         self.setDescription({
           pc: internalCall.pc,
@@ -130,13 +178,13 @@ angular.module('webrtc.peerService', ['util.pubsub'])
           callId: data.msg.callId,
           sdpType: "offer",
           sdp: internalCall.localSdp,
-          successEvent: pubsub.set_local_offer_success,
-          failureEvent: pubsub.set_local_offer_failure
+          successEvent: pubsubEvent.set_local_offer_success,
+          failureEvent: pubsubEvent.set_local_offer_failure
         });
       };
 
       self.handleSetLocalAnswer = function(data) {
-        var callId = data.callId,
+        var callId = data.msg.callId,
           internalCall = calls[callId];
         self.setDescription({
           pc: internalCall.pc,
@@ -144,27 +192,27 @@ angular.module('webrtc.peerService', ['util.pubsub'])
           callId: data.msg.callId,
           sdpType: "answer",
           sdp: internalCall.localSdp,
-          successEvent: pubsub.set_local_answer_success,
-          failureEvent: pubsub.set_local_answer_failure
+          successEvent: pubsubEvent.set_local_answer_success,
+          failureEvent: pubsubEvent.set_local_answer_failure
         });
       };
 
       self.handleSetRemoteOffer = function(data) {
-        var callId = data.callId,
+        var callId = data.msg.callId,
           internalCall = calls[callId];
         self.setDescription({
           pc: internalCall.pc,
           method: "setRemoteDescription",
           callId: data.msg.callId,
           sdpType: "offer",
-          sdp: data.msg.sdp,
-          successEvent: pubsub.set_remote_offer_success,
-          failureEvent: pubsub.set_remote_offer_failure
+          sdp: internalCall.remoteSdp,
+          successEvent: pubsubEvent.set_remote_offer_success,
+          failureEvent: pubsubEvent.set_remote_offer_failure
         });
       };
 
       self.handleSetRemoteAnswer = function(data) {
-        var callId = data.callId,
+        var callId = data.msg.callId,
           internalCall = calls[callId];
         self.setDescription({
           pc: internalCall.pc,
@@ -172,16 +220,19 @@ angular.module('webrtc.peerService', ['util.pubsub'])
           callId: data.msg.callId,
           sdpType: "answer",
           sdp: data.msg.sdp,
-          successEvent: pubsub.set_remote_answer_success,
-          failureEvent: pubsub.set_remote_answer_failure
+          successEvent: pubsubEvent.set_remote_answer_success,
+          failureEvent: pubsubEvent.set_remote_answer_failure
         });
       };
 
+      eventHandlers[pubsubEvent.create_peer] = self.handleCreatePeer;
       eventHandlers[pubsubEvent.create_offer] = self.handleCreateOffer;
+      eventHandlers[pubsubEvent.create_answer] = self.handleCreateAnswer;
       eventHandlers[pubsubEvent.set_local_offer] = self.handleSetLocalOffer;
       eventHandlers[pubsubEvent.set_local_answer] = self.handleSetLocalAnswer;
       eventHandlers[pubsubEvent.set_remote_offer] = self.handleSetRemoteOffer;
       eventHandlers[pubsubEvent.set_remote_answer] = self.handleSetRemoteAnswer;
+      eventHandlers[pubsubEvent.add_local_stream] = self.handleAddLocalStream;
 
       self.handlePeerServiceEvent = function(data) {
         eventHandlers[data.event](data);

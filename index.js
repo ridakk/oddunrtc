@@ -244,6 +244,9 @@ ionsp.on('connection', function(socket) {
   socket.broadcast.emit('hi');
   socket.on('disconnect', function() {
     console.log('user disconnected with id %s', socket.id);
+    Sockets.remove({
+      id: socket.id
+    });
   });
 
   socket.on('message', function(msg) {
