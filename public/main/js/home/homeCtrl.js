@@ -16,7 +16,7 @@ angular.module('home')
           subscriber: pubsubSubscriber.call_fsm,
           event: pubsubEvent.start_call_gui,
           msg: {
-            target: contact
+            from: contact
           }
         });
       };

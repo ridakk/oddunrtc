@@ -186,39 +186,40 @@ app.post('/connections', function(request, response) {
   });
 });
 
-app.post('/call', function(request, response) {
-  var msg = request.body;
-  console.log("/call post from %j", msg);
+app.post('/call/:callId', function(request, response) {
+  var data = request.body;
+  console.log("/call post from %j", data);
 
   Call.create({
-    to: msg.to,
-    from: msg.from
+    to: data.to,
+    from: data.from
   }).then(function(params) {
-    msg.callId = params.callId;
+    data.callId = params.callId;
     console.log("call success %j", params);
 
     Sockets.getSocketUrl({
-      owner: params.to
+      owner: data.to
     }).then(function(socketUrl) {
-      ionsp.to(socketUrl).emit('message', msg);
-      response.status(201).send(JSON.stringify({
-        callId: params.callId
-      }));
+      ionsp.to(socketUrl).emit('message', data);
+      response.status(201).send(JSON.stringify(data));
     }, function() {
       response.status(404).send();
     });
   });
 });
 
-app.put('/call/:id', function(request, response) {
-  var msg = request.body;
-  console.log("/call/:id put from %j", msg);
+app.put('/call/:callId', function(request, response) {
+  var data = request.body;
+  console.log("/call post from %j", data);
 
-  ionsp.to(Sockets.getSocketUrl({
-    owner: msg.to
-  })).emit('message', msg);
-
-  response.status(200).send();
+  Sockets.getSocketUrl({
+    owner: data.to
+  }).then(function(socketUrl) {
+    ionsp.to(socketUrl).emit('message', data);
+    response.status(200).send(JSON.stringify(data));
+  }, function() {
+    response.status(404).send();
+  });
 });
 
 io.use(function(socket, next) {

@@ -88,10 +88,15 @@ angular.module('call')
         subscriber: pubsubSubscriber.peer_service,
         event: pubsubEvent.set_remote_offer
       };
-      tasks[callFsmTasks.publish_send_call_request] = {
+      tasks[callFsmTasks.publish_send_start_call_request] = {
         pubsubMethod: pubsubMethods.publish,
         subscriber: pubsubSubscriber.call_service,
-        event: pubsubEvent.send_call_request
+        event: pubsubEvent.send_start_call_request
+      };
+      tasks[callFsmTasks.publish_send_answer_call_request] = {
+        pubsubMethod: pubsubMethods.publish,
+        subscriber: pubsubSubscriber.call_service,
+        event: pubsubEvent.send_answer_call_request
       };
       tasks[callFsmTasks.publish_add_local_stream] = {
         pubsubMethod: pubsubMethods.publish,
@@ -139,7 +144,7 @@ angular.module('call')
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.create_offer_success,
-          performs: [callFsmTasks.publish_send_call_request]
+          performs: [callFsmTasks.publish_send_start_call_request]
         }],
       };
       transitionsHashTable[pubsubEvent.start_call_gui][4] = {
@@ -148,10 +153,10 @@ angular.module('call')
           // TODO add send call end request task to perfom list
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
-          event: pubsubEvent.send_call_request_failure,
+          event: pubsubEvent.send_start_call_request_failure,
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
-          event: pubsubEvent.send_call_request_success,
+          event: pubsubEvent.send_start_call_request_success,
           performs: []
         }],
       };
@@ -290,10 +295,26 @@ angular.module('call')
         }, {
           event: pubsubEvent.create_answer_success,
           // TODO send call answer sdp to remote endpoint in this perfom list
-          performs: [callFsmTasks.publish_set_local_answer]
+          performs: [callFsmTasks.publish_send_answer_call_request]
         }],
       };
       transitionsHashTable[pubsubEvent.on_incoming_call_notify][6] = {
+        when: [{
+          event: pubsubEvent.end_call_gui,
+          // TODO add send call end request task to perfom list
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.call_ended_notify,
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.send_answer_call_request_failure,
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.send_answer_call_request_success,
+          performs: [callFsmTasks.publish_set_local_answer]
+        }],
+      };
+      transitionsHashTable[pubsubEvent.on_incoming_call_notify][7] = {
         when: [{
           event: pubsubEvent.end_call_gui,
           // TODO add send call end request task to perfom list
@@ -389,7 +410,8 @@ angular.module('call')
     publish_create_offer: "publish_create_offer",
     publish_create_answer: "publish_create_answer",
     broadcast_clear_resources: "broadcast_clear_resources",
-    publish_send_call_request: "publish_send_call_request",
+    publish_send_start_call_request: "publish_send_start_call_request",
+    publish_send_answer_call_request: "publish_send_answer_call_request",
     publish_set_local_offer: "publish_set_local_offer",
     publish_set_local_answer: "publish_set_local_answer",
     publish_set_remote_offer: "publish_set_remote_offer",

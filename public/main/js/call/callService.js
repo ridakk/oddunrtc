@@ -1,6 +1,6 @@
 angular.module('call')
-  .service('callService', ["$log", "$q", "userService", "httpService", "pubsub", "pubsubSubscriber", "pubsubEvent", "callType",
-    function($log, $q, userService, httpService, pubsub, pubsubSubscriber, pubsubEvent, callType) {
+  .service('callService', ["$log", "$q", "userService", "httpService", "httpRequestType", "pubsub", "pubsubSubscriber", "pubsubEvent", "callType",
+    function($log, $q, userService, httpService, httpRequestType, pubsub, pubsubSubscriber, pubsubEvent, callType) {
       var self = this,
         calls = {},
         eventHandlers = {};
@@ -18,7 +18,7 @@ angular.module('call')
         }
       });
 
-      self.isIncomingCall = function(data){
+      self.isIncomingCall = function(data) {
         return calls[data.callId].type === callType.incoming;
       };
 
@@ -33,7 +33,7 @@ angular.module('call')
         });
       };
 
-      self.end = function (data) {
+      self.end = function(data) {
         pubsub.publish({
           publisher: pubsubSubscriber.call_service,
           subscriber: pubsubSubscriber.call_fsm,
@@ -52,32 +52,26 @@ angular.module('call')
         self.onRemoteStreamAdded(data.msg.stream);
       };
 
-      self.handleOnIceCandidate = function(data) {
-        // TODO implement callHttpService
-        // TODO send candidate to remote party
-      };
-
-      self.handleSendCallRequest = function(data) {
+      self.sendCallRequest = function(data) {
         var internalCall = calls[data.msg.callId];
-        // TODO send call request to server
-        httpService.post({
-          url: window.location.origin + "/call",
+
+        return httpService[data.method]({
+          url: window.location.origin + "/call/" + data.msg.callId,
           //timeout: 30000,
           data: {
-            type: "call",
+            type: data.type,
+            action: data.action,
             from: userService.email,
-            to: internalCall.target,
-            action: "start",
+            to: internalCall.from,
             data: {
-              sdp: data.msg.sdp
+              msg: data.msg
             }
           }
         }).then(function(res) {
-          internalCall.serverCallId = res.callId;
           pubsub.publish({
             publisher: pubsubSubscriber.call_service,
             subscriber: pubsubSubscriber.call_fsm,
-            event: pubsubEvent.send_call_request_success,
+            event: data.successEvent,
             msg: {
               callId: data.msg.callId
             }
@@ -86,7 +80,7 @@ angular.module('call')
           pubsub.publish({
             publisher: pubsubSubscriber.call_service,
             subscriber: pubsubSubscriber.call_fsm,
-            event: pubsubEvent.send_call_request_failure,
+            event: data.failureEvent,
             msg: {
               error: error,
               callId: data.msg.callId
@@ -95,11 +89,46 @@ angular.module('call')
         });
       };
 
+      self.handleSendStartCallRequest = function(data) {
+        data.method = httpRequestType.post;
+        data.type = "call";
+        data.action = "start";
+        data.successEvent = pubsubEvent.send_start_call_request_success;
+        data.failureEvent = pubsubEvent.send_start_call_request_failure;
+        self.sendCallRequest(data);
+      };
+
+      self.handleSendAnswerCallRequest = function(data) {
+        data.method = httpRequestType.put;
+        data.type = "call";
+        data.action = "answer";
+        data.successEvent = pubsubEvent.send_answer_call_request_success;
+        data.failureEvent = pubsubEvent.send_answer_call_request_failure;
+        self.sendCallRequest(data);
+      };
+
+      self.handleOnIceCandidate = function(data) {
+        var internalCall = calls[data.msg.callId];
+
+        httpService.put({
+          url: window.location.origin + "/call/" + data.msg.callId,
+          //timeout: 30000,
+          data: {
+            type: "call",
+            action: "candidate",
+            from: userService.email,
+            to: internalCall.from,
+            data: {
+              msg: data.msg
+            }
+          }
+        })
+      };
+
       self.handleCreateCall = function(data) {
         calls[data.msg.callId] = {
           type: data.msg.type,
-          serverCallId: data.msg.serverCallId,
-          target: data.msg.target
+          from: data.msg.from
         };
       };
 
@@ -116,7 +145,8 @@ angular.module('call')
       eventHandlers[pubsubEvent.on_local_stream] = self.handleOnLocalStream;
       eventHandlers[pubsubEvent.on_remote_stream] = self.handleOnRemoteStream;
       eventHandlers[pubsubEvent.on_ice_canditate] = self.handleOnIceCandidate;
-      eventHandlers[pubsubEvent.send_call_request] = self.handleSendCallRequest;
+      eventHandlers[pubsubEvent.send_start_call_request] = self.handleSendStartCallRequest;
+      eventHandlers[pubsubEvent.send_answer_call_request] = self.handleSendAnswerCallRequest;
       eventHandlers[pubsubEvent.create_outgoing_call] = self.handleCreateOutgoingCall;
       eventHandlers[pubsubEvent.create_incoming_call] = self.handleCreateIncomingCall;
 

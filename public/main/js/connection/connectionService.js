@@ -17,19 +17,46 @@ angular.module('connection')
               uuid: data.uuid
             })
           });
-          socket.on('message', function(msg) {
-            $log.info("message received", msg);
+          socket.on('message', function(data) {
+            $log.info("message received", data);
 
-            pubsub.publish({
-              publisher: pubsubSubscriber.connection_service,
-              subscriber: pubsubSubscriber.call_fsm,
-              event: pubsubEvent.on_incoming_call_notify,
-              msg: {
-                target: msg.from,
-                remoteSdp: msg.data.sdp,
-                callId: msg.callId
+            if (data.type === "call") {
+              if (data.action === "start") {
+                pubsub.publish({
+                  publisher: pubsubSubscriber.connection_service,
+                  subscriber: pubsubSubscriber.call_fsm,
+                  event: pubsubEvent.on_incoming_call_notify,
+                  msg: {
+                    from: data.from,
+                    // TODO who is adding second data object in message
+                    remoteSdp: data.data.msg.sdp,
+                    callId: data.data.msg.callId
+                  }
+                });
+              } else if (data.action === "answer") {
+                pubsub.publish({
+                  publisher: pubsubSubscriber.connection_service,
+                  subscriber: pubsubSubscriber.call_fsm,
+                  event: pubsubEvent.call_answered_notify,
+                  msg: {
+                    from: data.from,
+                    // TODO who is adding second data object in message
+                    sdp: data.data.msg.sdp,
+                    callId: data.data.msg.callId
+                  }
+                });
+              } else if (data.action === "candidate") {
+                pubsub.publish({
+                  publisher: pubsubSubscriber.connection_service,
+                  subscriber: pubsubSubscriber.peer_service,
+                  event: pubsubEvent.ice_candidate_notify,
+                  msg: {
+                    candidate: data.data.msg.candidate,
+                    callId: data.data.msg.callId
+                  }
+                });
               }
-            });
+            }
           });
         });
       };

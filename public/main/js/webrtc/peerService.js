@@ -22,6 +22,10 @@ angular.module('webrtc.peerService', ['util.pubsub'])
         };
 
         pc.onicecandidate = function(e) {
+          if (e.candidate === null) {
+            return;
+          }
+
           pubsub.publish({
             publisher: pubsubSubscriber.peer_service,
             subscriber: pubsubSubscriber.call_service,
@@ -225,6 +229,20 @@ angular.module('webrtc.peerService', ['util.pubsub'])
         });
       };
 
+      self.handleIceCandidateNotify = function(data) {
+        var callId = data.msg.callId,
+          internalCall = calls[callId];
+
+        internalCall.pc.addIceCandidate(new RTCIceCandidate(data.msg.candidate),
+          function() {
+
+          },
+          function(err) {
+
+          }
+        );
+      };
+
       eventHandlers[pubsubEvent.create_peer] = self.handleCreatePeer;
       eventHandlers[pubsubEvent.create_offer] = self.handleCreateOffer;
       eventHandlers[pubsubEvent.create_answer] = self.handleCreateAnswer;
@@ -233,6 +251,7 @@ angular.module('webrtc.peerService', ['util.pubsub'])
       eventHandlers[pubsubEvent.set_remote_offer] = self.handleSetRemoteOffer;
       eventHandlers[pubsubEvent.set_remote_answer] = self.handleSetRemoteAnswer;
       eventHandlers[pubsubEvent.add_local_stream] = self.handleAddLocalStream;
+      eventHandlers[pubsubEvent.ice_candidate_notify] = self.handleIceCandidateNotify;
 
       self.handlePeerServiceEvent = function(data) {
         eventHandlers[data.event](data);

@@ -32,4 +32,10 @@ angular.module('util.http', [])
       params.method = "DELETE";
       return self.request(params);
     };
-  }]);
+  }])
+  .constant("httpRequestType", {
+    get: "get",
+    post: "post",
+    put: "put",
+    delete: "delete"
+  })
