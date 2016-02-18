@@ -23,6 +23,7 @@ angular.module('webrtc.peerService', ['util.pubsub'])
 
         pc.onicecandidate = function(e) {
           if (e.candidate === null) {
+            // TODO implement full ice solution too
             return;
           }
 

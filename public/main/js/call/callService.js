@@ -107,6 +107,15 @@ angular.module('call')
         self.sendCallRequest(data);
       };
 
+      self.handleSendAcceptCallRequest = function(data) {
+        data.method = httpRequestType.put;
+        data.type = "call";
+        data.action = "accept";
+        data.successEvent = pubsubEvent.send_accept_call_request_success;
+        data.failureEvent = pubsubEvent.send_accept_call_request_failure;
+        self.sendCallRequest(data);
+      };
+
       self.handleOnIceCandidate = function(data) {
         var internalCall = calls[data.msg.callId];
 
@@ -147,6 +156,7 @@ angular.module('call')
       eventHandlers[pubsubEvent.on_ice_canditate] = self.handleOnIceCandidate;
       eventHandlers[pubsubEvent.send_start_call_request] = self.handleSendStartCallRequest;
       eventHandlers[pubsubEvent.send_answer_call_request] = self.handleSendAnswerCallRequest;
+      eventHandlers[pubsubEvent.send_accept_call_request] = self.handleSendAcceptCallRequest;
       eventHandlers[pubsubEvent.create_outgoing_call] = self.handleCreateOutgoingCall;
       eventHandlers[pubsubEvent.create_incoming_call] = self.handleCreateIncomingCall;
 

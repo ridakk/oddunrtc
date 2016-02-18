@@ -88,6 +88,11 @@ angular.module('call')
         subscriber: pubsubSubscriber.peer_service,
         event: pubsubEvent.set_remote_offer
       };
+      tasks[callFsmTasks.publish_set_remote_answer] = {
+        pubsubMethod: pubsubMethods.publish,
+        subscriber: pubsubSubscriber.peer_service,
+        event: pubsubEvent.set_remote_answer
+      };
       tasks[callFsmTasks.publish_send_start_call_request] = {
         pubsubMethod: pubsubMethods.publish,
         subscriber: pubsubSubscriber.call_service,
@@ -98,13 +103,16 @@ angular.module('call')
         subscriber: pubsubSubscriber.call_service,
         event: pubsubEvent.send_answer_call_request
       };
+      tasks[callFsmTasks.publish_send_accept_call_request] = {
+        pubsubMethod: pubsubMethods.publish,
+        subscriber: pubsubSubscriber.call_service,
+        event: pubsubEvent.send_accept_call_request
+      };
       tasks[callFsmTasks.publish_add_local_stream] = {
         pubsubMethod: pubsubMethods.publish,
         subscriber: pubsubSubscriber.peer_service,
         event: pubsubEvent.add_local_stream
       };
-      // TODO add send end call request to tasks
-
 
       // TODO how to publish state change updates ???
       // TODO how to handle call end glare condition scenario with pub sub ???
@@ -246,10 +254,24 @@ angular.module('call')
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.answer_call_gui,
-          performs: [callFsmTasks.publish_request_media_permission]
+          performs: [callFsmTasks.publish_send_accept_call_request]
         }],
       };
       transitionsHashTable[pubsubEvent.on_incoming_call_notify][3] = {
+        when: [{
+          event: pubsubEvent.end_call_gui,
+          // TODO add send call end request task to perfom list
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.send_accept_call_request_failure,
+          // TODO add send call end request task to perfom list
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.send_accept_call_request_success,
+          performs: [callFsmTasks.publish_request_media_permission]
+        }],
+      };
+      transitionsHashTable[pubsubEvent.on_incoming_call_notify][4] = {
         when: [{
           event: pubsubEvent.end_call_gui,
           // TODO add send call end request task to perfom list
@@ -265,7 +287,7 @@ angular.module('call')
           ]
         }],
       };
-      transitionsHashTable[pubsubEvent.on_incoming_call_notify][4] = {
+      transitionsHashTable[pubsubEvent.on_incoming_call_notify][5] = {
         when: [{
           event: pubsubEvent.end_call_gui,
           // TODO add send call end request task to perfom list
@@ -281,7 +303,7 @@ angular.module('call')
           performs: [callFsmTasks.publish_create_answer]
         }],
       };
-      transitionsHashTable[pubsubEvent.on_incoming_call_notify][5] = {
+      transitionsHashTable[pubsubEvent.on_incoming_call_notify][6] = {
         when: [{
           event: pubsubEvent.end_call_gui,
           // TODO add send call end request task to perfom list
@@ -298,7 +320,7 @@ angular.module('call')
           performs: [callFsmTasks.publish_send_answer_call_request]
         }],
       };
-      transitionsHashTable[pubsubEvent.on_incoming_call_notify][6] = {
+      transitionsHashTable[pubsubEvent.on_incoming_call_notify][7] = {
         when: [{
           event: pubsubEvent.end_call_gui,
           // TODO add send call end request task to perfom list
@@ -314,7 +336,7 @@ angular.module('call')
           performs: [callFsmTasks.publish_set_local_answer]
         }],
       };
-      transitionsHashTable[pubsubEvent.on_incoming_call_notify][7] = {
+      transitionsHashTable[pubsubEvent.on_incoming_call_notify][8] = {
         when: [{
           event: pubsubEvent.end_call_gui,
           // TODO add send call end request task to perfom list
@@ -412,6 +434,7 @@ angular.module('call')
     broadcast_clear_resources: "broadcast_clear_resources",
     publish_send_start_call_request: "publish_send_start_call_request",
     publish_send_answer_call_request: "publish_send_answer_call_request",
+    publish_send_accept_call_request: "publish_send_accept_call_request",
     publish_set_local_offer: "publish_set_local_offer",
     publish_set_local_answer: "publish_set_local_answer",
     publish_set_remote_offer: "publish_set_remote_offer",

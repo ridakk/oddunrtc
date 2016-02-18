@@ -45,7 +45,17 @@ angular.module('connection')
                     callId: data.data.msg.callId
                   }
                 });
-              } else if (data.action === "candidate") {
+              } else if (data.action === "accept") {
+                pubsub.publish({
+                  publisher: pubsubSubscriber.connection_service,
+                  subscriber: pubsubSubscriber.call_fsm,
+                  event: pubsubEvent.call_accepted_notify,
+                  msg: {
+                    callId: data.data.msg.callId
+                  }
+                });
+              }
+              else if (data.action === "candidate") {
                 pubsub.publish({
                   publisher: pubsubSubscriber.connection_service,
                   subscriber: pubsubSubscriber.peer_service,
