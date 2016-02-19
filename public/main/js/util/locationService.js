@@ -1,12 +1,12 @@
-angular.module('util.location', ['util.pubsub'])
-  .service('locationService', ["$rootScope", "$location", "pubsub", "pubsubSubscriber", "pubsubEvent",
-    function($rootScope, $location, pubsub, pubsubSubscriber, pubsubEvent) {
+angular.module('util.location', ['ui.router' ,'util.pubsub'])
+  .service('locationService', ["$rootScope", "$state", "pubsub", "pubsubSubscriber", "pubsubEvent",
+    function($rootScope, $state, pubsub, pubsubSubscriber, pubsubEvent) {
       var self = this,
         eventHandlers = {};
 
       self.handleChangeUrlToCall = function(data) {
-        $rootScope.$apply(function() {
-          $location.url('/call/' + data.msg.callId);
+        $state.go('call', {
+          callId: data.msg.callId
         });
       };
 

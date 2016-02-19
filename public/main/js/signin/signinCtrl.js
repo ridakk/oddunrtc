@@ -1,5 +1,6 @@
 angular.module('signin')
-  .controller('SigninCtrl', ["$scope", "$log", "$location", "userService", "accountService", "connectionService", function($scope, $log, $location, userService, accountService, connectionService) {
+  .controller('SigninCtrl', ["$scope", "$log", "$state", "userService", "accountService", "connectionService",
+  function($scope, $log, $state, userService, accountService, connectionService) {
     $log.info("SigninCtrl initialized...");
 
     $scope.user = userService;
@@ -10,7 +11,7 @@ angular.module('signin')
       accountService.createAccount(userService).then(function(res) {
         $log.info("account created...", res);
         connectionService.openConnection(userService.email).then(function() {
-          $location.url('/home');
+        $state.go('home');
         });
       }, function(err) {
         $log.info("account create failed", err);

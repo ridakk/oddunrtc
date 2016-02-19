@@ -1,20 +1,27 @@
-angular.module('main', ['ngRoute', 'signin', 'login', 'home', 'call'])
-  .config(['$routeProvider', '$locationProvider',
-    function($routeProvider, $locationProvider) {
-      $routeProvider
-        .when('/', {
-          templateUrl: '/main/js/signin/signin.html',
-          controller: 'SigninCtrl'
-        })
-        .when('/login', {
+angular.module('main', ['ui.router', 'signin', 'login', 'home', 'call'])
+  .config(['$stateProvider', '$urlRouterProvider',
+    function($stateProvider, $urlRouterProvider) {
+
+      $urlRouterProvider.otherwise('login');
+
+      $stateProvider
+        .state('login', {
+          url: '/',
           templateUrl: '/main/js/login/login.html',
           controller: 'LoginCtrl'
         })
-        .when('/home', {
+        .state('signin', {
+          url: '/signin',
+          templateUrl: '/main/js/signin/signin.html',
+          controller: 'SigninCtrl'
+        })
+        .state('home', {
+          url: '/home',
           templateUrl: '/main/js/home/home.html',
           controller: 'HomeCtrl'
         })
-        .when('/call/:callId', {
+        .state('call', {
+          url: '/call/:callId',
           templateUrl: '/main/js/call/call.html',
           controller: 'CallCtrl'
         });

@@ -1,5 +1,6 @@
 angular.module('login')
-  .controller('LoginCtrl', ["$scope", "$log", "$location", "userService", "connectionService", function($scope, $log, $location, userService, connectionService) {
+  .controller('LoginCtrl', ["$scope", "$log", "$state", "userService", "connectionService",
+  function($scope, $log, $state, userService, connectionService) {
     $log.info("loginCtrl initialized...");
 
     $scope.user = userService;
@@ -9,7 +10,7 @@ angular.module('login')
       $log.info("SigninCtrl.createAccount $scope.email: " + userService.email);
 
       connectionService.openConnection(userService.email).then(function() {
-        $location.url('/home');
+        $state.go('home');
       });
     };
   }]);

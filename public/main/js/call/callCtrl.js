@@ -1,14 +1,14 @@
 angular.module('call')
-  .controller('CallCtrl', ["$scope", "$log", "$routeParams", "callService", "userService",
-    function($scope, $log, $routeParams, callService, userService) {
-      $log.info("CallCtrl initialized... callId: " + $routeParams.callId);
+  .controller('CallCtrl', ["$scope", "$log", "$stateParams", "callService", "userService",
+    function($scope, $log, $stateParams, callService, userService) {
+      $log.info("CallCtrl initialized... callId: " + $stateParams.callId);
 
-      $scope.callId = $routeParams.callId;
+      $scope.callId = $stateParams.callId;
 
       $scope.answer = function(){
         $log.info("answer is clicked ");
         callService.answer({
-          callId: $routeParams.callId
+          callId: $stateParams.callId
         });
         $('#incomingCallModal').modal('hide');
       };
@@ -16,7 +16,7 @@ angular.module('call')
       $scope.end = function(){
         $log.info("decline is clicked ");
         callService.end({
-          callId: $routeParams.callId
+          callId: $stateParams.callId
         });
         $('#incomingCallModal').modal('hide');
       };
@@ -32,7 +32,7 @@ angular.module('call')
       };
 
       if (callService.isIncomingCall({
-        callId: $routeParams.callId
+        callId: $stateParams.callId
       })) {
         $("#incomingCallModal").modal();
       }
