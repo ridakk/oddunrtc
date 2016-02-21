@@ -1,16 +1,22 @@
 #videoContainer {
-    width: 100%;
-    padding-bottom: 75%;
+  width: 100%;
+  padding-bottom: 75%;
 }
 #videoContainer #remoteStream {
-    position: absolute;
-    width: 100%;
-    height: 100%;
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 #videoContainer #localStream {
-    position: absolute;
-    width: 25%;
-    bottom: 10px;
-    right: 10px;
-    z-index: 1;
+  position: absolute;
+  width: 25%;
+  bottom: 10px;
+  right: 10px;
+  z-index: 1;
+}
+.callEnd {
+  position: absolute;
+  bottom: 10px;
+  right: 30%;
+  opacity: .8;
 }

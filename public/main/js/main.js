@@ -2,7 +2,7 @@ angular.module('main', ['ui.router', 'signin', 'login', 'home', 'call'])
   .config(['$stateProvider', '$urlRouterProvider',
     function($stateProvider, $urlRouterProvider) {
 
-      $urlRouterProvider.otherwise('login');
+      $urlRouterProvider.otherwise('/');
 
       $stateProvider
         .state('login', {

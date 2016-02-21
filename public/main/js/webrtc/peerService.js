@@ -7,7 +7,34 @@ angular.module('webrtc.peerService', ['util.pubsub'])
 
       // TODO how to pass ice servers, dtls etc...
       self.createPeer = function(data) {
-        var pc = new RTCPeerConnection( /*data.config, data.pcConstraints*/ );
+        var pc = new RTCPeerConnection({
+          "iceServers": [{
+            "url": "stun:stun.l.google.com:19302",
+            "hasCredentials": false
+          }, {
+            "url": "stun:stun1.l.google.com:19302",
+            "hasCredentials": false
+          }, {
+            url: 'stun:stun2.l.google.com:19302',
+            "hasCredentials": false
+          }, {
+            url: 'stun:stun3.l.google.com:19302',
+            "hasCredentials": false
+          }, {
+            url: 'stun:stun4.l.google.com:19302',
+            "hasCredentials": false
+          }, {
+            "url": "stun:stun.services.mozilla.com",
+            "hasCredentials": false
+          }]
+        }, {
+          "mandatory": {
+            "IceTransports": "all"
+          },
+          "optional": [{
+            "googIPv6": true
+          }]
+        });
 
         pc.onaddstream = function(e) {
           pubsub.publish({
