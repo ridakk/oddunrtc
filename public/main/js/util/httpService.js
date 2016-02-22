@@ -4,6 +4,9 @@ angular.module('util.http', [])
 
     self.request = function(params) {
       var deferred = $q.defer();
+      params.headers = {
+        'Content-Type': 'application/json'
+      };
       $http(params).
       then(function(response) {
         deferred.resolve(response.data);

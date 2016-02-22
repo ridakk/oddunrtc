@@ -35,7 +35,7 @@ function Sockets() {
 
     if (!sockets[params.owner] || !sockets[params.owner][0]) {
       deferred.reject();
-      return;
+      return deferred.promise;
     }
 
     toSocketUrl = "/sockets" + sockets[params.owner][0];

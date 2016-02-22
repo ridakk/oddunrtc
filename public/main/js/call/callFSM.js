@@ -177,7 +177,7 @@ angular.module('call')
           event: pubsubEvent.call_timeout_notify,
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
-          event: pubsubEvent.call_ended_notify,
+          event: pubsubEvent.call_end_notify,
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_accepted_notify,
@@ -190,7 +190,7 @@ angular.module('call')
           // TODO add send call end request task to perfom list
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
-          event: pubsubEvent.call_ended_notify,
+          event: pubsubEvent.call_end_notify,
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.set_local_offer_failure,
@@ -206,7 +206,7 @@ angular.module('call')
           // TODO add send call end request task to perfom list
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
-          event: pubsubEvent.call_ended_notify,
+          event: pubsubEvent.call_end_notify,
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_answered_notify,
@@ -219,7 +219,7 @@ angular.module('call')
           // TODO add send call end request task to perfom list
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
-          event: pubsubEvent.call_ended_notify,
+          event: pubsubEvent.call_end_notify,
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.set_remote_answer_failure,
@@ -235,7 +235,7 @@ angular.module('call')
           // TODO add send call end request task to perfom list
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
-          event: pubsubEvent.call_ended_notify,
+          event: pubsubEvent.call_end_notify,
           performs: [callFsmTasks.broadcast_clear_resources]
         }],
       };
@@ -303,7 +303,7 @@ angular.module('call')
           // TODO add send call end request task to perfom list
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
-          event: pubsubEvent.call_ended_notify,
+          event: pubsubEvent.call_end_notify,
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.set_remote_offer_failure,
@@ -319,7 +319,7 @@ angular.module('call')
           // TODO add send call end request task to perfom list
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
-          event: pubsubEvent.call_ended_notify,
+          event: pubsubEvent.call_end_notify,
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.create_answer_failure,
@@ -336,7 +336,7 @@ angular.module('call')
           // TODO add send call end request task to perfom list
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
-          event: pubsubEvent.call_ended_notify,
+          event: pubsubEvent.call_end_notify,
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.send_answer_call_request_failure,
@@ -352,7 +352,7 @@ angular.module('call')
           // TODO add send call end request task to perfom list
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
-          event: pubsubEvent.call_ended_notify,
+          event: pubsubEvent.call_end_notify,
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.set_local_answer_failure,
@@ -368,7 +368,7 @@ angular.module('call')
           // TODO add send call end request task to perfom list
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
-          event: pubsubEvent.call_ended_notify,
+          event: pubsubEvent.call_end_notify,
           performs: [callFsmTasks.broadcast_clear_resources]
         }],
       };

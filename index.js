@@ -227,7 +227,7 @@ app.delete('/call/:callId', function(request, response) {
   console.log("/call delete from %j", data);
 
   Call.delete({
-    callId: data.msg.callId
+    callId: data.data.msg.callId
   });
 
   Sockets.getSocketUrl({
