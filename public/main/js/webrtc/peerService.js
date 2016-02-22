@@ -1,6 +1,6 @@
 angular.module('webrtc.peerService', ['util.pubsub'])
-  .service('peerService', ["$log", "pubsub", "pubsubSubscriber", "pubsubEvent",
-    function($log, pubsub, pubsubSubscriber, pubsubEvent) {
+  .service('peerService', ["$log", "$q", "pubsub", "pubsubSubscriber", "pubsubEvent",
+    function($log, $q, pubsub, pubsubSubscriber, pubsubEvent) {
       var self = this,
         calls = {},
         eventHandlers = {};
@@ -176,10 +176,12 @@ angular.module('webrtc.peerService', ['util.pubsub'])
       };
 
       self.setDescription = function(data) {
+        var deferred = $q.defer();
         data.pc[data.method](new RTCSessionDescription({
           type: data.sdpType,
           sdp: data.sdp
         }), function() {
+          deferred.resolve();
           pubsub.publish({
             publisher: pubsubSubscriber.peer_service,
             subscriber: pubsubSubscriber.call_fsm,
@@ -189,6 +191,7 @@ angular.module('webrtc.peerService', ['util.pubsub'])
             }
           });
         }, function(error) {
+          deferred.reject();
           pubsub.publish({
             publisher: pubsubSubscriber.peer_service,
             subscriber: pubsubSubscriber.call_fsm,
@@ -199,6 +202,7 @@ angular.module('webrtc.peerService', ['util.pubsub'])
             }
           });
         });
+        return deferred.promise;
       };
 
       self.handleSetLocalOffer = function(data) {
@@ -244,16 +248,30 @@ angular.module('webrtc.peerService', ['util.pubsub'])
       };
 
       self.handleSetRemoteAnswer = function(data) {
-        var callId = data.msg.callId,
+        var callId = data.msg.callId, i,
           internalCall = calls[callId];
         self.setDescription({
           pc: internalCall.pc,
           method: "setRemoteDescription",
-          callId: data.msg.callId,
+          callId: callId,
           sdpType: "answer",
           sdp: data.msg.sdp,
           successEvent: pubsubEvent.set_remote_answer_success,
           failureEvent: pubsubEvent.set_remote_answer_failure
+        }).then(function(){
+          if(internalCall.remoteteCandidateQueue) {
+            for (i in internalCall.remoteteCandidateQueue) {
+              if (internalCall.remoteteCandidateQueue.hasOwnProperty(i)) {
+                self.handleIceCandidateNotify({
+                  msg: {
+                    callId: callId,
+                    candidate: internalCall.remoteteCandidateQueue[i]
+                  }
+                });
+              }
+            }
+            internalCall.remoteteCandidateQueue = null;
+          }
         });
       };
 
@@ -261,8 +279,15 @@ angular.module('webrtc.peerService', ['util.pubsub'])
         var callId = data.msg.callId,
           internalCall = calls[callId];
 
-          // TODO may receive candidates before setting remote description
-          // we first need to queue them and apply after setting remote desc. 
+          if (internalCall.pc.remoteDescription.sdp === "") {
+            if (!internalCall.remoteteCandidateQueue) {
+              internalCall.remoteteCandidateQueue = []
+            }
+
+            internalCall.remoteteCandidateQueue.push(data.msg.candidate);
+            return;
+          }
+
         internalCall.pc.addIceCandidate(new RTCIceCandidate(data.msg.candidate),
           function() {
 
