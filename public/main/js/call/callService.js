@@ -1,22 +1,12 @@
 angular.module('call')
-  .service('callService', ["$log", "$q", "userService", "httpService", "httpRequestType", "pubsub", "pubsubSubscriber", "pubsubEvent", "callType",
-    function($log, $q, userService, httpService, httpRequestType, pubsub, pubsubSubscriber, pubsubEvent, callType) {
+  .service('callService', ["$log", "$q", "locationService", "userService", "httpService", "httpRequestType", "pubsub", "pubsubSubscriber", "pubsubEvent", "callType",
+    function($log, $q, locationService, userService, httpService, httpRequestType, pubsub, pubsubSubscriber, pubsubEvent, callType) {
       var self = this,
         calls = {},
         eventHandlers = {};
 
       self.onLocalStreamAdded = function() {};
       self.onRemoteStreamAdded = function() {};
-
-      pubsub.subscribe({
-        subscriber: pubsubSubscriber.global,
-        event: pubsubEvent.clear_resources,
-        callback: function(data) {
-          $log.info("call service: deleting call object: " + data.msg.callId);
-
-          delete calls[data.msg.callId];
-        }
-      });
 
       self.isIncomingCall = function(data) {
         return calls[data.callId].type === callType.incoming;
@@ -186,6 +176,18 @@ angular.module('call')
       pubsub.subscribe({
         subscriber: pubsubSubscriber.call_service,
         callback: self.handleCallServiceEvent
+      });
+
+      pubsub.subscribe({
+        subscriber: pubsubSubscriber.global,
+        event: pubsubEvent.clear_resources,
+        callback: function(data) {
+          $log.info("call service: deleting call object: " + data.msg.callId);
+
+          delete calls[data.msg.callId];
+
+          locationService.toHome();
+        }
       });
     }
   ])

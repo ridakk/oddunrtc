@@ -301,8 +301,11 @@ angular.module('webrtc.peerService', ['util.pubsub'])
 
           // TODO release local stream if peer has one
           // adaptor shim does not handle media stop
-          calls[data.msg.callId].pc.getLocalStreams()[0].getTracks()[0].stop();
-          calls[data.msg.callId].pc.getLocalStreams()[0].getTracks()[1].stop();
+          if (calls[data.msg.callId].pc.getLocalStreams() &&
+            calls[data.msg.callId].pc.getLocalStreams()[0]) {
+            calls[data.msg.callId].pc.getLocalStreams()[0].getTracks()[0].stop();
+            calls[data.msg.callId].pc.getLocalStreams()[0].getTracks()[1].stop();
+          }
 
           calls[data.msg.callId].pc.close();
           calls[data.msg.callId].pc = null;

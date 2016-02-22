@@ -6,7 +6,7 @@ angular.module('call')
         transitionsHashTable = {},
         tasks = {};
 
-      tasks[callFsmTasks.publish_location_change] = {
+      tasks[callFsmTasks.publish_location_change_to_call] = {
         pubsubMethod: pubsubMethods.publish,
         subscriber: pubsubSubscriber.location_service,
         event: pubsubEvent.change_url_to_call
@@ -122,7 +122,7 @@ angular.module('call')
           event: pubsubEvent.start_call_gui,
           performs: [
             callFsmTasks.publish_create_outgoing_call,
-            callFsmTasks.publish_location_change,
+            callFsmTasks.publish_location_change_to_call,
             // TODO may be there is a glare condition between url change and permission request
             callFsmTasks.publish_request_media_permission
           ]
@@ -246,13 +246,16 @@ angular.module('call')
           event: pubsubEvent.on_incoming_call_notify,
           performs: [
             callFsmTasks.publish_create_incoming_call,
-            callFsmTasks.publish_location_change,
+            callFsmTasks.publish_location_change_to_call,
             callFsmTasks.publish_create_peer
           ]
         }],
       };
       transitionsHashTable[pubsubEvent.on_incoming_call_notify][1] = {
-        when: [{
+        when: [, {
+          event: pubsubEvent.call_end_notify,
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
           event: pubsubEvent.create_peer_completed,
           performs: []
         }],
@@ -260,7 +263,9 @@ angular.module('call')
       transitionsHashTable[pubsubEvent.on_incoming_call_notify][2] = {
         when: [{
           event: pubsubEvent.end_call_gui,
-          // TODO add send call end request task to perfom list
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.call_end_notify,
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.answer_call_gui,
@@ -270,11 +275,12 @@ angular.module('call')
       transitionsHashTable[pubsubEvent.on_incoming_call_notify][3] = {
         when: [{
           event: pubsubEvent.end_call_gui,
-          // TODO add send call end request task to perfom list
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.call_end_notify,
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.send_accept_call_request_failure,
-          // TODO add send call end request task to perfom list
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.send_accept_call_request_success,
@@ -284,7 +290,9 @@ angular.module('call')
       transitionsHashTable[pubsubEvent.on_incoming_call_notify][4] = {
         when: [{
           event: pubsubEvent.end_call_gui,
-          // TODO add send call end request task to perfom list
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.call_end_notify,
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.media_permission_rejected,
@@ -300,7 +308,6 @@ angular.module('call')
       transitionsHashTable[pubsubEvent.on_incoming_call_notify][5] = {
         when: [{
           event: pubsubEvent.end_call_gui,
-          // TODO add send call end request task to perfom list
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_end_notify,
@@ -316,7 +323,6 @@ angular.module('call')
       transitionsHashTable[pubsubEvent.on_incoming_call_notify][6] = {
         when: [{
           event: pubsubEvent.end_call_gui,
-          // TODO add send call end request task to perfom list
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_end_notify,
@@ -326,14 +332,12 @@ angular.module('call')
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.create_answer_success,
-          // TODO send call answer sdp to remote endpoint in this perfom list
           performs: [callFsmTasks.publish_send_answer_call_request]
         }],
       };
       transitionsHashTable[pubsubEvent.on_incoming_call_notify][7] = {
         when: [{
           event: pubsubEvent.end_call_gui,
-          // TODO add send call end request task to perfom list
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_end_notify,
@@ -349,7 +353,6 @@ angular.module('call')
       transitionsHashTable[pubsubEvent.on_incoming_call_notify][8] = {
         when: [{
           event: pubsubEvent.end_call_gui,
-          // TODO add send call end request task to perfom list
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_end_notify,
@@ -365,7 +368,6 @@ angular.module('call')
       transitionsHashTable[pubsubEvent.on_incoming_call_notify][9] = {
         when: [{
           event: pubsubEvent.end_call_gui,
-          // TODO add send call end request task to perfom list
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_end_notify,
@@ -459,7 +461,7 @@ angular.module('call')
     publish_set_local_answer: "publish_set_local_answer",
     publish_set_remote_offer: "publish_set_remote_offer",
     publish_set_remote_answer: "publish_set_remote_answer",
-    publish_location_change: "publish_location_change",
+    publish_location_change_to_call: "publish_location_change_to_call",
     publish_add_local_stream: "publish_add_local_stream"
   })
   .run(['callFSM', function() {}]);

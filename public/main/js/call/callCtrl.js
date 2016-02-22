@@ -5,7 +5,7 @@ angular.module('call')
 
       $scope.callId = $stateParams.callId;
 
-      $scope.answer = function(){
+      $scope.answer = function() {
         $log.info("answer is clicked ");
         callService.answer({
           callId: $stateParams.callId
@@ -13,7 +13,7 @@ angular.module('call')
         $('#incomingCallModal').modal('hide');
       };
 
-      $scope.end = function(){
+      $scope.end = function() {
         $log.info("decline is clicked ");
         callService.end({
           callId: $stateParams.callId
@@ -32,9 +32,14 @@ angular.module('call')
       };
 
       if (callService.isIncomingCall({
-        callId: $stateParams.callId
-      })) {
+          callId: $stateParams.callId
+        })) {
         $("#incomingCallModal").modal();
       }
+
+      $scope.$on("$destroy", function() {
+        $('#incomingCallModal').remove();
+        $('.modal-backdrop').remove();
+      });
     }
   ]);
