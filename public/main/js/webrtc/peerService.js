@@ -261,6 +261,8 @@ angular.module('webrtc.peerService', ['util.pubsub'])
         var callId = data.msg.callId,
           internalCall = calls[callId];
 
+          // TODO may receive candidates before setting remote description
+          // we first need to queue them and apply after setting remote desc. 
         internalCall.pc.addIceCandidate(new RTCIceCandidate(data.msg.candidate),
           function() {
 

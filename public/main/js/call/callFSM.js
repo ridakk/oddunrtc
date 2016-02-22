@@ -6,6 +6,7 @@ angular.module('call')
         transitionsHashTable = {},
         tasks = {};
 
+        // TODO move tasks into a different module
       tasks[callFsmTasks.publish_location_change_to_call] = {
         pubsubMethod: pubsubMethods.publish,
         subscriber: pubsubSubscriber.location_service,
@@ -115,7 +116,8 @@ angular.module('call')
       };
 
       // TODO how to publish state change updates ???
-      // TODO how to handle call end glare condition scenario with pub sub ???
+      // TODO move transitions to a different module
+      // TODO we can also make a service to provide when block to avoid duplication
       transitionsHashTable[pubsubEvent.start_call_gui] = {};
       transitionsHashTable[pubsubEvent.start_call_gui][0] = {
         when: [{
@@ -232,7 +234,6 @@ angular.module('call')
       transitionsHashTable[pubsubEvent.start_call_gui][9] = {
         when: [{
           event: pubsubEvent.end_call_gui,
-          // TODO add send call end request task to perfom list
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_end_notify,
@@ -426,6 +427,7 @@ angular.module('call')
         }
 
         // TODO need to understand current transition is completed
+        // TODO need to have an idle state loop back to itself
         internalCall.trIndex++;
 
       };
