@@ -222,6 +222,24 @@ app.put('/call/:callId', function(request, response) {
   });
 });
 
+app.delete('/call/:callId', function(request, response) {
+  var data = request.body;
+  console.log("/call delete from %j", data);
+
+  Call.delete({
+    callId: data.msg.callId
+  });
+
+  Sockets.getSocketUrl({
+    owner: data.to
+  }).then(function(socketUrl) {
+    ionsp.to(socketUrl).emit('message', data);
+    response.status(200).send(JSON.stringify(data));
+  }, function() {
+    response.status(404).send();
+  });
+});
+
 io.use(function(socket, next) {
   var params = JSON.parse(socket.handshake.query.serverparams);
 

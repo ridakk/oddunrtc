@@ -66,6 +66,16 @@ angular.module('connection')
                   }
                 });
               }
+              else if (data.action === "end") {
+                pubsub.publish({
+                  publisher: pubsubSubscriber.connection_service,
+                  subscriber: pubsubSubscriber.call_fsm,
+                  event: pubsubEvent.call_end_notify,
+                  msg: {
+                    callId: data.data.msg.callId
+                  }
+                });
+              }
             }
           });
         });

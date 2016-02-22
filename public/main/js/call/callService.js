@@ -34,12 +34,31 @@ angular.module('call')
       };
 
       self.end = function(data) {
+        var callId = data.callId,
+          internalCall = calls[callId];
+
+        httpService.delete({
+          url: window.location.origin + "/call/" + callId,
+          //timeout: 30000,
+          data: {
+            type: "call",
+            action: "end",
+            from: userService.email,
+            to: internalCall.from,
+            data: {
+              msg: {
+                callId: callId
+              }
+            }
+          }
+        });
+
         pubsub.publish({
           publisher: pubsubSubscriber.call_service,
           subscriber: pubsubSubscriber.call_fsm,
           event: pubsubEvent.end_call_gui,
           msg: {
-            callId: data.callId
+            callId: callId
           }
         });
       };

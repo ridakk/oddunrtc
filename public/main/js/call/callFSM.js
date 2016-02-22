@@ -229,6 +229,16 @@ angular.module('call')
           performs: []
         }],
       };
+      transitionsHashTable[pubsubEvent.start_call_gui][9] = {
+        when: [{
+          event: pubsubEvent.end_call_gui,
+          // TODO add send call end request task to perfom list
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.call_ended_notify,
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }],
+      };
 
       transitionsHashTable[pubsubEvent.on_incoming_call_notify] = {};
       transitionsHashTable[pubsubEvent.on_incoming_call_notify][0] = {
@@ -350,6 +360,16 @@ angular.module('call')
         }, {
           event: pubsubEvent.set_local_answer_success,
           performs: []
+        }],
+      };
+      transitionsHashTable[pubsubEvent.on_incoming_call_notify][9] = {
+        when: [{
+          event: pubsubEvent.end_call_gui,
+          // TODO add send call end request task to perfom list
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
+          event: pubsubEvent.call_ended_notify,
+          performs: [callFsmTasks.broadcast_clear_resources]
         }],
       };
 

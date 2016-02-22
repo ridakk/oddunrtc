@@ -6,7 +6,8 @@ function Call() {
 }
 
 Call.prototype.create = function(params) {
-  var deferred = Q.defer(), callId = uuid.v4();
+  var deferred = Q.defer(),
+    callId = uuid.v4();
 
   this.calls[callId] = {
     callId: callId,
@@ -17,6 +18,10 @@ Call.prototype.create = function(params) {
   deferred.resolve(this.calls[callId]);
 
   return deferred.promise;
+};
+
+Call.prototype.delete = function(params) {
+  delete this.calls[params.callId];
 };
 
 module.exports = new Call();
