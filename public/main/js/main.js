@@ -21,7 +21,10 @@ angular.module('main', ['ui.router', 'signin', 'login', 'home', 'call'])
           controller: 'HomeCtrl'
         })
         .state('call', {
-          url: '/call/:callId',
+          url: '/call',
+          params: {
+            callId: undefined
+          },
           templateUrl: '/main/js/call/call.html',
           controller: 'CallCtrl'
         });
@@ -29,4 +32,12 @@ angular.module('main', ['ui.router', 'signin', 'login', 'home', 'call'])
   ])
   .controller('mainCtrl', ["$scope", "$log", function($scope, $log) {
     $log.info("mainCtrl initialized...");
-  }]);
+  }])
+  .run(function($rootScope, $state) {
+    $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
+      if (toState.url === '/call' &&
+          !toParams.callId) {
+        event.preventDefault();
+      }
+    });
+  });
