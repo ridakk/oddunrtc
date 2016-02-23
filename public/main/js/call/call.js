@@ -1,1 +1,7 @@
-angular.module('call', ['user', 'connection', 'util.pubsub', 'util.location']);
+angular.module('call', [
+  'user',
+  'connection',
+  'util.pubsub',
+  'util.location',
+  'tasks'
+]);

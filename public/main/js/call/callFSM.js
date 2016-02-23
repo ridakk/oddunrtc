@@ -1,119 +1,9 @@
 angular.module('call')
-  .service('callFSM', ["$log", "$q", "pubsub", "pubsubSubscriber", "pubsubEvent", "pubsubMethods", "callFsmTasks",
-    function($log, $q, pubsub, pubsubSubscriber, pubsubEvent, pubsubMethods, callFsmTasks) {
+  .service('callFSM', ["$log", "$q", "pubsub", "pubsubSubscriber", "pubsubEvent", "pubsubMethods", "taskFactory", "callFsmTasks",
+    function($log, $q, pubsub, pubsubSubscriber, pubsubEvent, pubsubMethods, taskFactory, callFsmTasks) {
       var self = this,
         calls = {},
-        transitionsHashTable = {},
-        tasks = {};
-
-      // TODO move tasks into a different module
-      tasks[callFsmTasks.publish_location_change_to_call] = {
-        pubsubMethod: pubsubMethods.publish,
-        subscriber: pubsubSubscriber.location_service,
-        event: pubsubEvent.change_url_to_call
-      };
-      tasks[callFsmTasks.publish_create_outgoing_call] = {
-        pubsubMethod: pubsubMethods.publish,
-        subscriber: pubsubSubscriber.call_service,
-        event: pubsubEvent.create_outgoing_call
-      };
-      tasks[callFsmTasks.publish_create_incoming_call] = {
-        pubsubMethod: pubsubMethods.publish,
-        subscriber: pubsubSubscriber.call_service,
-        event: pubsubEvent.create_incoming_call
-      };
-      tasks[callFsmTasks.publish_state_chage] = {
-        pubsubMethod: pubsubMethods.publish,
-        subscriber: pubsubSubscriber.call_service,
-        event: pubsubEvent.state_change
-      };
-      tasks[callFsmTasks.publish_request_media_permission] = {
-        pubsubMethod: pubsubMethods.publish,
-        subscriber: pubsubSubscriber.media_service,
-        event: pubsubEvent.request_media_permission,
-        params: {
-          constraints: {
-            audio: true,
-            video: true
-          }
-        }
-      };
-      tasks[callFsmTasks.broadcast_clear_resources] = {
-        pubsubMethod: pubsubMethods.broadcast,
-        subscriber: pubsubSubscriber.global,
-        event: pubsubEvent.clear_resources
-      };
-      tasks[callFsmTasks.publish_create_peer] = {
-        pubsubMethod: pubsubMethods.publish,
-        subscriber: pubsubSubscriber.peer_service,
-        event: pubsubEvent.create_peer
-      };
-      tasks[callFsmTasks.publish_create_offer] = {
-        pubsubMethod: pubsubMethods.publish,
-        subscriber: pubsubSubscriber.peer_service,
-        event: pubsubEvent.create_offer,
-        params: {
-          constraints: {
-            "mandatory": {
-              "OfferToReceiveAudio": true,
-              "OfferToReceiveVideo": true
-            }
-          }
-        }
-      };
-      tasks[callFsmTasks.publish_create_answer] = {
-        pubsubMethod: pubsubMethods.publish,
-        subscriber: pubsubSubscriber.peer_service,
-        event: pubsubEvent.create_answer,
-        params: {
-          constraints: {
-            "mandatory": {
-              "OfferToReceiveAudio": true,
-              "OfferToReceiveVideo": true
-            }
-          }
-        }
-      };
-      tasks[callFsmTasks.publish_set_local_offer] = {
-        pubsubMethod: pubsubMethods.publish,
-        subscriber: pubsubSubscriber.peer_service,
-        event: pubsubEvent.set_local_offer
-      };
-      tasks[callFsmTasks.publish_set_local_answer] = {
-        pubsubMethod: pubsubMethods.publish,
-        subscriber: pubsubSubscriber.peer_service,
-        event: pubsubEvent.set_local_answer
-      };
-      tasks[callFsmTasks.publish_set_remote_offer] = {
-        pubsubMethod: pubsubMethods.publish,
-        subscriber: pubsubSubscriber.peer_service,
-        event: pubsubEvent.set_remote_offer
-      };
-      tasks[callFsmTasks.publish_set_remote_answer] = {
-        pubsubMethod: pubsubMethods.publish,
-        subscriber: pubsubSubscriber.peer_service,
-        event: pubsubEvent.set_remote_answer
-      };
-      tasks[callFsmTasks.publish_send_start_call_request] = {
-        pubsubMethod: pubsubMethods.publish,
-        subscriber: pubsubSubscriber.call_service,
-        event: pubsubEvent.send_start_call_request
-      };
-      tasks[callFsmTasks.publish_send_answer_call_request] = {
-        pubsubMethod: pubsubMethods.publish,
-        subscriber: pubsubSubscriber.call_service,
-        event: pubsubEvent.send_answer_call_request
-      };
-      tasks[callFsmTasks.publish_send_accept_call_request] = {
-        pubsubMethod: pubsubMethods.publish,
-        subscriber: pubsubSubscriber.call_service,
-        event: pubsubEvent.send_accept_call_request
-      };
-      tasks[callFsmTasks.publish_add_local_stream] = {
-        pubsubMethod: pubsubMethods.publish,
-        subscriber: pubsubSubscriber.peer_service,
-        event: pubsubEvent.add_local_stream
-      };
+        transitionsHashTable = {};
 
       // TODO how to publish state change updates ???
       // TODO move transitions to a different module
@@ -409,7 +299,7 @@ angular.module('call')
 
               for (var j in performList) {
                 if (performList.hasOwnProperty(j)) {
-                  task = tasks[performList[j]];
+                  task = taskFactory[performList[j]];
 
                   for (var k in task.params) {
                     if (task.params.hasOwnProperty(k)) {
