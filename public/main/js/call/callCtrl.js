@@ -4,6 +4,7 @@ angular.module('call')
       $log.info("CallCtrl initialized... callId: " + $stateParams.callId);
 
       $scope.callId = $stateParams.callId;
+      $scope.muteState = "mute";
 
       $scope.answer = function() {
         $log.info("answer is clicked ");
@@ -20,6 +21,21 @@ angular.module('call')
         });
         $('#incomingCallModal').modal('hide');
       };
+
+      $scope.mute = function(){
+        $log.info("mute is clicked : " + $scope.muteState);
+        callService.mute({
+          callId: $stateParams.callId,
+          mute: $scope.muteState === "mute" ? true : false
+        });
+
+        if ($scope.muteState === "mute") {
+          $scope.muteState = "unmute";
+        }
+        else {
+          $scope.muteState = "mute";
+        }
+      }
 
       callService.onLocalStreamAdded = function(stream) {
         $log.info("local stream added: ", stream);

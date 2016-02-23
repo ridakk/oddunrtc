@@ -160,7 +160,6 @@ angular.module('call')
       transitionsHashTable[pubsubEvent.start_call_gui][4] = {
         when: [{
           event: pubsubEvent.end_call_gui,
-          // TODO add send call end request task to perfom list
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.send_start_call_request_failure,
@@ -173,7 +172,6 @@ angular.module('call')
       transitionsHashTable[pubsubEvent.start_call_gui][5] = {
         when: [{
           event: pubsubEvent.end_call_gui,
-          // TODO add send call end request task to perfom list
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_timeout_notify,
@@ -189,7 +187,6 @@ angular.module('call')
       transitionsHashTable[pubsubEvent.start_call_gui][6] = {
         when: [{
           event: pubsubEvent.end_call_gui,
-          // TODO add send call end request task to perfom list
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_end_notify,
@@ -205,7 +202,6 @@ angular.module('call')
       transitionsHashTable[pubsubEvent.start_call_gui][7] = {
         when: [{
           event: pubsubEvent.end_call_gui,
-          // TODO add send call end request task to perfom list
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_end_notify,
@@ -218,7 +214,6 @@ angular.module('call')
       transitionsHashTable[pubsubEvent.start_call_gui][8] = {
         when: [{
           event: pubsubEvent.end_call_gui,
-          // TODO add send call end request task to perfom list
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_end_notify,

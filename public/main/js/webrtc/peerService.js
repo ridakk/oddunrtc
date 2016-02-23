@@ -298,6 +298,16 @@ angular.module('webrtc.peerService', ['util.pubsub'])
         );
       };
 
+      self.handleMuteUnmuteAudio = function(data){
+        var callId = data.msg.callId,
+          internalCall = calls[callId];
+
+          if (calls[data.msg.callId].pc.getLocalStreams() &&
+            calls[data.msg.callId].pc.getLocalStreams()[0]) {
+            calls[data.msg.callId].pc.getLocalStreams()[0].getAudioTracks()[0].enabled = data.mute;
+          }
+      };
+
       eventHandlers[pubsubEvent.create_peer] = self.handleCreatePeer;
       eventHandlers[pubsubEvent.create_offer] = self.handleCreateOffer;
       eventHandlers[pubsubEvent.create_answer] = self.handleCreateAnswer;
@@ -307,6 +317,7 @@ angular.module('webrtc.peerService', ['util.pubsub'])
       eventHandlers[pubsubEvent.set_remote_answer] = self.handleSetRemoteAnswer;
       eventHandlers[pubsubEvent.add_local_stream] = self.handleAddLocalStream;
       eventHandlers[pubsubEvent.ice_candidate_notify] = self.handleIceCandidateNotify;
+      eventHandlers[pubsubEvent.mute_unmute_audio] = self.handleMuteUnmuteAudio;
 
       self.handlePeerServiceEvent = function(data) {
         eventHandlers[data.event](data);

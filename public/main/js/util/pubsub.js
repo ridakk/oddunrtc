@@ -119,5 +119,6 @@ angular.module('util.pubsub', [])
     on_incoming_call_notify: "on_incoming_call_notify",
     ice_candidate_notify: "ice_candidate_notify",
     change_url_to_call: "change_url_to_call",
-    add_local_stream: "add_local_stream"
+    add_local_stream: "add_local_stream",
+    mute_unmute_audio: "mute_unmute_audio"
   });

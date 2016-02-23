@@ -53,6 +53,18 @@ angular.module('call')
         });
       };
 
+      self.mute = function(data){
+        pubsub.publish({
+          publisher: pubsubSubscriber.call_service,
+          subscriber: pubsubSubscriber.peer_service,
+          event: pubsubEvent.mute_unmute_audio,
+          msg: {
+            callId: data.callId,
+            mute: data.mute
+          }
+        });
+      };
+
       self.handleOnLocalStream = function(data) {
         self.onLocalStreamAdded(data.msg.stream);
       };

@@ -1,7 +1,10 @@
 <div id="videoContainer">
   <video class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="localStream" autoplay muted></video>
   <video class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="remoteStream" autoplay></video>
-  <button ng-click="end()" class="callEnd btn btn-danger btn-block" type="submit">End</button>
+  <div class="callControlButtons btn-group" role="group" aria-label="...">
+    <button ng-click="mute()" type="button" class="btn btn-default">{{muteState}}</button>
+    <button ng-click="end()" type="button" class="btn btn-danger">End</button>
+  </div>
 </div>
 <div id="incomingCallModal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
   <div class="modal-dialog modal-sm">
