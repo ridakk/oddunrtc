@@ -1,16 +1,16 @@
 <form class="form-signin">
   <h2 class="form-signin-heading">Create a new account</h2>
   <label for="inputEmail" class="sr-only">Email address</label>
-  <input ng-model="user.email" type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+  <input ng-model="email" type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
 
   <label for="inputPassword" class="sr-only">Password</label>
-  <input ng-model="user.password" type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+  <input ng-model="password" type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
 
   <label for="inputFirstName" class="sr-only">First Name</label>
-  <input ng-model="user.firstName" type="firstName" id="inputFirstName" class="form-control" placeholder="First name" required="" autofocus="">
+  <input ng-model="firstName" type="firstName" id="inputFirstName" class="form-control" placeholder="First name" required="" autofocus="">
 
   <label for="inputLastName" class="sr-only">Last Name</label>
-  <input ng-model="user.lastName" type="lastName" id="inputLastName" class="form-control" placeholder="Last name" required="">
+  <input ng-model="lastName" type="lastName" id="inputLastName" class="form-control" placeholder="Last name" required="">
   <button ng-click="createAccount()" class="btn btn-lg btn-primary btn-block" type="submit">Create account</button>
   <div style="float:right;">
     Already registered? <a ui-sref="login" href="#/login">Log in</a>

@@ -1,6 +1,6 @@
 angular.module('connection')
-  .service('connectionService', ["$rootScope", "$log", "httpService", "$location", "pubsub", "pubsubSubscriber", "pubsubEvent",
-    function($rootScope, $log, httpService, $location, pubsub, pubsubSubscriber, pubsubEvent) {
+  .service('connectionService', ["$rootScope", "$log", "httpService", "userService", "locationService", "pubsub", "pubsubSubscriber", "pubsubEvent",
+    function($rootScope, $log, httpService, userService, locationService, pubsub, pubsubSubscriber, pubsubEvent) {
       var self = this,
         socket;
 
@@ -11,6 +11,7 @@ angular.module('connection')
             email: email
           }
         }).then(function(data) {
+          userService.connected = true;
           socket = io(data.url, {
             query: 'serverparams=' + JSON.stringify({
               user: email,
@@ -54,8 +55,7 @@ angular.module('connection')
                     callId: data.data.msg.callId
                   }
                 });
-              }
-              else if (data.action === "candidate") {
+              } else if (data.action === "candidate") {
                 pubsub.publish({
                   publisher: pubsubSubscriber.connection_service,
                   subscriber: pubsubSubscriber.peer_service,
@@ -65,8 +65,7 @@ angular.module('connection')
                     callId: data.data.msg.callId
                   }
                 });
-              }
-              else if (data.action === "end") {
+              } else if (data.action === "end") {
                 pubsub.publish({
                   publisher: pubsubSubscriber.connection_service,
                   subscriber: pubsubSubscriber.call_fsm,
@@ -77,6 +76,13 @@ angular.module('connection')
                 });
               }
             }
+          });
+
+          socket.on('disconnect', function() {
+            socket.disconnect();
+            socket = null;
+            userService.connected = false;
+            locationService.toLogin();
           });
         });
       };

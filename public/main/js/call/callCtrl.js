@@ -26,7 +26,7 @@ angular.module('call')
         $log.info("mute is clicked : " + $scope.muteState);
         callService.mute({
           callId: $stateParams.callId,
-          mute: $scope.muteState === "mute" ? true : false
+          mute: $scope.muteState === "mute" ? false : true
         });
 
         if ($scope.muteState === "mute") {

@@ -304,7 +304,7 @@ angular.module('webrtc.peerService', ['util.pubsub'])
 
           if (calls[data.msg.callId].pc.getLocalStreams() &&
             calls[data.msg.callId].pc.getLocalStreams()[0]) {
-            calls[data.msg.callId].pc.getLocalStreams()[0].getAudioTracks()[0].enabled = data.mute;
+            calls[data.msg.callId].pc.getLocalStreams()[0].getAudioTracks()[0].enabled = data.msg.mute;
           }
       };
 

@@ -1,1 +1,1 @@
-angular.module('connection', ["util.http"]);
+angular.module('connection', ["util.http", "util.location", "user"]);

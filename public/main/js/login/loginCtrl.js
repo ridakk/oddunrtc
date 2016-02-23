@@ -3,11 +3,11 @@ angular.module('login')
   function($scope, $log, $state, userService, connectionService) {
     $log.info("loginCtrl initialized...");
 
-    $scope.user = userService;
-
     $scope.login = function() {
       $log.info("loginCtrl.login clicked...");
-      $log.info("SigninCtrl.createAccount $scope.email: " + userService.email);
+
+      userService.email = $scope.email;
+      userService.password = $scope.password;
 
       connectionService.openConnection(userService.email).then(function() {
         $state.go('home');

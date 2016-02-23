@@ -1,4 +1,4 @@
-angular.module('main', ['ui.router', 'signin', 'login', 'home', 'call'])
+angular.module('main', ['ui.router', 'signin', 'login', 'home', 'call', 'user', 'util.location'])
   .config(['$stateProvider', '$urlRouterProvider',
     function($stateProvider, $urlRouterProvider) {
 
@@ -33,8 +33,14 @@ angular.module('main', ['ui.router', 'signin', 'login', 'home', 'call'])
   .controller('mainCtrl', ["$scope", "$log", function($scope, $log) {
     $log.info("mainCtrl initialized...");
   }])
-  .run(function($rootScope, $state) {
+  .run(function($rootScope, $state, userService, locationService) {
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
+      if ((toState.url === "/home" || toState.url === "/call") && !userService.connected) {
+        event.preventDefault();
+
+        locationService.toLogin();
+      }
+
       if (toState.url === '/call' &&
           !toParams.callId) {
         event.preventDefault();
