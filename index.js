@@ -1,4 +1,5 @@
 var express = require('express');
+var compression = require('compression');
 var app = express();
 var bodyParser = require('body-parser')
 var http = require('http').Server(app);
@@ -25,6 +26,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.use(bodyParser.json());
+app.use(compression());
 
 // views is directory for all template files
 app.set('views', __dirname + '/views');

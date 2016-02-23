@@ -33,7 +33,7 @@ angular.module('main', ['ui.router', 'signin', 'login', 'home', 'call', 'user', 
   .controller('mainCtrl', ["$scope", "$log", function($scope, $log) {
     $log.info("mainCtrl initialized...");
   }])
-  .run(function($rootScope, $state, userService, locationService) {
+  .run(["$rootScope", "$state", "userService", "locationService", function($rootScope, $state, userService, locationService) {
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
       if ((toState.url === "/home" || toState.url === "/call") && !userService.connected) {
         event.preventDefault();
@@ -46,4 +46,4 @@ angular.module('main', ['ui.router', 'signin', 'login', 'home', 'call', 'user', 
         event.preventDefault();
       }
     });
-  });
+  }]);
