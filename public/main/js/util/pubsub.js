@@ -101,6 +101,7 @@ angular.module('util.pubsub', [])
     set_remote_offer_success: "set_remote_offer_success",
     set_remote_offer_success: "set_remote_offer_success",
     on_ice_canditate: "on_ice_canditate",
+    on_ice_connection_failed: "on_ice_connection_failed",
     on_local_stream: "on_local_stream",
     on_remote_stream: "on_remote_stream",
     send_start_call_request: "send_start_call_request",

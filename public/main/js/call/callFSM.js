@@ -6,7 +6,7 @@ angular.module('call')
         transitionsHashTable = {},
         tasks = {};
 
-        // TODO move tasks into a different module
+      // TODO move tasks into a different module
       tasks[callFsmTasks.publish_location_change_to_call] = {
         pubsubMethod: pubsubMethods.publish,
         subscriber: pubsubSubscriber.location_service,
@@ -227,7 +227,11 @@ angular.module('call')
         }],
       };
       transitionsHashTable[pubsubEvent.start_call_gui][9] = {
+        loop: true,
         when: [{
+          event: pubsubEvent.on_ice_connection_failed,
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
           event: pubsubEvent.end_call_gui,
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
@@ -362,7 +366,11 @@ angular.module('call')
         }],
       };
       transitionsHashTable[pubsubEvent.on_incoming_call_notify][9] = {
+        loop: true,
         when: [{
+          event: pubsubEvent.on_ice_connection_failed,
+          performs: [callFsmTasks.broadcast_clear_resources]
+        }, {
           event: pubsubEvent.end_call_gui,
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
@@ -423,7 +431,11 @@ angular.module('call')
 
         // TODO need to understand current transition is completed
         // TODO need to have an idle state loop back to itself
-        internalCall.trIndex++;
+
+        // loop:true means transition will loop back to itself
+        if (!internalCall.transition[internalCall.trIndex].loop) {
+          internalCall.trIndex++;
+        }
 
       };
 

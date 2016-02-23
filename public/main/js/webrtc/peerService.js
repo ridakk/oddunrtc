@@ -68,15 +68,16 @@ angular.module('webrtc.peerService', ['util.pubsub'])
         pc.oniceconnectionstatechange = function(e) {
           $log.info("ice connection state: " + pc.iceConnectionState);
           // TODO ice connection state should be handled by fsm, it indicates audio path success/failure
-          // pubsub.publish({
-          //   publisher: pubsubSubscriber.peer_service,
-          //   subscriber: pubsubSubscriber.call_fsm,
-          //  event: pubsubEvent.on_ice_connection_state,
-          //   msg: {
-          //     callId: data.msg.callId,
-          //     state: pc.iceConnectionState
-          //   }
-          // });
+          if (pc.iceConnectionState === "failed") {
+            pubsub.publish({
+              publisher: pubsubSubscriber.peer_service,
+              subscriber: pubsubSubscriber.call_fsm,
+              event: pubsubEvent.on_ice_connection_failed,
+              msg: {
+                callId: data.msg.callId
+              }
+            });
+          }
         };
         return pc;
       };
@@ -248,7 +249,8 @@ angular.module('webrtc.peerService', ['util.pubsub'])
       };
 
       self.handleSetRemoteAnswer = function(data) {
-        var callId = data.msg.callId, i,
+        var callId = data.msg.callId,
+          i,
           internalCall = calls[callId];
         self.setDescription({
           pc: internalCall.pc,
@@ -258,8 +260,8 @@ angular.module('webrtc.peerService', ['util.pubsub'])
           sdp: data.msg.sdp,
           successEvent: pubsubEvent.set_remote_answer_success,
           failureEvent: pubsubEvent.set_remote_answer_failure
-        }).then(function(){
-          if(internalCall.remoteteCandidateQueue) {
+        }).then(function() {
+          if (internalCall.remoteteCandidateQueue) {
             for (i in internalCall.remoteteCandidateQueue) {
               if (internalCall.remoteteCandidateQueue.hasOwnProperty(i)) {
                 self.handleIceCandidateNotify({
@@ -279,14 +281,14 @@ angular.module('webrtc.peerService', ['util.pubsub'])
         var callId = data.msg.callId,
           internalCall = calls[callId];
 
-          if (internalCall.pc.remoteDescription.sdp === "") {
-            if (!internalCall.remoteteCandidateQueue) {
-              internalCall.remoteteCandidateQueue = []
-            }
-
-            internalCall.remoteteCandidateQueue.push(data.msg.candidate);
-            return;
+        if (internalCall.pc.remoteDescription.sdp === "") {
+          if (!internalCall.remoteteCandidateQueue) {
+            internalCall.remoteteCandidateQueue = []
           }
+
+          internalCall.remoteteCandidateQueue.push(data.msg.candidate);
+          return;
+        }
 
         internalCall.pc.addIceCandidate(new RTCIceCandidate(data.msg.candidate),
           function() {
@@ -298,14 +300,14 @@ angular.module('webrtc.peerService', ['util.pubsub'])
         );
       };
 
-      self.handleMuteUnmuteAudio = function(data){
+      self.handleMuteUnmuteAudio = function(data) {
         var callId = data.msg.callId,
           internalCall = calls[callId];
 
-          if (calls[data.msg.callId].pc.getLocalStreams() &&
-            calls[data.msg.callId].pc.getLocalStreams()[0]) {
-            calls[data.msg.callId].pc.getLocalStreams()[0].getAudioTracks()[0].enabled = data.msg.mute;
-          }
+        if (calls[data.msg.callId].pc.getLocalStreams() &&
+          calls[data.msg.callId].pc.getLocalStreams()[0]) {
+          calls[data.msg.callId].pc.getLocalStreams()[0].getAudioTracks()[0].enabled = data.msg.mute;
+        }
       };
 
       eventHandlers[pubsubEvent.create_peer] = self.handleCreatePeer;
