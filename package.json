@@ -35,6 +35,7 @@
   "devDependencies": {
     "compression": "^1.6.1",
     "grunt-contrib-concat": "^1.0.0",
-    "node-uuid": "^1.4.7"
+    "node-uuid": "^1.4.7",
+    "serve-favicon": "^2.3.0"
   }
 }

@@ -1,27 +1,22 @@
-var Q = require("q");
-var uuid = require('node-uuid');
+var Q = require("q"),
+  uuid = require('node-uuid'),
+  calls = {};
 
-function Call() {
-  this.calls = {};
-}
-
-Call.prototype.create = function(params) {
+exports.create = function(params) {
   var deferred = Q.defer(),
     callId = uuid.v4();
 
-  this.calls[callId] = {
+  calls[callId] = {
     callId: callId,
     from: params.from,
     to: params.to,
   }
 
-  deferred.resolve(this.calls[callId]);
+  deferred.resolve(calls[callId]);
 
   return deferred.promise;
 };
 
-Call.prototype.delete = function(params) {
-  delete this.calls[params.callId];
+exports.delete = function(params) {
+  delete calls[params.callId];
 };
-
-module.exports = new Call();

@@ -10,8 +10,8 @@ var User = require('./User');
 var UserContacts = require('./UserContacts');
 var uuid = require('node-uuid');
 var Q = require("q");
-var Call = require('./Call');
-var Sockets = require('./Sockets');
+var call = require('./Call');
+var sockets = require('./Sockets');
 
 var connections = {};
 
@@ -192,14 +192,14 @@ app.post('/call/:callId', function(request, response) {
   var data = request.body;
   console.log("/call post from %j", data);
 
-  Call.create({
+  call.create({
     to: data.to,
     from: data.from
   }).then(function(params) {
     data.callId = params.callId;
     console.log("call success %j", params);
 
-    Sockets.getSocketUrl({
+    sockets.getSocketUrl({
       owner: data.to
     }).then(function(socketUrl) {
       ionsp.to(socketUrl).emit('message', data);
@@ -214,7 +214,7 @@ app.put('/call/:callId', function(request, response) {
   var data = request.body;
   console.log("/call post from %j", data);
 
-  Sockets.getSocketUrl({
+  sockets.getSocketUrl({
     owner: data.to
   }).then(function(socketUrl) {
     ionsp.to(socketUrl).emit('message', data);
@@ -228,11 +228,11 @@ app.delete('/call/:callId', function(request, response) {
   var data = request.body;
   console.log("/call delete from %j", data);
 
-  Call.delete({
+  call.delete({
     callId: data.data.msg.callId
   });
 
-  Sockets.getSocketUrl({
+  sockets.getSocketUrl({
     owner: data.to
   }).then(function(socketUrl) {
     ionsp.to(socketUrl).emit('message', data);
@@ -251,7 +251,7 @@ io.use(function(socket, next) {
     console.log("not authorized");
     next(new Error('not authorized'));
   } else {
-    Sockets.add({
+    sockets.add({
       user: params.user,
       id: socket.id
     })
@@ -265,7 +265,7 @@ ionsp.on('connection', function(socket) {
   socket.broadcast.emit('hi');
   socket.on('disconnect', function() {
     console.log('user disconnected with id %s', socket.id);
-    Sockets.remove({
+    sockets.remove({
       id: socket.id
     });
   });
@@ -274,7 +274,7 @@ ionsp.on('connection', function(socket) {
     console.log('message to: %s txt: %s', msg.to, msg.text);
     //ionsp.emit('chat message', msg);
 
-    socket.broadcast.to(Sockets.getSocketUrl({
+    socket.broadcast.to(sockets.getSocketUrl({
       owner: msg.to
     })).emit('chat message', msg);
   });
