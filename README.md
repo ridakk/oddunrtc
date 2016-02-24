@@ -2,12 +2,12 @@
 
 Yet another WebRtc video call solution with Node.js, Express.js and Angular.js.
 
-### PREREQUISITE
+### Prerequisite
 
 * Node.js - [Download](https://nodejs.org/en/download/) and Install Node.js.
 * MongoDB - [Download](https://www.mongodb.org/downloads#production) and Install mongodb - [Checkout their manual](https://docs.mongodb.org/manual/) if you’re just starting.
 
-### INSTALLATION
+### Installation
 
 ```sh
 $ npm install
