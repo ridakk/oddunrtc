@@ -10,21 +10,59 @@
     <title>odunRTC - Login Page</title>
     <link href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic" rel="stylesheet">
     <link href="../css/main.css" rel="stylesheet">
+    <link href="../css/lib.css" rel="stylesheet">
+    <script src="../js/lib.js"></script>
+    <script>
+    $(document).ready(function() {
+        $('.switchSignupButton').click(function(){
+            $('.whiteBox').animate({
+                left: '5%'
+            }, 50, 'swing');
+            $('.loginWhiteBox').hide();
+            $('.signupWhiteBox').fadeIn();
+            $('.loginMessage').fadeIn();
+        });
+
+        $('.switchLoginButton').click(function(){
+            $('.whiteBox').animate({
+                left: '45%'
+            }, 50, 'swing');
+            $('.signupWhiteBox').hide();
+            $('.loginWhiteBox').fadeIn();
+            $('.signupMessage').fadeIn();
+        });
+    });
+    </script>
 </head>
 <body class="loginPage">
     <div class="loginBackground">
         <div class="container">
             <div class="blackContainer">
-                <div class="signUpMessage">
+                <div class="switchMessage signupMessage">
                     <div class="title">Don't have an account?</div>
-                    <div class="signUpButton">Sign Up</div>
+                    <div class="switchMessageButton switchSignupButton">Sign Up</div>
                 </div>
-                <form class="loginWhiteBox">
-                    <div class="title">Log In</div>
-                    <input type="text" placeholder="Username">
-                    <input type="password" placeholder="Password">
-                    <input type="submit" value="Log In" class="loginButton">
-                </form>
+
+                <div class="switchMessage loginMessage">
+                    <div class="title">Have an account?</div>
+                    <div class="switchMessageButton switchLoginButton">Log In</div>
+                </div>
+
+                <div class="whiteBox">
+                    <form class="loginWhiteBox">
+                        <div class="title">Log In</div>
+                        <input type="text" placeholder="Username">
+                        <input type="password" placeholder="Password">
+                        <input type="submit" value="Log In" class="loginButton">
+                    </form>
+                    <form class="signupWhiteBox" style="display:none">
+                        <div class="title">Sign Up</div>
+                        <input type="text" placeholder="Name">
+                        <input type="email" placeholder="Email">
+                        <input type="password" placeholder="Password">
+                        <input type="submit" value="Sign Up" class="loginButton">
+                    </form>
+                </div>
             </div>
         </div>
     </div>

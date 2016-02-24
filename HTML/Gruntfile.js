@@ -4,13 +4,17 @@ module.exports = function(grunt) {
 		pkg: grunt.file.readJSON('package.json'),
 		clean: ['www'],
 		concat: {
-			js: {
-				src: 'src/js/**/*.js',
-				dest: 'www/js/main.js'
+			jslib: {
+				src: 'src/lib/js/*.js',
+				dest: 'www/js/lib.js'
 			},
 			css: {
 				src: 'src/css/*.scss',
 				dest: 'www/css/main.scss'
+			},
+			csslib: {
+				src: 'src/lib/css/*.css',
+				dest: 'www/css/lib.css'
 			}
 		},
         sass: {
@@ -47,7 +51,7 @@ module.exports = function(grunt) {
 		watch: {
 			css: {
 				files: ['src/css/*.scss', 'src/templates/*.html'],
-				tasks: ['clean', 'concat:css', 'sass', 'cssmin', 'copy'],
+				tasks: ['clean', 'concat', 'sass', 'cssmin', 'copy'],
 				options: {
 					spawn: false,
 					livereload: true,
@@ -64,7 +68,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-sass');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 
-	grunt.registerTask('default', ['clean', 'concat:css', 'sass', 'cssmin', 'copy']);
+	grunt.registerTask('default', ['clean', 'concat', 'sass', 'cssmin', 'copy']);
 	grunt.registerTask('dev', ['watch']);
 
 };

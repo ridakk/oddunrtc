@@ -32,14 +32,15 @@ body.loginPage {
     height: 300px;
     position: relative;
 }
-.loginWhiteBox {
+.whiteBox {
     width: 40%;
     padding: 60px 5%;
     position: absolute;
-    right: 5%;
     height: 280px;
     top: -50px;
     background: #FDFDFD;
+    left: 45%;
+    transition:all 0.5s linear;
     .title {
         text-transform: uppercase;
         color: #ea6153;
@@ -47,9 +48,8 @@ body.loginPage {
         margin-top: 20px;
         margin-bottom: 50px;
     }
-    input[type='text'], input[type='password'] {
+    input[type='text'], input[type='password'], input[type='email'] {
         display: block;
-        margin: 30px 0;
         border: none;
         border-bottom: 2px solid #ecf0f1;
         font-size: 18px;
@@ -70,14 +70,14 @@ body.loginPage {
         font-size: 14px;
     }
 }
-.signUpMessage {
+.switchMessage {
     color: #bdc3c7;
     padding: 70px 70px;
     width: 30%;
     .title {
         font-size: 30px;
     }
-    .signUpButton {
+    .switchMessageButton {
         width: 160px;
         margin-top: 50px;
         border-radius: 3px;
@@ -86,4 +86,23 @@ body.loginPage {
         text-align: center;
         cursor: pointer;
     }
+}
+.loginWhiteBox {
+    input[type='text'], input[type='password'], input[type='email'] {
+        margin: 30px 0;
+    }
+}
+.signupWhiteBox {
+    input[type='text'], input[type='password'], input[type='email'] {
+        margin: 20px 0;
+    }
+}
+.signupMessage {
+
+}
+.loginMessage {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 0;
 }
