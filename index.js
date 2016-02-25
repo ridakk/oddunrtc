@@ -1,17 +1,18 @@
 var express = require('express');
 var compression = require('compression');
+var favicon = require('serve-favicon');
+var passport = require('passport');
 var app = express();
-var bodyParser = require('body-parser')
+var morgan = require('morgan');
+var bodyParser = require('body-parser');
+var session = require('express-session');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var ionsp = io.of('/sockets');
 var mongoose = require('mongoose');
-var User = require('./User');
+var User = require('./models/User');
 var UserContacts = require('./UserContacts');
 var uuid = require('node-uuid');
-var Q = require("q");
-var call = require('./Call');
-var sockets = require('./Sockets');
 
 var connections = {};
 
@@ -22,11 +23,18 @@ mongoose.connect('mongodb://' + process.env.MONGO_USER + ':' + process.env.MONGO
 app.set('port', (process.env.PORT || 5000));
 
 app.use(express.static(__dirname + '/public'));
+app.use(morgan('dev')); // log every request to the console
 app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.use(bodyParser.json());
 app.use(compression());
+app.use(favicon(__dirname + '/public/favicon.ico'));
+
+// required for passport
+app.use(session({ secret: 'odun-rtc-rdk-session' })); // session secret
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
 
 // views is directory for all template files
 app.set('views', __dirname + '/views');
@@ -165,120 +173,16 @@ app.get('/contacts/:email', function(request, response) {
   });
 });
 
-app.post('/connections', function(request, response) {
-  console.log("/connections post from %s", request.body.email);
-  User.find({
-    email: request.body.email
-  }, function(err, user) {
-    if (err) {
-      console.log(err);
-      response.sendStatus(403);
-      return;
-    };
+// Load socket io routes
+require('./controllers/SocketIoController')(io, ionsp);
+require('./routes/SocketIo')(io, ionsp);
 
-    if (!connections[request.body.email]) {
-      connections[request.body.email] = uuid.v1();
-    }
+// load call routes
+require('./routes/Call')(app);
 
-    // object of the user
-    response.json({
-      "url": "/sockets",
-      "uuid": connections[request.body.email]
-    });
-  });
-});
 
-app.post('/call/:callId', function(request, response) {
-  var data = request.body;
-  console.log("/call post from %j", data);
 
-  call.create({
-    to: data.to,
-    from: data.from
-  }).then(function(params) {
-    data.callId = params.callId;
-    console.log("call success %j", params);
 
-    sockets.getSocketUrl({
-      owner: data.to
-    }).then(function(socketUrl) {
-      ionsp.to(socketUrl).emit('message', data);
-      response.status(201).send(JSON.stringify(data));
-    }, function() {
-      response.status(404).send();
-    });
-  });
-});
-
-app.put('/call/:callId', function(request, response) {
-  var data = request.body;
-  console.log("/call post from %j", data);
-
-  sockets.getSocketUrl({
-    owner: data.to
-  }).then(function(socketUrl) {
-    ionsp.to(socketUrl).emit('message', data);
-    response.status(200).send(JSON.stringify(data));
-  }, function() {
-    response.status(404).send();
-  });
-});
-
-app.delete('/call/:callId', function(request, response) {
-  var data = request.body;
-  console.log("/call delete from %j", data);
-
-  call.delete({
-    callId: data.data.msg.callId
-  });
-
-  sockets.getSocketUrl({
-    owner: data.to
-  }).then(function(socketUrl) {
-    ionsp.to(socketUrl).emit('message', data);
-    response.status(200).send(JSON.stringify(data));
-  }, function() {
-    response.status(404).send();
-  });
-});
-
-io.use(function(socket, next) {
-  var params = JSON.parse(socket.handshake.query.serverparams);
-
-  console.log("connections: %j", connections);
-  console.log("io request from user: %s with uuid: %s", params.user, params.uuid);
-  if (!params.user || !params.uuid || !connections[params.user] || connections[params.user] !== params.uuid) {
-    console.log("not authorized");
-    next(new Error('not authorized'));
-  } else {
-    sockets.add({
-      user: params.user,
-      id: socket.id
-    })
-
-    next();
-  }
-});
-
-ionsp.on('connection', function(socket) {
-  console.log('a user connected with id %s', socket.id);
-  socket.broadcast.emit('hi');
-  socket.on('disconnect', function() {
-    console.log('user disconnected with id %s', socket.id);
-    sockets.remove({
-      id: socket.id
-    });
-  });
-
-  socket.on('message', function(msg) {
-    console.log('message to: %s txt: %s', msg.to, msg.text);
-    //ionsp.emit('chat message', msg);
-
-    socket.broadcast.to(sockets.getSocketUrl({
-      owner: msg.to
-    })).emit('chat message', msg);
-  });
-});
 
 http.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));

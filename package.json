@@ -33,9 +33,17 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "bcrypt-nodejs": "0.0.3",
     "compression": "^1.6.1",
+    "express-session": "^1.13.0",
     "grunt-contrib-concat": "^1.0.0",
+    "morgan": "^1.7.0",
     "node-uuid": "^1.4.7",
+    "passport": "^0.3.2",
+    "passport-facebook": "^2.1.0",
+    "passport-google-auth": "^1.0.1",
+    "passport-local": "^1.0.0",
+    "passport-twitter": "^1.0.4",
     "serve-favicon": "^2.3.0"
   }
 }
