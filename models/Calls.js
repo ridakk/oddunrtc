@@ -1,10 +1,8 @@
-var Q = require("q"),
-  uuid = require('node-uuid'),
+var uuid = require('node-uuid'),
   calls = {};
 
 exports.create = function(params) {
-  var deferred = Q.defer(),
-    callId = uuid.v4();
+  var callId = uuid.v4();
 
   calls[callId] = {
     callId: callId,
@@ -12,9 +10,7 @@ exports.create = function(params) {
     to: params.to,
   }
 
-  deferred.resolve(calls[callId]);
-
-  return deferred.promise;
+  return callId;
 };
 
 exports.delete = function(params) {

@@ -1,4 +1,5 @@
-var ioCtrl = require('./../controllers/SocketIoController');
+var ioCtrl = require('./../controllers/SocketIoController'),
+  calls = require('./../models/Calls');
 
 
 // expose the routes to our app with module.exports
@@ -8,30 +9,26 @@ module.exports = function(app) {
     var data = request.body;
     console.log("/call post from %j", data);
 
-    call.create({
+    data.callId = calls.create({
       to: data.to,
       from: data.from
-    }).then(function(params) {
-      data.callId = params.callId;
-      console.log("call success %j", params);
-
-      if(ioCtrl.send(data.to, data)){
-        response.status(200).send(JSON.stringify(data));
-      }
-      else {
-        response.status(404).send();
-      }
     });
+
+    if (ioCtrl.send(data.to, data)) {
+      response.status(200).send(JSON.stringify(data));
+    } else {
+      response.status(404).send();
+    }
+
   });
 
   app.put('/call/:callId', function(request, response) {
     var data = request.body;
     console.log("/call post from %j", data);
 
-    if(ioCtrl.send(data.to, data)){
+    if (ioCtrl.send(data.to, data)) {
       response.status(200).send(JSON.stringify(data));
-    }
-    else {
+    } else {
       response.status(404).send();
     }
   });
@@ -40,14 +37,13 @@ module.exports = function(app) {
     var data = request.body;
     console.log("/call delete from %j", data);
 
-    call.delete({
+    calls.delete({
       callId: data.data.msg.callId
     });
 
-    if(ioCtrl.send(data.to, data)){
+    if (ioCtrl.send(data.to, data)) {
       response.status(200).send(JSON.stringify(data));
-    }
-    else {
+    } else {
       response.status(404).send();
     }
 

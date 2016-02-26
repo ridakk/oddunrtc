@@ -3,11 +3,12 @@ var connections = require('./../models/Connections'),
 
 module.exports = function(io, ionsp) {
   io.use(function(socket, next) {
-    var params = JSON.parse(socket.handshake.query.serverparams);
+    var params = JSON.parse(socket.handshake.query.serverparams),
+      conn = connections.get(params.user);
 
-    console.log("connections: %j", connections);
+    console.log("connections: %s", conn);
     console.log("io request from user: %s with uuid: %s", params.user, params.uuid);
-    if (!params.user || !params.uuid || !connections[params.user] || connections[params.user] !== params.uuid) {
+    if (!params.user || !params.uuid || !conn || conn !== params.uuid) {
       console.log("not authorized");
       next(new Error('not authorized'));
     } else {

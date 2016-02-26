@@ -1,4 +1,5 @@
 var user = require('./../models/User'),
+  uuid = require('node-uuid'),
   connections = require('./../models/Connections');
 
 module.exports = function(app) {
@@ -21,7 +22,7 @@ module.exports = function(app) {
       // object of the user
       response.json({
         "url": "/sockets",
-        "uuid": connections.add(email)
+        "uuid": connections.get(email)
       });
     });
   });

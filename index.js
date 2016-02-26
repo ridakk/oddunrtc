@@ -11,7 +11,7 @@ var io = require('socket.io')(http);
 var ionsp = io.of('/sockets');
 var mongoose = require('mongoose');
 var User = require('./models/User');
-var UserContacts = require('./UserContacts');
+var UserContacts = require('./models/UserContacts');
 var uuid = require('node-uuid');
 
 var connections = {};
@@ -180,7 +180,8 @@ require('./routes/SocketIo')(io, ionsp);
 // load call routes
 require('./routes/Call')(app);
 
-
+// load connection routes
+require('./routes/Connection')(app);
 
 
 

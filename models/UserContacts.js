@@ -10,7 +10,4 @@ var userContactsSchema = new Schema({
   contacts: Array
 });
 
-var UserContacts = mongoose.model('UserContacts', userContactsSchema);
-
-// make this available to our users in our Node applications
-module.exports = UserContacts;
+module.exports = mongoose.model('UserContacts', userContactsSchema);
