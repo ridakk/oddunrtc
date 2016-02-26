@@ -1,9 +1,10 @@
 var userContacts = require('./../models/UserContacts'),
+  authCtrl = require('./../controllers/AuthController'),
   user = require('./../models/User');
 
 module.exports = function(app) {
 
-  app.post('/contacts', function(request, response) {
+  app.post('/contacts', authCtrl.ensureAuthenticated, function(request, response) {
     var email = request.body.email;
     console.log("/contacts post from %s", email);
     userContacts.findOne({
@@ -53,7 +54,7 @@ module.exports = function(app) {
     });
   });
 
-  app.get('/contacts/:email', function(request, response) {
+  app.get('/contacts/:email', authCtrl.ensureAuthenticated, function(request, response) {
     var contacts = [],
       email = request.body.email;
     console.log("/contacts get from %j", request.params);

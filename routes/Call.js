@@ -1,11 +1,12 @@
 var ioCtrl = require('./../controllers/SocketIoController'),
+  authCtrl = require('./../controllers/AuthController'),
   calls = require('./../models/Calls');
 
 
 // expose the routes to our app with module.exports
 module.exports = function(app) {
 
-  app.post('/call/:callId', function(request, response) {
+  app.post('/call/:callId', authCtrl.ensureAuthenticated, function(request, response) {
     var data = request.body;
     console.log("/call post from %j", data);
 
@@ -22,7 +23,7 @@ module.exports = function(app) {
 
   });
 
-  app.put('/call/:callId', function(request, response) {
+  app.put('/call/:callId', authCtrl.ensureAuthenticated, function(request, response) {
     var data = request.body;
     console.log("/call post from %j", data);
 
@@ -33,7 +34,7 @@ module.exports = function(app) {
     }
   });
 
-  app.delete('/call/:callId', function(request, response) {
+  app.delete('/call/:callId', authCtrl.ensureAuthenticated, function(request, response) {
     var data = request.body;
     console.log("/call delete from %j", data);
 

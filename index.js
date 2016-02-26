@@ -40,9 +40,13 @@ app.use(passport.session()); // persistent login sessions
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
-app.get('/', function(request, response) {
-  response.render('pages/index')
-});
+require('./Auth');
+
+// load main app routes
+require('./routes/Main')(app);
+
+// load github auth routes
+require('./routes/AuthGithub')(app);
 
 // load user routes
 require('./routes/Users')(app);
@@ -59,8 +63,6 @@ require('./routes/Call')(app);
 
 // load connection routes
 require('./routes/Connection')(app);
-
-
 
 http.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
