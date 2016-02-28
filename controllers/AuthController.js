@@ -5,6 +5,6 @@ exports.ensureAuthenticated = function(req, res, next) {
   }
 
   // denied. redirect to login
-  console.log("auth failure...");
+  console.log("auth failure... %s", req.url);
   res.redirect('/')
 };

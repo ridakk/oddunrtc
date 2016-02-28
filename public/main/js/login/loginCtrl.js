@@ -9,8 +9,5 @@ angular.module('login')
       userService.email = $scope.email;
       userService.password = $scope.password;
 
-      connectionService.openConnection(userService.email).then(function() {
-        $state.go('home');
-      });
     };
   }]);

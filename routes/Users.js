@@ -3,7 +3,8 @@ var user = require('./../models/User'),
 
 module.exports = function(app) {
 
-  app.post('/users', authCtrl.ensureAuthenticated, function(request, response) {    var email = request.body.email;
+  app.post('/users', authCtrl.ensureAuthenticated, function(request, response) {
+    var email = request.body.email;
     console.log("/users post from %s", email);
     user.findOne({
       email: email

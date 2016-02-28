@@ -4,19 +4,16 @@ angular.module('connection')
       var self = this,
         socket;
 
-      self.openConnection = function(email) {
-        return httpService.post({
-          url: window.location.origin + "/connections",
-          data: {
-            email: email
-          }
+      self.getConnection = function(email) {
+        return httpService.get({
+          url: window.location.origin + "/connection"
         }).then(function(data) {
-          userService.connected = true;
-          socket = io(data.url, {
-            query: 'serverparams=' + JSON.stringify({
-              user: email,
-              uuid: data.uuid
-            })
+          userService.connected = true
+          userService.displayName = data.displayName || data.username;
+          userService.photo = data.photo;
+
+          socket = io({
+            query: 'token=' + data.token
           });
           socket.on('message', function(data) {
             $log.info("message received", data);

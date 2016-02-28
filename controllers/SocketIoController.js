@@ -1,9 +1,8 @@
 var sockets = require('./../models/Sockets'),
-  io, ionsp;
+  io;
 
 module.exports = function(socket_io, socket_ionsp) {
   io = socket_io;
-  ionsp = socket_ionsp;
 };
 
 module.exports.send = function(to, data) {
@@ -13,10 +12,10 @@ module.exports.send = function(to, data) {
     owner: to
   });
 
-  if(!socketUrl){
+  if (!socketUrl) {
     return false;
   }
 
-  ionsp.to(socketUrl).emit('message', data);
+  io.to(socketUrl).emit('message', data);
   return true;
 }

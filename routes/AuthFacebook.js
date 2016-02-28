@@ -2,11 +2,11 @@ var passport = require('passport');
 
 module.exports = function(app) {
 
-  // we will call this to start the GitHub Login process
-  app.get('/auth/github', passport.authenticate('github'));
+  // we will call this to start the Facebook Login process
+  app.get('/auth/facebook', passport.authenticate('facebook'));
 
   // GitHub will call this URL
-  app.get('/auth/github/callback', passport.authenticate('github', {
+  app.get('/auth/facebook/callback', passport.authenticate('facebook', {
       failureRedirect: '/'
     }),
     function(req, res) {

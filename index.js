@@ -8,11 +8,9 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var ionsp = io.of('/sockets');
 var mongoose = require('mongoose');
 var User = require('./models/User');
 var UserContacts = require('./models/UserContacts');
-var uuid = require('node-uuid');
 
 var connections = {};
 
@@ -40,13 +38,17 @@ app.use(passport.session()); // persistent login sessions
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
-require('./Auth');
+require('./AuthGithubStrategy');
 
 // load main app routes
 require('./routes/Main')(app);
 
-// load github auth routes
+// load connection routes
+require('./routes/Connection')(app);
+
+// load auth routes
 require('./routes/AuthGithub')(app);
+require('./routes/AuthFacebook')(app);
 
 // load user routes
 require('./routes/Users')(app);
@@ -55,14 +57,11 @@ require('./routes/Users')(app);
 require('./routes/Contacts')(app);
 
 // Load socket io routes
-require('./controllers/SocketIoController')(io, ionsp);
-require('./routes/SocketIo')(io, ionsp);
+require('./controllers/SocketIoController')(io);
+require('./routes/SocketIo')(io);
 
 // load call routes
 require('./routes/Call')(app);
-
-// load connection routes
-require('./routes/Connection')(app);
 
 http.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));

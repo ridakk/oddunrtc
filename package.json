@@ -29,7 +29,9 @@
     "passport-twitter": "^1.0.4",
     "q": "^1.4.1",
     "serve-favicon": "^2.3.0",
-    "socket.io": "^1.4.5"
+    "socket.io": "^1.4.5",
+    "socketio-jwt": "^4.3.4",
+    "jsonwebtoken": "^5.7.0"
   },
   "engines": {
     "node": "0.12.7"

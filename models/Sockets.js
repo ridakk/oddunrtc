@@ -1,4 +1,5 @@
-var sockets = {};
+var Q = require("q"),
+  sockets = {};
 
 exports.add = function(params) {
   var socketUrl = params.id.replace("/#", "#");
@@ -27,7 +28,7 @@ exports.remove = function(params) {
 };
 
 exports.getSocketUrl = function(params) {
-  var toSocketUrl;
+  var toSocketUrl, deferred = Q.defer();
   console.log("getSocketUrl %j", params);
 
   if (!sockets[params.owner] || !sockets[params.owner][0]) {
@@ -36,6 +37,8 @@ exports.getSocketUrl = function(params) {
 
   toSocketUrl = "/sockets" + sockets[params.owner][0];
 
+  deferred.resolve(toSocketUrl);
+
   console.log("toSocketUrl %s", toSocketUrl);
-  return toSocketUrl;
+  return deferred.promise;
 };
