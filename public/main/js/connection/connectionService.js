@@ -4,7 +4,7 @@ angular.module('connection')
       var self = this,
         socket;
 
-      self.getConnection = function(email) {
+      self.getConnection = function() {
         return httpService.get({
           url: window.location.origin + "/connection"
         }).then(function(data) {

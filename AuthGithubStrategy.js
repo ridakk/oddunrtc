@@ -34,6 +34,7 @@ passport.use(new GithubStrategy({
 
           newUser.uuid = uuid.v1();
           newUser.id = profile.id;
+          newUser.link = "c2c_" + uuid.v1();
           newUser.type = "github";
           newUser.token = accessToken;
           newUser.username = profile.username;

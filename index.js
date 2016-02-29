@@ -11,7 +11,7 @@ var io = require('socket.io')(http);
 var mongoose = require('mongoose');
 var User = require('./models/User');
 var UserContacts = require('./models/UserContacts');
-var flash    = require('connect-flash');
+var flash = require('connect-flash');
 
 var connections = {};
 
@@ -46,8 +46,8 @@ require('./AuthFacebookStrategy');
 require('./AuthLocalLoginStrategy');
 require('./AuthLocalSignupStrategy');
 
-// load main app routes
-require('./routes/Main')(app);
+// load app routes
+require('./routes/User')(app);
 
 // load connection routes
 require('./routes/Connection')(app);
@@ -56,9 +56,6 @@ require('./routes/Connection')(app);
 require('./routes/AuthGithub')(app);
 require('./routes/AuthFacebook')(app);
 require('./routes/AuthLocal')(app);
-
-// load user routes
-require('./routes/Users')(app);
 
 // load contact routes
 require('./routes/Contacts')(app);

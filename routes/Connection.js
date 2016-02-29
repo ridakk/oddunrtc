@@ -13,6 +13,7 @@ module.exports = function(app) {
       token: token,
       uuid: request.user.uuid,
       type: request.user.type,
+      link: request.user.link,
       displayName: request.user.displayName,
       username: request.user.username,
       email: request.user.email,

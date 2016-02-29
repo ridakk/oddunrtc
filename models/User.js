@@ -13,7 +13,8 @@ var userSchema = new Schema({
   photo: String,
   email: String,
   password: String,
-  name: String
+  name: String,
+  link: String
 });
 
 userSchema.methods.generateHash = function(password) {
