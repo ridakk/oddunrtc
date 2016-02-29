@@ -13,7 +13,7 @@
       <h1><span class="fa fa-sign-in"></span> Login</h1>
 
       <!-- show any messages that come back with authentication -->
-      <% if (message.length > 0) { %>
+      <% if (message && message.length > 0) { %>
         <div class="alert alert-danger">
           <%= message %>
         </div>
@@ -36,7 +36,8 @@
           <hr>
 
           <p>Need an account? <a href="/signup">Signup</a></p>
-          <p>Or</p>
+
+          <hr>
 
           <% include ../partials/social.ejs %>
 

@@ -1,15 +1,10 @@
-angular.module('main', ['ui.router', 'home', 'call', 'user', 'util.location'])
+angular.module('main', ['ui.router', 'call', 'user', 'connection', 'contacts', 'util.pubsub'])
   .config(['$stateProvider', '$urlRouterProvider',
     function($stateProvider, $urlRouterProvider) {
 
       $urlRouterProvider.otherwise('/');
 
       $stateProvider
-        .state('home', {
-          url: '/',
-          templateUrl: '/main/js/home/home.html',
-          controller: 'HomeCtrl'
-        })
         .state('call', {
           url: '/call',
           params: {
@@ -20,11 +15,28 @@ angular.module('main', ['ui.router', 'home', 'call', 'user', 'util.location'])
         });
     }
   ])
-  .controller('mainCtrl', ["$scope", "$log", function($scope, $log, userService) {
+  .controller('mainCtrl', ["$scope", "$log", "userService", "connectionService", "contactsService", "pubsub",
+  function($scope, $log, userService, connectionService, contactsService, pubsub) {
     $log.info("mainCtrl initialized...");
 
-    $scope.getPhoto = function(){
-      return userService.photo;
+    $scope.user = userService;
+    $scope.contacts = [];
+
+    connectionService.getConnection();
+
+    contactsService.get(userService.email).then(function(res) {
+      $scope.contacts = res;
+    });
+
+    $scope.startCallTo = function(contact) {
+      pubsub.publish({
+        publisher: pubsubSubscriber.home_ctrl,
+        subscriber: pubsubSubscriber.call_fsm,
+        event: pubsubEvent.start_call_gui,
+        msg: {
+          from: contact
+        }
+      });
     };
   }])
   .run(["$rootScope", "$state", "userService", "locationService", function($rootScope, $state, userService, locationService) {

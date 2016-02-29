@@ -35,6 +35,7 @@ passport.use(new FacebookStrategy({
 
           newUser.uuid = uuid.v1();
           newUser.id = profile.id;
+          newUser.type = "facebook";
           newUser.token = accessToken;
           newUser.username = profile.username;
           newUser.displayName = profile.displayName;

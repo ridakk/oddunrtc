@@ -4,7 +4,9 @@ module.exports = function(app) {
   // HOME PAGE (with login links) ========
   // =====================================
   app.get('/', function(req, res) {
-    res.render('pages/login.ejs'); // load the index.ejs file
+    res.render('pages/login.ejs', {
+      message: req.flash('loginMessage')
+    });
   });
 
   app.get('/home', function(req, res) {

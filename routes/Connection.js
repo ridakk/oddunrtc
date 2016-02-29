@@ -12,8 +12,10 @@ module.exports = function(app) {
     response.json({
       token: token,
       uuid: request.user.uuid,
+      type: request.user.type,
       displayName: request.user.displayName,
       username: request.user.username,
+      email: request.user.email,
       photo: request.user.photo
     });
   });

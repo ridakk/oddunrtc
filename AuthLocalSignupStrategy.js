@@ -29,6 +29,7 @@ passport.use('local-signup', new LocalStrategy({
 
         // set the user's local credentials
         newUser.uuid = uuid.v1();
+        newUser.type = "user";
         newUser.email = email;
         newUser.password = newUser.generateHash(password);
 
