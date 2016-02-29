@@ -11,7 +11,7 @@ module.exports = function(app) {
     }),
     function(req, res) {
       console.log("redirect user to home: %j", req.user);
-      res.redirect('/#/home');
+      res.redirect('/home');
     }
   );
 

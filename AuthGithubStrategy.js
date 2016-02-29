@@ -1,6 +1,6 @@
 var passport = require('passport'),
-    User = require('./models/User'),
-    uuid = require('node-uuid'),
+  User = require('./models/User'),
+  uuid = require('node-uuid'),
   GithubStrategy = require('passport-github').Strategy;
 
 passport.use(new GithubStrategy({
@@ -15,7 +15,7 @@ passport.use(new GithubStrategy({
     // check if the user is already logged in
     if (!req.user) {
 
-      // find the user in the database based on their facebook id
+      // find the user in the database based on their github id
       User.findOne({
         'id': profile.id
       }, function(err, user) {
@@ -52,21 +52,9 @@ passport.use(new GithubStrategy({
       });
 
     } else {
-      // user already exists and is logged in, we have to link accounts
-      var user = req.user; // pull the user out of the session
+      // user already exists and is logged in
 
-      // update the current users github credentials
-      user.token = accessToken;
-      user.username = profile.username;
-      user.displayName = profile.displayName;
-      user.photo = profile.photos[0].value;
-
-      // save the user
-      user.save(function(err) {
-        if (err)
-          throw err;
-        return done(null, user);
-      });
+      done(null, req.user);
     }
 
   }

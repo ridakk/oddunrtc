@@ -11,6 +11,7 @@ var io = require('socket.io')(http);
 var mongoose = require('mongoose');
 var User = require('./models/User');
 var UserContacts = require('./models/UserContacts');
+var flash    = require('connect-flash');
 
 var connections = {};
 
@@ -33,12 +34,17 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(session({ secret: 'odun-rtc-rdk-session' })); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
+app.use(flash());
 
 // views is directory for all template files
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
+// load auth strategies
 require('./AuthGithubStrategy');
+require('./AuthFacebookStrategy');
+require('./AuthLocalLoginStrategy');
+require('./AuthLocalSignupStrategy');
 
 // load main app routes
 require('./routes/Main')(app);
@@ -49,6 +55,7 @@ require('./routes/Connection')(app);
 // load auth routes
 require('./routes/AuthGithub')(app);
 require('./routes/AuthFacebook')(app);
+require('./routes/AuthLocal')(app);
 
 // load user routes
 require('./routes/Users')(app);

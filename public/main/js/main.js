@@ -1,22 +1,12 @@
-angular.module('main', ['ui.router', 'signin', 'login', 'home', 'call', 'user', 'util.location'])
+angular.module('main', ['ui.router', 'home', 'call', 'user', 'util.location'])
   .config(['$stateProvider', '$urlRouterProvider',
     function($stateProvider, $urlRouterProvider) {
 
       $urlRouterProvider.otherwise('/');
 
       $stateProvider
-        .state('login', {
-          url: '/',
-          templateUrl: '/main/js/login/login.html',
-          controller: 'LoginCtrl'
-        })
-        .state('signin', {
-          url: '/signin',
-          templateUrl: '/main/js/signin/signin.html',
-          controller: 'SigninCtrl'
-        })
         .state('home', {
-          url: '/home',
+          url: '/',
           templateUrl: '/main/js/home/home.html',
           controller: 'HomeCtrl'
         })
