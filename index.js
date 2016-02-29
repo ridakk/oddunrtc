@@ -48,6 +48,7 @@ require('./AuthLocalSignupStrategy');
 
 // load app routes
 require('./routes/User')(app);
+require('./routes/Anonymous')(app);
 
 // load connection routes
 require('./routes/Connection')(app);

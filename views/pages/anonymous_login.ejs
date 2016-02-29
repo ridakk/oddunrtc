@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+
+<head>
+  <% include ../partials/login_signup_head.ejs %>
+</head>
+
+<body>
+  <div class="container">
+
+    <div class="col-sm-6 col-sm-offset-3">
+
+      <h1><span class="fa fa-user-secret"></span></h1>
+
+          <!-- ANONYMLOUS LOGIN FORM -->
+          <form action=
+          <% if (url.length > 0) { %>
+              <%= url %>
+            <% } %>
+            method="post">
+            <div class="form-group">
+              <label>User Name</label>
+              <input type="text" class="form-control" name="username">
+            </div>
+
+            <button type="submit" class="btn btn-warning btn-lg">Call
+              <% if (to.length > 0) { %>
+                  <%= to %>
+                <% } %>
+            </button>
+          </form>
+
+
+    </div>
+
+  </div>
+</body>
+
+</html>

@@ -6,7 +6,7 @@ angular.module('connection')
 
       self.getConnection = function() {
         return httpService.get({
-          url: window.location.origin + "/connection"
+          url: window.location.href.replace("/home", "") + "/connection"
         }).then(function(data) {
           userService.connected = true
           userService.uuid = data.uuid;
