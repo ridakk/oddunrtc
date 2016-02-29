@@ -1,1 +1,1 @@
-angular.module('contacts', ["util.http"]);
+angular.module('contacts', ["util.http", "user"]);

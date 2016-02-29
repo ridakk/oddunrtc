@@ -9,6 +9,7 @@ angular.module('connection')
           url: window.location.origin + "/connection"
         }).then(function(data) {
           userService.connected = true
+          userService.uuid = data.uuid;
           userService.displayName = data.displayName || data.username || data.email;
           userService.type = data.type;
           userService.photo = data.photo;

@@ -22,10 +22,10 @@ angular.module('main', ['ui.router', 'call', 'user', 'connection', 'contacts', '
     $scope.user = userService;
     $scope.contacts = [];
 
-    connectionService.getConnection();
-
-    contactsService.get(userService.email).then(function(res) {
-      $scope.contacts = res;
+    connectionService.getConnection().then(function(){
+      contactsService.get().then(function(res) {
+        $scope.contacts = res;
+      });
     });
 
     $scope.startCallTo = function(contact) {

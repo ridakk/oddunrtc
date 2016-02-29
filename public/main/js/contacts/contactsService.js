@@ -1,5 +1,6 @@
 angular.module('contacts')
-  .service('contactsService', ["$q", "httpService", function($q, httpService) {
+  .service('contactsService', ["$q", "httpService", "userService",
+  function($q, httpService, userService) {
     var self = this,
       contacts;
 
@@ -12,7 +13,7 @@ angular.module('contacts')
       }
 
       return httpService.get({
-        url: window.location.origin + "/contacts/" + email
+        url: window.location.origin + "/contacts/" + userService.uuid
       });
     };
   }]);

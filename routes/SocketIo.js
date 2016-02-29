@@ -11,6 +11,10 @@ module.exports = function(io) {
 
   io.on('connection', function(socket) {
     console.log('socket.decoded_token %j', socket.decoded_token); // this works
+    sockets.add({
+      user: socket.decoded_token.uuid,
+      id: socket.id
+    });
     socket.on('disconnect', function() {
       console.log('user disconnected with id %s', socket.id);
       sockets.remove({

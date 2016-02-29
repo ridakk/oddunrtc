@@ -12,7 +12,7 @@ module.exports = function(app) {
 
     data.callId = calls.create({
       to: data.to,
-      from: data.from
+      from: request.user.uuid
     });
 
     if (ioCtrl.send(data.to, data)) {

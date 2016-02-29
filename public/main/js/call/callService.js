@@ -33,7 +33,6 @@ angular.module('call')
           data: {
             type: "call",
             action: "end",
-            from: userService.email,
             to: internalCall.from,
             data: {
               msg: {
@@ -82,7 +81,6 @@ angular.module('call')
           data: {
             type: data.type,
             action: data.action,
-            from: userService.email,
             to: internalCall.from,
             data: {
               msg: data.msg
@@ -146,7 +144,6 @@ angular.module('call')
           data: {
             type: "call",
             action: "candidate",
-            from: userService.email,
             to: internalCall.from,
             data: {
               msg: data.msg
