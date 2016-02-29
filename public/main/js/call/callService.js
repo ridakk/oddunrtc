@@ -28,12 +28,12 @@ angular.module('call')
           internalCall = calls[callId];
 
         httpService.delete({
-          url: window.location.origin + "/call/" + callId,
+          url: window.location.href.replace("/home#/call", "") + "/call/" + callId,
           //timeout: 30000,
           data: {
             type: "call",
             action: "end",
-            to: internalCall.from,
+            to: internalCall.to,
             data: {
               msg: {
                 callId: callId
@@ -76,12 +76,12 @@ angular.module('call')
         var internalCall = calls[data.msg.callId];
 
         return httpService[data.method]({
-          url: window.location.origin + "/call/" + data.msg.callId,
+          url: window.location.href.replace("/home#/call", "") + "/call/" + data.msg.callId,
           //timeout: 30000,
           data: {
             type: data.type,
             action: data.action,
-            to: internalCall.from,
+            to: internalCall.to,
             data: {
               msg: data.msg
             }
@@ -139,12 +139,12 @@ angular.module('call')
         var internalCall = calls[data.msg.callId];
 
         httpService.put({
-          url: window.location.origin + "/call/" + data.msg.callId,
+          url: window.location.href.replace("/home#/call", "") + "/call/" + data.msg.callId,
           //timeout: 30000,
           data: {
             type: "call",
             action: "candidate",
-            to: internalCall.from,
+            to: internalCall.to,
             data: {
               msg: data.msg
             }
@@ -155,7 +155,7 @@ angular.module('call')
       self.handleCreateCall = function(data) {
         calls[data.msg.callId] = {
           type: data.msg.type,
-          from: data.msg.from
+          to: data.msg.to
         };
       };
 

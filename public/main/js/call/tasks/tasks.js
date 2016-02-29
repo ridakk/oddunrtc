@@ -12,11 +12,6 @@ angular.module('tasks', ['util.pubsub'])
           subscriber: pubsubSubscriber.call_service,
           event: pubsubEvent.create_outgoing_call
         },
-        publish_create_outgoing_call: {
-          pubsubMethod: pubsubMethods.publish,
-          subscriber: pubsubSubscriber.call_service,
-          event: pubsubEvent.create_outgoing_call
-        },
         publish_create_incoming_call: {
           pubsubMethod: pubsubMethods.publish,
           subscriber: pubsubSubscriber.call_service,

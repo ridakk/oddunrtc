@@ -1,4 +1,4 @@
-angular.module('anonymous', ['ui.router', 'call', 'user', 'connection', 'util.pubsub'])
+angular.module('anonymous', ['ui.router', 'call', 'user', 'connection', 'util.pubsub', 'webrtc.mediaService', 'webrtc.peerService'])
   .config(['$stateProvider', '$urlRouterProvider',
     function($stateProvider, $urlRouterProvider) {
 
@@ -15,27 +15,25 @@ angular.module('anonymous', ['ui.router', 'call', 'user', 'connection', 'util.pu
         });
     }
   ])
-  .controller('anonymousCtrl', ["$scope", "$log", "userService", "connectionService", "pubsub",
-  function($scope, $log, userService, connectionService, pubsub) {
-    $log.info("anonymousCtrl initialized...");
+  .controller('anonymousCtrl', ["$scope", "$log", "userService", "connectionService", "pubsub", "pubsubSubscriber", "pubsubEvent",
+    function($scope, $log, userService, connectionService, pubsub, pubsubSubscriber, pubsubEvent) {
+      $log.info("anonymousCtrl initialized...");
 
-    $scope.user = userService;
+      $scope.user = userService;
 
-    connectionService.getConnection().then(function(){
+      connectionService.getConnection().then(function() {
+        pubsub.publish({
+          publisher: pubsubSubscriber.home_ctrl,
+          subscriber: pubsubSubscriber.call_fsm,
+          event: pubsubEvent.start_call_gui,
+          msg: {
+            to: userService.callingTo
+          }
+        });
 
-    });
-
-    $scope.startCallTo = function(contact) {
-      pubsub.publish({
-        publisher: pubsubSubscriber.home_ctrl,
-        subscriber: pubsubSubscriber.call_fsm,
-        event: pubsubEvent.start_call_gui,
-        msg: {
-          from: contact
-        }
       });
-    };
-  }])
+    }
+  ])
   .run(["$rootScope", "$state", "userService", "locationService", function($rootScope, $state, userService, locationService) {
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
       /*if ((toState.url === "/home" || toState.url === "/call") && !userService.connected) {
@@ -45,7 +43,7 @@ angular.module('anonymous', ['ui.router', 'call', 'user', 'connection', 'util.pu
       }*/
 
       if (toState.url === '/call' &&
-          !toParams.callId) {
+        !toParams.callId) {
         event.preventDefault();
       }
     });

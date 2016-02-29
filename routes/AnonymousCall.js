@@ -6,44 +6,70 @@ var ioCtrl = require('./../controllers/SocketIoController'),
 // expose the routes to our app with module.exports
 module.exports = function(app) {
 
-  app.post('/a/:link/:uuid/call/:callId', function(request, response) {
+  app.post('/a/:link/:uuid/call/:callId', function(req, res) {
     var link = req.params.link,
       uuid = req.params.uuid,
       callId = req.params.callId,
-      data = request.body;
+      data = req.body;
 
     console.log("anonymous /call %s from %s with id %s", link, uuid, callId, data);
 
-    data.callId = calls.create({
-      to: data.to,
-      from: uuid
-    });
+    User.findOne({
+      link: link
+    }, function(err, user) {
+      if (err) {
+        console.log("db error, cannot query link: %s", link);
+        res.status(500).send();
+        return;
+      }
 
-    if (ioCtrl.send(data.to, data)) {
-      response.status(200).send(JSON.stringify(data));
-    } else {
-      response.status(404).send();
-    }
+      if (!user) {
+        console.log("user link not found: %s", link);
+        res.status(404).send();
+        return;
+      }
+
+      anonymousUser = AnonymousUser.get({
+        uuid: uuid
+      });
+
+      if (!anonymousUser) {
+        console.log("anonymous user link not found: %s", link);
+        res.status(404).send();
+        return;
+      }
+
+      data.callId = calls.create({
+        to: data.to,
+        from: uuid
+      });
+
+      if (ioCtrl.send(data.to, data)) {
+        res.status(200).send(JSON.stringify(data));
+      } else {
+        res.status(404).send();
+      }
+    });
 
   });
 
-  app.put('/a/:link/:uuid/call/:callId', function(request, response) {
+  app.put('/a/:link/:uuid/call/:callId', function(req, res) {
     var link = req.params.link,
       uuid = req.params.uuid,
-      data = request.body;
+      data = req.body;
     console.log("/call post from %j", data);
 
     if (ioCtrl.send(data.to, data)) {
-      response.status(200).send(JSON.stringify(data));
+      res.status(200).send(JSON.stringify(data));
     } else {
-      response.status(404).send();
+      res.status(404).send();
     }
   });
 
-  app.delete('/a/:link/:uuid/call/:callId', function(request, response) {
+  app.delete('/a/:link/:uuid/call/:callId', function(req, res) {
     var link = req.params.link,
       uuid = req.params.uuid,
-      data = request.body;
+      data = req.body;
     console.log("/call delete from %j", data);
 
     calls.delete({
@@ -51,9 +77,9 @@ module.exports = function(app) {
     });
 
     if (ioCtrl.send(data.to, data)) {
-      response.status(200).send(JSON.stringify(data));
+      res.status(200).send(JSON.stringify(data));
     } else {
-      response.status(404).send();
+      res.status(404).send();
     }
 
   });
