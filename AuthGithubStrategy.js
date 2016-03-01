@@ -13,10 +13,11 @@ passport.use(new GithubStrategy({
     passReqToCallback: true
   },
   function(req, accessToken, refreshToken, profile, done) {
-    logger.debug("github profile: %j", profile);
+    logger.info("github profile: %j", profile);
 
     // check if the user is already logged in
     if (!req.user) {
+      logger.info("user in the request : %j", req.user);
 
       // find the user in the database based on their github id
       User.findOne({
@@ -33,6 +34,7 @@ passport.use(new GithubStrategy({
           return done(null, user); // user found, return that user
         } else {
           // if there is no user found with that github id
+
           var newUser = new User();
 
           newUser.uuid = uuid.v1();
@@ -44,6 +46,7 @@ passport.use(new GithubStrategy({
           newUser.displayName = profile.displayName;
           newUser.photo = profile.photos[0].value;
 
+          logger.info("new user to be persisted in db : %j", newUser);
           // save our user to the database
           newUser.save(function(err) {
             if (err)
