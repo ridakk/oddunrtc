@@ -42,3 +42,21 @@ exports.getSocketUrl = function(params) {
   console.log("toSocketUrl %s", toSocketUrl);
   return deferred.promise;
 };
+
+exports.getSocketUrlList = function(params) {
+  var toSocketUrlList = [], deferred = Q.defer();
+  console.log("getSocketUrlList %j", params);
+
+  if (!sockets[params.owner]) {
+    return;
+  }
+
+  for (var i = 0; i < sockets[params.owner].length; i++) {
+    toSocketUrlList[i] = "/sockets" + sockets[params.owner][i];
+  }
+
+  deferred.resolve(toSocketUrlList);
+
+  console.log("toSocketUrlList %s", toSocketUrlList.toString());
+  return deferred.promise;
+};

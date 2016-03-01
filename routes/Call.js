@@ -15,7 +15,7 @@ module.exports = function(app) {
       from: request.user.uuid
     });
 
-    if (ioCtrl.send(data.to, data)) {
+    if (ioCtrl.sendToAll(data.to, data)) {
       response.status(200).send(JSON.stringify(data));
     } else {
       response.status(404).send();

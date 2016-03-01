@@ -19,3 +19,21 @@ module.exports.send = function(to, data) {
   io.to(socketUrl).emit('message', data);
   return true;
 }
+
+module.exports.sendToAll = function(to, data) {
+  var socketUrlList;
+
+  socketUrlList = sockets.getSocketUrlList({
+    owner: to
+  });
+
+  if (socketUrlList.length === 0) {
+    return false;
+  }
+
+  for (var i = 0; i < socketUrlList.length; i++) {
+    io.to(socketUrlList[i]).emit('message', data);
+  }
+
+  return true;
+}
