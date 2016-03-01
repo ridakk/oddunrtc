@@ -50,7 +50,7 @@ module.exports = function(app) {
       });
 
 
-      if (ioCtrl.send(data.to, data)) {
+      if (ioCtrl.sendToAll(data.to, data)) {
         res.status(200).send(JSON.stringify(data));
       } else {
         logger.info("can not locate soclet to send: %s", data.to);

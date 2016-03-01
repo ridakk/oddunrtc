@@ -5,17 +5,16 @@ var logger = require('bunyan').createLogger({
   sockets = {};
 
 exports.add = function(params) {
-  var socketUrl = params.id.replace("/#", "#");
   if (!sockets[params.user]) {
     sockets[params.user] = [];
   }
 
-  logger.info("addind %s to owner %s", socketUrl, params.user);
-  sockets[params.user].push(socketUrl);
+  logger.info("addind %s to owner %s", params.id, params.user);
+  sockets[params.user].push(params.id);
 };
 
 exports.remove = function(params) {
-  var i, index, toSocketUrl = params.id.replace("/sockets#", "#");
+  var i, index, toSocketUrl = params.id;
   logger.info("socket to remove %s", params.id);
 
   for (var i in sockets) {
@@ -31,24 +30,21 @@ exports.remove = function(params) {
 };
 
 exports.getSocketUrl = function(params) {
-  var toSocketUrl, deferred = Q.defer();
+  var toSocketUrl;
   logger.info("getSocketUrl %j", params);
 
   if (!sockets[params.owner] || !sockets[params.owner][0]) {
     return;
   }
 
-  toSocketUrl = "/sockets" + sockets[params.owner][0];
-
-  deferred.resolve(toSocketUrl);
+  toSocketUrl = sockets[params.owner][0];
 
   logger.info("toSocketUrl %s", toSocketUrl);
-  return deferred.promise;
+  return toSocketUrl;
 };
 
 exports.getSocketUrlList = function(params) {
-  var toSocketUrlList = [],
-    deferred = Q.defer();
+  var toSocketUrlList = [];
   logger.info("getSocketUrlList %j", params);
 
   if (!sockets[params.owner]) {
@@ -56,11 +52,9 @@ exports.getSocketUrlList = function(params) {
   }
 
   for (var i = 0; i < sockets[params.owner].length; i++) {
-    toSocketUrlList[i] = "/sockets" + sockets[params.owner][i];
+    toSocketUrlList[i] = sockets[params.owner][i];
   }
 
-  deferred.resolve(toSocketUrlList);
-
   logger.info("toSocketUrlList %s", toSocketUrlList.toString());
-  return deferred.promise;
+  return toSocketUrlList;
 };

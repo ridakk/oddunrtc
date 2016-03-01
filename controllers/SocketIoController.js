@@ -11,7 +11,7 @@ module.exports = function(socket_io) {
 module.exports.send = function(to, data) {
   var socketUrl;
 
-  logger.info("send to %s - data %j", to, data);
+  logger.info("send to %s", to);
   socketUrl = sockets.getSocketUrl({
     owner: to
   });
