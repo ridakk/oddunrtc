@@ -1,4 +1,4 @@
-angular.module('main', ['ui.router', 'call', 'user', 'connection', 'contacts', 'util.pubsub'])
+angular.module('main', ['ui.router', 'call', 'user', 'connection', 'contacts', 'util.pubsub', 'webrtc.mediaService', 'webrtc.peerService'])
   .config(['$stateProvider', '$urlRouterProvider',
     function($stateProvider, $urlRouterProvider) {
 
