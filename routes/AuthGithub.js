@@ -1,4 +1,7 @@
-var passport = require('passport');
+var logger = require('bunyan').createLogger({
+    name: 'routes.AuthGithub'
+  }),
+  passport = require('passport');
 
 module.exports = function(app) {
 
@@ -10,7 +13,7 @@ module.exports = function(app) {
       failureRedirect: '/'
     }),
     function(req, res) {
-      console.log("redirect user to home: %j", req.user);
+      logger.debug("redirect user to home: %j", req.user);
       res.redirect('/home');
     }
   );

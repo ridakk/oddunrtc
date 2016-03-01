@@ -1,4 +1,7 @@
-var User = require('./../models/User'),
+var logger = require('bunyan').createLogger({
+    name: 'routes.Anonymous'
+  }),
+  User = require('./../models/User'),
   AnonymousUser = require('./../models/AnonymousUser'),
   uuid = require('node-uuid');
 
@@ -15,14 +18,14 @@ module.exports = function(app) {
       link: link
     }, function(err, user) {
       if (err) {
-        console.log("db error, cannot query link: %s", link);
+        logger.fatal("db error, cannot query link: %s", link);
         response.status(500).send();
         return;
       }
 
       if (!user) {
         console.log("user link not found: %s", link);
-        response.status(404).send();
+        logger.error(404).send();
         return;
       }
 
@@ -46,13 +49,13 @@ module.exports = function(app) {
       link: link
     }, function(err, user) {
       if (err) {
-        console.log("db error, cannot query link: %s", link);
+        logger.fatal("db error, cannot query link: %s", link);
         response.status(500).send();
         return;
       }
 
       if (!user) {
-        console.log("user link not found: %s", link);
+        logger.error("user link not found: %s", link);
         response.status(404).send();
         return;
       }
@@ -62,7 +65,7 @@ module.exports = function(app) {
       });
 
       if (!anonymousUser) {
-        console.log("anonymous user link not found: %s", link);
+        logger.error("anonymous user link not found: %s", link);
         res.status(404).send();
         return;
       }
@@ -78,7 +81,7 @@ module.exports = function(app) {
   });
 
   app.get('/logout', function(req, res) {
-    console.log('logging out');
+    logger.debug('logging out');
     req.logout();
     res.redirect('/');
   });

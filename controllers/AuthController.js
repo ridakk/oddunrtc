@@ -1,3 +1,7 @@
+var logger = require('bunyan').createLogger({
+    name: 'controllers.AuthController'
+  });
+
 exports.ensureAuthenticated = function(req, res, next) {
   if (req.isAuthenticated()) {
     // req.user is available for use here
@@ -5,6 +9,6 @@ exports.ensureAuthenticated = function(req, res, next) {
   }
 
   // denied. redirect to login
-  console.log("auth failure... %s", req.url);
+  logger.error("auth failure... %s", req.url);
   res.redirect('/')
 };
