@@ -19,6 +19,9 @@
         <a class="navbar-brand" href="#">OdunRtc</a>
       </div>
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-5">
+        <form class="navbar-form navbar-left" role="search">
+          <input type="text" class="form-control" placeholder="Search users">
+        </form>
         <p class="navbar-text navbar-right">Signed in
           <i class="fa fa-{{user.type}}"> {{user.displayName}}</i>
           <a href="/logout">
@@ -33,9 +36,10 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <a href="{{user.link}}">
-          <i class="fa fa-external-link"></i> {{user.link}}
-        </a>
+        <div class="text-center">
+          <i class="fa fa-external-link"> Share your link - {{user.link}}</i>
+        </div>
+
 
         <div ui-view></div>
       </div>
