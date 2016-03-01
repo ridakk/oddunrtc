@@ -16,4 +16,9 @@ angular.module('contacts')
         url: window.location.origin + "/contacts/" + userService.uuid
       });
     };
+    self.getUsers = function (name) {
+      var deferred = $q.defer();
+        return httpService.get({url: window.location.origin +"/users/" + name});
+
+    };
   }]);
