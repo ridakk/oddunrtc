@@ -11,7 +11,7 @@ module.exports = function(app) {
 
   app.post('/call/:callId', authCtrl.ensureAuthenticated, function(request, response) {
     var data = request.body;
-    logger.debug("/call post from %j", data);
+    logger.info("/call post from %j", data);
 
     data.callId = calls.create({
       to: data.to,
@@ -28,7 +28,7 @@ module.exports = function(app) {
 
   app.put('/call/:callId', authCtrl.ensureAuthenticated, function(request, response) {
     var data = request.body;
-    logger.debug("/call post from %j", data);
+    logger.info("/call post from %j", data);
 
     if (ioCtrl.send(data.to, data)) {
       response.status(200).send(JSON.stringify(data));
@@ -39,7 +39,7 @@ module.exports = function(app) {
 
   app.delete('/call/:callId', authCtrl.ensureAuthenticated, function(request, response) {
     var data = request.body;
-    logger.debug("/call delete from %j", data);
+    logger.info("/call delete from %j", data);
 
     calls.delete({
       callId: data.data.msg.callId

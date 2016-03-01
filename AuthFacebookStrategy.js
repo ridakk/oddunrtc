@@ -14,7 +14,7 @@ passport.use(new FacebookStrategy({
     passReqToCallback: true
   },
   function(req, accessToken, refreshToken, profile, done) {
-    logger.debug("facebook profile: %j", profile);
+    logger.info("facebook profile: %j", profile);
 
     // check if the user is already logged in
     if (!req.user) {

@@ -13,7 +13,7 @@ module.exports = function(app) {
       failureRedirect: '/'
     }),
     function(req, res) {
-      logger.debug("redirect user to home: %j", req.user);
+      logger.info("redirect user to home: %j", req.user);
       res.redirect('/home');
     }
   );

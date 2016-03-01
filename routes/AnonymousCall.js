@@ -17,19 +17,19 @@ module.exports = function(app) {
       callId = req.params.callId,
       data = req.body;
 
-    logger.debug("anonymous /call %s from %s with id %s", link, uuid, callId);
+    logger.info("anonymous /call %s from %s with id %s", link, uuid, callId);
 
     User.findOne({
       link: link
     }, function(err, user) {
       if (err) {
-        logger.fatal("db error, cannot query link: %s", link);
+        logger.info("db error, cannot query link: %s", link);
         res.status(500).send();
         return;
       }
 
       if (!user) {
-        logger.error("user link not found: %s", link);
+        logger.info("user link not found: %s", link);
         res.status(404).send();
         return;
       }
@@ -39,7 +39,7 @@ module.exports = function(app) {
       });
 
       if (!anonymousUser) {
-        logger.error("anonymous user link not found: %s", link);
+        logger.info("anonymous user link not found: %s", link);
         res.status(404).send();
         return;
       }
@@ -53,7 +53,7 @@ module.exports = function(app) {
       if (ioCtrl.send(data.to, data)) {
         res.status(200).send(JSON.stringify(data));
       } else {
-        logger.error("can not locate soclet to send: %s", data.to);
+        logger.info("can not locate soclet to send: %s", data.to);
         res.status(404).send();
       }
     });
@@ -64,12 +64,12 @@ module.exports = function(app) {
     var link = req.params.link,
       uuid = req.params.uuid,
       data = req.body;
-    logger.debug("/call post from %j", data);
+    logger.info("/call post from %j", data);
 
     if (ioCtrl.send(data.to, data)) {
       res.status(200).send(JSON.stringify(data));
     } else {
-      logger.error("can not locate soclet to send: %s", data.to);
+      logger.info("can not locate soclet to send: %s", data.to);
       res.status(404).send();
     }
   });
@@ -78,7 +78,7 @@ module.exports = function(app) {
     var link = req.params.link,
       uuid = req.params.uuid,
       data = req.body;
-    logger.debug("/call delete from %j", data);
+    logger.info("/call delete from %j", data);
 
     calls.delete({
       callId: data.data.msg.callId
@@ -87,7 +87,7 @@ module.exports = function(app) {
     if (ioCtrl.send(data.to, data)) {
       res.status(200).send(JSON.stringify(data));
     } else {
-      logger.error("can not locate soclet to send: %s", data.to);
+      logger.info("can not locate soclet to send: %s", data.to);
       res.status(404).send();
     }
 

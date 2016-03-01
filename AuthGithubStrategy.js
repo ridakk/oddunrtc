@@ -13,7 +13,7 @@ passport.use(new GithubStrategy({
     passReqToCallback: true
   },
   function(req, accessToken, refreshToken, profile, done) {
-    logger.debug("github profile: %j", profile);
+    logger.info("github profile: %j", profile);
 
     // check if the user is already logged in
     if (!req.user) {
