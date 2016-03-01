@@ -20,7 +20,6 @@ module.exports.send = function(to, data) {
     return false;
   }
 
-  logger.info("OOONNUUUUUURRRRR %s", socketUrl);
   io.to(socketUrl).emit('message', data);
   return true;
 }

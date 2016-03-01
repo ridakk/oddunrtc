@@ -5,17 +5,16 @@ var logger = require('bunyan').createLogger({
   sockets = {};
 
 exports.add = function(params) {
-  var socketUrl = params.id.replace("/#", "#");
   if (!sockets[params.user]) {
     sockets[params.user] = [];
   }
 
-  logger.info("addind %s to owner %s", socketUrl, params.user);
-  sockets[params.user].push(socketUrl);
+  logger.info("addind %s to owner %s", params.id, params.user);
+  sockets[params.user].push(params.id);
 };
 
 exports.remove = function(params) {
-  var i, index, toSocketUrl = params.id.replace("/sockets#", "#");
+  var i, index, toSocketUrl = params.id;
   logger.info("socket to remove %s", params.id);
 
   for (var i in sockets) {
@@ -38,7 +37,7 @@ exports.getSocketUrl = function(params) {
     return;
   }
 
-  toSocketUrl = "/sockets" + sockets[params.owner][0];
+  toSocketUrl = sockets[params.owner][0];
 
   logger.info("toSocketUrl %s", toSocketUrl);
   return toSocketUrl;
@@ -53,7 +52,7 @@ exports.getSocketUrlList = function(params) {
   }
 
   for (var i = 0; i < sockets[params.owner].length; i++) {
-    toSocketUrlList[i] = "/sockets" + sockets[params.owner][i];
+    toSocketUrlList[i] = sockets[params.owner][i];
   }
 
   logger.info("toSocketUrlList %s", toSocketUrlList.toString());
