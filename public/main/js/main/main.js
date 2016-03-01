@@ -38,6 +38,14 @@ angular.module('main', ['ui.router', 'call', 'user', 'connection', 'contacts', '
           }
         });
       };
+
+      $scope.searchInputChange = function() {
+        contactsService.getUsers($scope.searchInput).then(function(res) {
+          $scope.userList = res;
+        });
+      };
+
+
     }
   ])
   .run(["$rootScope", "$state", "userService", "locationService", function($rootScope, $state, userService, locationService) {

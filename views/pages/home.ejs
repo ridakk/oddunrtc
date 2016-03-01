@@ -20,8 +20,9 @@
       </div>
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-5">
         <form class="navbar-form navbar-left" role="search">
-          <input type="text" class="form-control" placeholder="Search users">
-        </form>
+          <input ng-change="searchInputChange()" ng-model="searchInput" type="text"
+          placeholder="username, email" class="search-input">
+          </form>
         <p class="navbar-text navbar-right">Signed in
           <i class="fa fa-{{user.type}}"> {{user.displayName}}</i>
           <a href="/logout">
@@ -39,7 +40,11 @@
         <div class="text-center">
           <i class="fa fa-external-link"> Share your link - {{user.link}}</i>
         </div>
-
+        <div  ng-repeat="user in userList">
+            <div val="username">{{user.username}}</div>
+            <div val="displayName">{{user.displayName}}</div>
+            <div val="email">{{user.email}}</div>
+        </div>
 
         <div ui-view></div>
       </div>
