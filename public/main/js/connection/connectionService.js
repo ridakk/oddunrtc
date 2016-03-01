@@ -83,6 +83,10 @@ angular.module('connection')
             }
           });
 
+          socket.on('session', function(data) {
+            userService.socketId = data.id;
+          });
+
           socket.on('disconnect', function() {
             socket.disconnect();
             socket = null;

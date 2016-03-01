@@ -1,69 +1,45 @@
 var logger = require('bunyan').createLogger({
     name: 'routes.Call'
   }),
-  ioCtrl = require('./../controllers/SocketIoController'),
   authCtrl = require('./../controllers/AuthController'),
-  calls = require('./../models/Calls');
+  CallCtrl = require('./../controllers/CallController');
 
 
 // expose the routes to our app with module.exports
 module.exports = function(app) {
 
   app.post('/call/:callId', authCtrl.ensureAuthenticated, function(req, res) {
-    var data = req.body,
-      callId = req.params.callId;
-    logger.info("/call post from %j", data);
-
-    calls.create({
-      callId: callId,
-      to: data.to,
-      from: req.user.uuid
+    CallCtrl.handlePost({
+      callId: req.params.callId,
+      reqData: req.body,
+      reqUser: req.user
+    }).then(function(data) {
+      res.status(data.httpCode).send();
+    }, function(err) {
+      res.status(err.httpCode).send(JSON.stringify(err));
     });
-    data.from = req.user.uuid;
-
-    if (ioCtrl.sendToAll(data.to, data)) {
-      res.status(200).send(JSON.stringify(data));
-    } else {
-      res.status(404).send();
-    }
-
   });
 
   app.put('/call/:callId', authCtrl.ensureAuthenticated, function(req, res) {
-    var data = req.body,
-      callId = req.params.callId;
-    logger.info("/call post from %j", data);
-
-    if (!calls.get({
-        callId: callId
-      })) {
-      logger.info("call id  not found: %s", callId);
-      res.status(404).send();
-      return;
-    }
-
-    if (ioCtrl.send(data.to, data)) {
-      res.status(200).send(JSON.stringify(data));
-    } else {
-      res.status(404).send();
-    }
+    CallCtrl.handlePut({
+      callId: req.params.callId,
+      reqData: req.body,
+      reqUser: req.user
+    }).then(function(data) {
+      res.status(data.httpCode).send();
+    }, function(err) {
+      res.status(err.httpCode).send(JSON.stringify(err));
+    });
   });
 
   app.delete('/call/:callId', authCtrl.ensureAuthenticated, function(req, res) {
-    var data = req.body,
-      callId = req.params.callId;
-    logger.info("/call delete from %j", data);
-
-    calls.delete({
-      callId: callId
+    CallCtrl.handleDelete({
+      callId: req.params.callId,
+      reqData: req.body,
+      reqUser: req.user
     });
 
-    if (ioCtrl.send(data.to, data)) {
-      res.status(200).send(JSON.stringify(data));
-    } else {
-      res.status(404).send();
-    }
-
+    res.status(200).send();
   });
 
 };

@@ -16,13 +16,18 @@ module.exports.send = function(to, data) {
     owner: to
   });
 
-  if (!socketUrl) {
+  return this.sendToSocketUrl(socketUrl, data);
+};
+
+module.exports.sendToSocketUrl = function(url, data) {
+  if (!url) {
     return false;
   }
 
-  io.to(socketUrl).emit('message', data);
+  logger.info("send to %s", url);
+  io.to(url).emit('message', data);
   return true;
-}
+};
 
 module.exports.sendToAll = function(to, data) {
   var socketUrlList;
@@ -40,4 +45,4 @@ module.exports.sendToAll = function(to, data) {
   }
 
   return true;
-}
+};

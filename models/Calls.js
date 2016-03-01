@@ -1,11 +1,13 @@
 var calls = {};
 
 exports.create = function(params) {
-  calls[params.callId] = {
-    callId: params.callId,
-    from: params.from,
-    to: params.to,
-  };
+  calls[params.callId] = {};
+
+  for (var i in params) {
+    if (params.hasOwnProperty(i)) {
+      calls[params.callId][i] = params[i];
+    }
+  }
 
   return params.callId;
 };

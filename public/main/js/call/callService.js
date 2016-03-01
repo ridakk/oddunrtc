@@ -82,6 +82,7 @@ angular.module('call')
             type: data.type,
             action: data.action,
             to: internalCall.to,
+            socketId: data.socketId,
             data: {
               msg: data.msg
             }
@@ -112,6 +113,7 @@ angular.module('call')
         data.method = httpRequestType.post;
         data.type = "call";
         data.action = "start";
+        data.socketId = userService.socketId;
         data.successEvent = pubsubEvent.send_start_call_request_success;
         data.failureEvent = pubsubEvent.send_start_call_request_failure;
         self.sendCallRequest(data);
@@ -130,6 +132,7 @@ angular.module('call')
         data.method = httpRequestType.put;
         data.type = "call";
         data.action = "accept";
+        data.socketId = userService.socketId;
         data.successEvent = pubsubEvent.send_accept_call_request_success;
         data.failureEvent = pubsubEvent.send_accept_call_request_failure;
         self.sendCallRequest(data);

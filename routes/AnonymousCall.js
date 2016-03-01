@@ -1,9 +1,7 @@
 var logger = require('bunyan').createLogger({
     name: 'routes.AnonymousCall'
   }),
-  ioCtrl = require('./../controllers/SocketIoController'),
-  authCtrl = require('./../controllers/AuthController'),
-  calls = require('./../models/Calls'),
+  CallCtrl = require('./../controllers/CallController'),
   User = require('./../models/User'),
   AnonymousUser = require('./../models/AnonymousUser');
 
@@ -44,19 +42,15 @@ module.exports = function(app) {
         return;
       }
 
-      calls.create({
-        callId: callId,
-        to: data.to,
-        from: uuid
+      CallCtrl.handlePost({
+        callId: req.params.callId,
+        reqData: req.body,
+        reqUser: anonymousUser
+      }).then(function(data) {
+        res.status(data.httpCode).send();
+      }, function(err) {
+        res.status(err.httpCode).send(JSON.stringify(err));
       });
-      data.from = uuid;
-
-      if (ioCtrl.sendToAll(data.to, data)) {
-        res.status(200).send(JSON.stringify(data));
-      } else {
-        logger.info("can not locate soclet to send: %s", data.to);
-        res.status(404).send();
-      }
     });
 
   });
@@ -93,20 +87,15 @@ module.exports = function(app) {
         return;
       }
 
-      if (!calls.get({
-          callId: callId
-        })) {
-        logger.info("call id  not found: %s", callId);
-        res.status(404).send();
-        return;
-      }
-
-      if (ioCtrl.send(data.to, data)) {
-        res.status(200).send(JSON.stringify(data));
-      } else {
-        logger.info("can not locate soclet to send: %s", data.to);
-        res.status(404).send();
-      }
+      CallCtrl.handlePut({
+        callId: req.params.callId,
+        reqData: req.body,
+        reqUser: anonymousUser
+      }).then(function(data) {
+        res.status(data.httpCode).send();
+      }, function(err) {
+        res.status(err.httpCode).send(JSON.stringify(err));
+      });
     });
 
   });
@@ -143,16 +132,13 @@ module.exports = function(app) {
         return;
       }
 
-      calls.delete({
-        callId: callId
+      CallCtrl.handleDelete({
+        callId: req.params.callId,
+        reqData: req.body,
+        reqUser: anonymousUser
       });
 
-      if (ioCtrl.send(data.to, data)) {
-        res.status(200).send();
-      } else {
-        logger.info("can not locate soclet to send: %s", data.to);
-        res.status(404).send();
-      }
+      res.status(200).send();
     });
   });
 

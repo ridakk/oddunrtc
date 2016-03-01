@@ -13,20 +13,22 @@ module.exports = function(io) {
   }));
 
   io.on('connection', function(socket) {
-    logger.info('socket.decoded_token %j', socket.decoded_token); // this works
+
+    // store socket via user uuid
     sockets.add({
       user: socket.decoded_token.uuid,
       id: socket.id
     });
+
+    // bounce back socket id to socket owner
+    socket.emit('session', { id: socket.id });
+
     socket.on('disconnect', function() {
       logger.info('user disconnected with id %s', socket.id);
       sockets.remove({
         id: socket.id
       });
     });
-  }).on('authenticated', function(socket) {
-    //this socket is authenticated, we are good to handle more events from it.
-    logger.info('hello! ' + socket.decoded_token);
   });
 
 };
