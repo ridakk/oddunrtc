@@ -85,12 +85,11 @@ module.exports = function(app) {
     });
 
     if (ioCtrl.send(data.to, data)) {
-      res.status(200).send(JSON.stringify(data));
+      res.status(200).send();
     } else {
       logger.info("can not locate soclet to send: %s", data.to);
       res.status(404).send();
     }
-
   });
 
 };

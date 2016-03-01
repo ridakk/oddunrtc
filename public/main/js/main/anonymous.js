@@ -1,10 +1,15 @@
-angular.module('anonymous', ['ui.router', 'call', 'user', 'connection', 'util.pubsub', 'webrtc.mediaService', 'webrtc.peerService'])
+angular.module('anonymous', ['anonymousHome', 'ui.router', 'call', 'user', 'connection', 'util.pubsub', 'webrtc.mediaService', 'webrtc.peerService'])
   .config(['$stateProvider', '$urlRouterProvider',
     function($stateProvider, $urlRouterProvider) {
 
       $urlRouterProvider.otherwise('/');
 
       $stateProvider
+        .state('home', {
+          url: '/end',
+          templateUrl: '/main/js/home/anonymous_home.html',
+          controller: 'anonymousHomeCtrl'
+        })
         .state('call', {
           url: '/call',
           params: {

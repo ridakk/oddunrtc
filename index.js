@@ -31,7 +31,9 @@ app.use(compression());
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
 // required for passport
-app.use(session({ secret: 'odun-rtc-rdk-session' })); // session secret
+app.use(session({
+  secret: 'odun-rtc-rdk-session'
+})); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash());
@@ -47,8 +49,9 @@ require('./AuthLocalLoginStrategy');
 require('./AuthLocalSignupStrategy');
 
 // load app routes
-require('./routes/User')(app);
+require('./routes/Index')(app);
 require('./routes/Anonymous')(app);
+require('./routes/Users')(app);
 
 // load connection routes
 require('./routes/Connection')(app);

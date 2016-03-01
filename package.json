@@ -46,7 +46,11 @@
   "keywords": [
     "node",
     "heroku",
-    "express"
+    "express",
+    "mongodb",
+    "webrtc",
+    "socketio",
+    "passport"
   ],
   "license": "MIT",
   "devDependencies": {}
