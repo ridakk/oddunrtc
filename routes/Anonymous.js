@@ -19,7 +19,7 @@ module.exports = function(app) {
     }, function(err, user) {
       if (err) {
         logger.info("db error, cannot query link: %s", link);
-        response.status(500).send();
+        res.status(500).send();
         return;
       }
 
@@ -50,13 +50,13 @@ module.exports = function(app) {
     }, function(err, user) {
       if (err) {
         logger.info("db error, cannot query link: %s", link);
-        response.status(500).send();
+        res.status(500).send();
         return;
       }
 
       if (!user) {
         logger.info("user link not found: %s", link);
-        response.status(404).send();
+        res.status(404).send();
         return;
       }
 
