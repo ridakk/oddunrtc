@@ -14,6 +14,8 @@ module.exports = function(app) {
       expiresIn: 60 * 1000 * 5
     });
 
+    logger.debug("user connection: %j", request.user.uuid);
+
     response.json({
       token: token,
       uuid: request.user.uuid,

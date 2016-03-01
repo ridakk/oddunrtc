@@ -13,6 +13,7 @@ angular.module('connection')
           userService.displayName = data.displayName || data.username || data.email;
           userService.type = data.type;
           userService.photo = data.photo;
+          userService.link = data.link;
 
           socket = io({
             query: 'token=' + data.token
