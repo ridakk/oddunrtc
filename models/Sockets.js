@@ -31,7 +31,7 @@ exports.remove = function(params) {
 };
 
 exports.getSocketUrl = function(params) {
-  var toSocketUrl, deferred = Q.defer();
+  var toSocketUrl;
   logger.info("getSocketUrl %j", params);
 
   if (!sockets[params.owner] || !sockets[params.owner][0]) {
@@ -40,15 +40,12 @@ exports.getSocketUrl = function(params) {
 
   toSocketUrl = "/sockets" + sockets[params.owner][0];
 
-  deferred.resolve(toSocketUrl);
-
   logger.info("toSocketUrl %s", toSocketUrl);
-  return deferred.promise;
+  return toSocketUrl;
 };
 
 exports.getSocketUrlList = function(params) {
-  var toSocketUrlList = [],
-    deferred = Q.defer();
+  var toSocketUrlList = [];
   logger.info("getSocketUrlList %j", params);
 
   if (!sockets[params.owner]) {
@@ -59,8 +56,6 @@ exports.getSocketUrlList = function(params) {
     toSocketUrlList[i] = "/sockets" + sockets[params.owner][i];
   }
 
-  deferred.resolve(toSocketUrlList);
-
   logger.info("toSocketUrlList %s", toSocketUrlList.toString());
-  return deferred.promise;
+  return toSocketUrlList;
 };
