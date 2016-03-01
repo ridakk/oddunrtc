@@ -10,7 +10,7 @@
 
     <div class="col-sm-6 col-sm-offset-3">
 
-      <h1><span class="fa fa-user-secret"></span></h1>
+      <h1><span class="fa fa-sign-in"></span> Anonymous</h1>
 
           <!-- ANONYMLOUS LOGIN FORM -->
           <form action=
@@ -18,12 +18,13 @@
               <%= url %>
             <% } %>
             method="post">
-            <div class="form-group">
-              <label>User Name</label>
+
+            <div class="form-group input-group margin-bottom-sm">
+              <span class="input-group-addon"><i class="fa fa-user-secret fa-fw"></i></span>
               <input type="text" class="form-control" name="username">
             </div>
 
-            <button type="submit" class="btn btn-warning btn-lg">Call
+            <button type="submit" class="btn btn-warning btn-lg btn-block">Call
               <% if (to.length > 0) { %>
                   <%= to %>
                 <% } %>

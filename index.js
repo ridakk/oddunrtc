@@ -31,7 +31,9 @@ app.use(compression());
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
 // required for passport
-app.use(session({ secret: 'odun-rtc-rdk-session' })); // session secret
+app.use(session({
+  secret: 'odun-rtc-rdk-session'
+})); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash());

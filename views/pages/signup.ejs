@@ -2,6 +2,7 @@
 <html>
 
 <head>
+
   <head>
     <% include ../partials/login_signup_head.ejs %>
   </head>
@@ -23,19 +24,16 @@
 
           <!-- LOGIN FORM -->
           <form action="/signup" method="post">
-            <div class="form-group">
-              <label>Email</label>
-              <input type="text" class="form-control" name="email">
-            </div>
-            <div class="form-group">
-              <label>Password</label>
-              <input type="password" class="form-control" name="password">
-            </div>
+            <% include ../partials/login_signup_content.ejs %>
 
-            <button type="submit" class="btn btn-warning btn-lg">Signup</button>
+              <button type="submit" class="btn btn-warning btn-lg btn-block">Signup</button>
           </form>
 
-          <hr>
+          <div>
+            <div>---</div>
+              <div>OR</div>
+                <div>---</div>
+          </div>
 
           <p>Already have an account? <a href="/login">Login</a></p>
 
