@@ -1,13 +1,17 @@
-var sockets = require('./../models/Sockets'),
+var logger = require('bunyan').createLogger({
+    name: 'controllers.SocketIoController'
+  }),
+  sockets = require('./../models/Sockets'),
   io;
 
-module.exports = function(socket_io, socket_ionsp) {
+module.exports = function(socket_io) {
   io = socket_io;
 };
 
 module.exports.send = function(to, data) {
   var socketUrl;
 
+  logger.info("send to %s - data %j", to, data);
   socketUrl = sockets.getSocketUrl({
     owner: to
   });

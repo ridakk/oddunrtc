@@ -33,7 +33,10 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <i class="fa fa-external-link"></i> {{user.link}}<br>
+        <a href="{{user.link}}">
+          <i class="fa fa-external-link"></i> {{user.link}}
+        </a>
+
         <div ui-view></div>
       </div>
     </div>
