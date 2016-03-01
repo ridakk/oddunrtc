@@ -1,4 +1,7 @@
-var passport = require('passport'),
+var logger = require('bunyan').createLogger({
+    name: 'AuthFacebookStrategy'
+  }),
+  passport = require('passport'),
   User = require('./models/User'),
   uuid = require('node-uuid'),
   FacebookStrategy = require('passport-facebook').Strategy;
@@ -11,7 +14,7 @@ passport.use(new FacebookStrategy({
     passReqToCallback: true
   },
   function(req, accessToken, refreshToken, profile, done) {
-    console.log("facebook profile: %j", profile);
+    logger.debug("facebook profile: %j", profile);
 
     // check if the user is already logged in
     if (!req.user) {

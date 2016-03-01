@@ -1,4 +1,7 @@
-var authCtrl = require('./../controllers/AuthController'),
+var logger = require('bunyan').createLogger({
+    name: 'routes.Connection'
+  }),
+  authCtrl = require('./../controllers/AuthController'),
   User = require('./../models/User'),
   AnonymousUser = require('./../models/AnonymousUser'),
   jwt = require('jsonwebtoken');
@@ -25,21 +28,21 @@ module.exports = function(app) {
 
   app.get('/a/:link/:uuid/connection', function(req, res) {
     var link = req.params.link,
-        uuid = req.params.uuid,
-        anonymousUser,
+      uuid = req.params.uuid,
+      anonymousUser,
       token;
 
     User.findOne({
       link: link
     }, function(err, user) {
       if (err) {
-        console.log("db error, cannot query link: %s", link);
+        logger.fatal("db error, cannot query link: %s", link);
         res.status(500).send();
         return;
       }
 
       if (!user) {
-        console.log("user link not found: %s", link);
+        logger.error("user link not found: %s", link);
         res.status(404).send();
         return;
       }
@@ -49,12 +52,12 @@ module.exports = function(app) {
       });
 
       if (!anonymousUser) {
-        console.log("anonymous user link not found: %s", link);
+        logger.error("anonymous user link not found: %s", link);
         res.status(404).send();
         return;
       }
 
-      console.log("anonymous user: %j", anonymousUser);
+      logger.debug("anonymous user: %j", anonymousUser);
 
       token = jwt.sign(anonymousUser, "odun-rtc-jwt-session", {
         expiresIn: 60 * 1000 * 5

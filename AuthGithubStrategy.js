@@ -1,4 +1,7 @@
-var passport = require('passport'),
+var logger = require('bunyan').createLogger({
+    name: 'AuthGithubStrategy'
+  }),
+  passport = require('passport'),
   User = require('./models/User'),
   uuid = require('node-uuid'),
   GithubStrategy = require('passport-github').Strategy;
@@ -10,7 +13,7 @@ passport.use(new GithubStrategy({
     passReqToCallback: true
   },
   function(req, accessToken, refreshToken, profile, done) {
-    console.log("github profile: %j", profile);
+    logger.debug("github profile: %j", profile);
 
     // check if the user is already logged in
     if (!req.user) {
