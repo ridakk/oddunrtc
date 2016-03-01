@@ -13,13 +13,13 @@ module.exports = function(io) {
   }));
 
   io.on('connection', function(socket) {
-    logger.debug('socket.decoded_token %j', socket.decoded_token); // this works
+    logger.info('socket.decoded_token %j', socket.decoded_token); // this works
     sockets.add({
       user: socket.decoded_token.uuid,
       id: socket.id
     });
     socket.on('disconnect', function() {
-      logger.debug('user disconnected with id %s', socket.id);
+      logger.info('user disconnected with id %s', socket.id);
       sockets.remove({
         id: socket.id
       });
