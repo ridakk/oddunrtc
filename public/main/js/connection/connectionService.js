@@ -5,14 +5,20 @@ angular.module('connection')
         socket;
 
       self.getConnection = function() {
+        var i;
         return httpService.get({
           url: window.location.href.replace("/home", "") + "/connection"
         }).then(function(data) {
           userService.connected = true
-          userService.uuid = data.uuid;
+
+          for (var i in data) {
+            if (data.hasOwnProperty(i)) {
+              userService[i] = data[i];
+            }
+          }
+
           userService.displayName = data.displayName || data.username || data.email;
-          userService.type = data.type;
-          userService.photo = data.photo;
+          userService.link = window.location.origin + "/a/" + data.link;
 
           socket = io({
             query: 'token=' + data.token

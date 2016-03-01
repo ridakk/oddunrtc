@@ -18,14 +18,14 @@ module.exports = function(app) {
       link: link
     }, function(err, user) {
       if (err) {
-        logger.fatal("db error, cannot query link: %s", link);
+        logger.info("db error, cannot query link: %s", link);
         response.status(500).send();
         return;
       }
 
       if (!user) {
         console.log("user link not found: %s", link);
-        logger.error(404).send();
+        logger.info(404).send();
         return;
       }
 
@@ -49,13 +49,13 @@ module.exports = function(app) {
       link: link
     }, function(err, user) {
       if (err) {
-        logger.fatal("db error, cannot query link: %s", link);
+        logger.info("db error, cannot query link: %s", link);
         response.status(500).send();
         return;
       }
 
       if (!user) {
-        logger.error("user link not found: %s", link);
+        logger.info("user link not found: %s", link);
         response.status(404).send();
         return;
       }
@@ -65,7 +65,7 @@ module.exports = function(app) {
       });
 
       if (!anonymousUser) {
-        logger.error("anonymous user link not found: %s", link);
+        logger.info("anonymous user link not found: %s", link);
         res.status(404).send();
         return;
       }
@@ -81,7 +81,7 @@ module.exports = function(app) {
   });
 
   app.get('/logout', function(req, res) {
-    logger.debug('logging out');
+    logger.info('logging out');
     req.logout();
     res.redirect('/');
   });

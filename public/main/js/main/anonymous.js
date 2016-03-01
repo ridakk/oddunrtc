@@ -27,7 +27,7 @@ angular.module('anonymous', ['ui.router', 'call', 'user', 'connection', 'util.pu
           subscriber: pubsubSubscriber.call_fsm,
           event: pubsubEvent.start_call_gui,
           msg: {
-            to: userService.callingTo
+            to: userService.callTo
           }
         });
 
