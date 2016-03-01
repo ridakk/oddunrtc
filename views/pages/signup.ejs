@@ -1,45 +1,50 @@
 <!doctype html>
 <html>
 
-<head>
-
   <head>
-    <% include ../partials/login_signup_head.ejs %>
+
+    <head>
+      <% include ../partials/login_signup_head.ejs %>
+    </head>
   </head>
-</head>
 
-<body>
-  <div class="container">
+  <body>
+    <div class="container">
 
-    <div class="col-sm-6 col-sm-offset-3">
+      <div class="col-sm-6 col-sm-offset-3">
 
-      <h1><span class="fa fa-sign-in"></span> Signup</h1>
+        <h1>
+          <span class="fa fa-sign-in"></span>
+          Signup</h1>
 
-      <!-- show any messages that come back with authentication -->
-      <% if (message.length > 0) { %>
-        <div class="alert alert-danger">
-          <%= message %>
-        </div>
+        <!-- show any messages that come back with authentication -->
+        <% if (message.length > 0) { %>
+          <div class="alert alert-danger">
+            <%= message %>
+          </div>
         <% } %>
 
-          <!-- LOGIN FORM -->
-          <form action="/signup" method="post">
-            <% include ../partials/login_signup_content.ejs %>
+        <!-- LOGIN FORM -->
+        <form action="/signup" method="post">
 
-              <button type="submit" class="btn btn-warning btn-lg btn-block">Signup</button>
-          </form>
+          <% include ../partials/login_signup_content.ejs %>
 
-          <hr>
+          <button type="submit" class="btn btn-warning btn-lg btn-block">Signup</button>
+        </form>
 
-          <p>Already have an account? <a href="/login">Login</a></p>
+        <hr>
 
-          <hr>
+        <p>Already have an account?
+          <a href="/login">Login</a>
+        </p>
 
-          <% include ../partials/social.ejs %>
+        <hr>
+
+        <% include ../partials/social.ejs %>
+
+      </div>
 
     </div>
-
-  </div>
-</body>
+  </body>
 
 </html>
