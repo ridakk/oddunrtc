@@ -1,24 +1,39 @@
 var logger = require('bunyan').createLogger({
     name: 'routes.Users'
   }),
-  User = require('./models/User');
+  User = require('./../models/User');
 
-  exports.findUsers = function(params) {
-    User.find( { username: {$regex : ".*params.name.*"}},
-  function(err, users) {
-    if (err) {
-      logger.info("db error, cannot query user: %s", params.name);
-      response.status(500).send();
-      return;
-    }
+module.exports = function(app) {
+  app.get('/users/:name', function(req, res) {
+    User.find().and([{
+        $or: [{
+          username: {
+            $regex: ".*" + req.params.name + ".*"
+          }
+        }, {
+          displayName: {
+            $regex: ".*" + req.params.name + ".*"
+          }
+        }, {
+          email: {
+            $regex: ".*" + req.params.name + ".*"
+          }
+        }]
+      }])
+      .exec(function(err, users) {
+        if (err) {
+          logger.info("db error, cannot query user: %s", req.params.name);
+          res.status(500).send();
+          return;
+        }
 
-    if (!users) {
-      console.log("user not found: %s", params.name);
-      logger.error(404).send();
-      return;
-    }
+        if (!users) {
+          logger.info("user not found: %s", req.params.name);
+          res.error(404).send();
+          return;
+        }
 
-    return users;
-  }
-);
-  };
+        res.status(200).send(JSON.stringify(users));
+      });
+  });
+};
