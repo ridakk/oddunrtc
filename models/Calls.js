@@ -1,18 +1,19 @@
-var uuid = require('node-uuid'),
-  calls = {};
+var calls = {};
 
 exports.create = function(params) {
-  var callId = uuid.v4();
-
-  calls[callId] = {
-    callId: callId,
+  calls[params.callId] = {
+    callId: params.callId,
     from: params.from,
     to: params.to,
-  }
+  };
 
-  return callId;
+  return params.callId;
 };
 
 exports.delete = function(params) {
   delete calls[params.callId];
+};
+
+exports.get = function(params) {
+  return calls[params.callId];
 };

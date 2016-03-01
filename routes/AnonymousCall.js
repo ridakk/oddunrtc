@@ -44,11 +44,12 @@ module.exports = function(app) {
         return;
       }
 
-      data.callId = calls.create({
+      calls.create({
+        callId: callId,
         to: data.to,
         from: uuid
       });
-
+      data.from = uuid;
 
       if (ioCtrl.sendToAll(data.to, data)) {
         res.status(200).send(JSON.stringify(data));
@@ -63,33 +64,96 @@ module.exports = function(app) {
   app.put('/a/:link/:uuid/call/:callId', function(req, res) {
     var link = req.params.link,
       uuid = req.params.uuid,
+      callId = req.params.callId,
       data = req.body;
     logger.info("/call post from %j", data);
 
-    if (ioCtrl.send(data.to, data)) {
-      res.status(200).send(JSON.stringify(data));
-    } else {
-      logger.info("can not locate soclet to send: %s", data.to);
-      res.status(404).send();
-    }
+    User.findOne({
+      link: link
+    }, function(err, user) {
+      if (err) {
+        logger.info("db error, cannot query link: %s", link);
+        res.status(500).send();
+        return;
+      }
+
+      if (!user) {
+        logger.info("user link not found: %s", link);
+        res.status(404).send();
+        return;
+      }
+
+      anonymousUser = AnonymousUser.get({
+        uuid: uuid
+      });
+
+      if (!anonymousUser) {
+        logger.info("anonymous user link not found: %s", link);
+        res.status(404).send();
+        return;
+      }
+
+      if (!calls.get({
+          callId: callId
+        })) {
+        logger.info("call id  not found: %s", callId);
+        res.status(404).send();
+        return;
+      }
+
+      if (ioCtrl.send(data.to, data)) {
+        res.status(200).send(JSON.stringify(data));
+      } else {
+        logger.info("can not locate soclet to send: %s", data.to);
+        res.status(404).send();
+      }
+    });
+
   });
 
   app.delete('/a/:link/:uuid/call/:callId', function(req, res) {
     var link = req.params.link,
       uuid = req.params.uuid,
+      callId = req.params.callId,
       data = req.body;
     logger.info("/call delete from %j", data);
 
-    calls.delete({
-      callId: data.data.msg.callId
-    });
+    User.findOne({
+      link: link
+    }, function(err, user) {
+      if (err) {
+        logger.info("db error, cannot query link: %s", link);
+        res.status(500).send();
+        return;
+      }
 
-    if (ioCtrl.send(data.to, data)) {
-      res.status(200).send();
-    } else {
-      logger.info("can not locate soclet to send: %s", data.to);
-      res.status(404).send();
-    }
+      if (!user) {
+        logger.info("user link not found: %s", link);
+        res.status(404).send();
+        return;
+      }
+
+      anonymousUser = AnonymousUser.get({
+        uuid: uuid
+      });
+
+      if (!anonymousUser) {
+        logger.info("anonymous user link not found: %s", link);
+        res.status(404).send();
+        return;
+      }
+
+      calls.delete({
+        callId: callId
+      });
+
+      if (ioCtrl.send(data.to, data)) {
+        res.status(200).send();
+      } else {
+        logger.info("can not locate soclet to send: %s", data.to);
+        res.status(404).send();
+      }
+    });
   });
 
 };
