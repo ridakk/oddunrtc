@@ -74,6 +74,11 @@ exports.handlePut = function(params) {
 
   if (params.reqData.action === "accept") {
     internalCall.targetSocketId = params.reqData.socketId;
+    exports.handleDelete({
+      callId: params.callId,
+      reqUser: params.reqUser,
+      cancelToOtherSockets: true
+    });
   }
 
   if (internalCall.ownerUuid === params.reqUser.uuid) {
@@ -113,13 +118,15 @@ exports.handleDelete = function(params) {
     callId: params.callId
   });
 
-  if (internalCall.ownerUuid === params.reqUser.uuid) {
-    socketUrl = internalCall.targetSocketId;
+  if (cancelToOtherSockets) {
+    SocketIoCtrl.sendToAllExceptOwner(socketUrl, internalCall.targetSocketId, params.reqData);
   } else {
-    socketUrl = internalCall.ownerSocketId;
+    if (internalCall.ownerUuid === params.reqUser.uuid) {
+      socketUrl = internalCall.targetSocketId;
+    } else {
+      socketUrl = internalCall.ownerSocketId;
+    }
+    SocketIoCtrl.sendToSocketUrl(socketUrl, params.reqData);
   }
-
-  SocketIoCtrl.sendToSocketUrl(socketUrl, params.reqData);
-
   return;
 };
