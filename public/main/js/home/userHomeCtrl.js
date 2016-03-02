@@ -1,14 +1,15 @@
 angular.module('userHome', ['contacts', 'util.pubsub'])
   .controller('userHomeCtrl', ["$scope", "$log", "$stateParams", "contactsService", "pubsub", "pubsubSubscriber", "pubsubEvent",
     function($scope, $log, $stateParams, contactsService, pubsub, pubsubSubscriber, pubsubEvent) {
-      var call_state_type = "info", call_state_text;
+      var call_state_type = "info",
+        call_state_text;
       $log.info("userHomeCtrl initialized...");
       $log.info("stateParams errorCode: " + $stateParams.errorCode);
       $log.info("stateParams errorText: " + $stateParams.errorText);
       $log.info("stateParams httpCode: " + $stateParams.httpCode);
       $log.info("stateParams state: " + $stateParams.state);
 
-      if($stateParams.state) {
+      if ($stateParams.state) {
         if ($stateParams.errorCode) {
           call_state_type = "warning"
           $stateParams.state += " - " + $stateParams.errorText
