@@ -9,11 +9,7 @@ var session = require('express-session');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var mongoose = require('mongoose');
-var User = require('./models/User');
-var UserContacts = require('./models/UserContacts');
 var flash = require('connect-flash');
-
-var connections = {};
 
 require('dotenv').config();
 
@@ -32,11 +28,15 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 
 // required for passport
 app.use(session({
-  secret: 'odun-rtc-rdk-session'
+  secret: 'odun-rtc-rdk-session',
+  resave: true,
+  saveUninitialized: true
 })); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash());
+
+console.log("running in " + process.env.PRIV_ENV + " mode");
 
 // views is directory for all template files
 app.set('views', __dirname + '/views');
@@ -51,7 +51,12 @@ require('./AuthLocalSignupStrategy');
 // load app routes
 require('./routes/Index')(app);
 require('./routes/Anonymous')(app);
+
+// load users routes
 require('./routes/Users')(app);
+
+// load contacts routes
+require('./routes/Contacts')(app);
 
 // load connection routes
 require('./routes/Connection')(app);

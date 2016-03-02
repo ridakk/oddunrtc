@@ -5,6 +5,7 @@ angular.module('call')
 
       $scope.callId = $stateParams.callId;
       $scope.muteState = "mute";
+      $scope.callState;
 
       $scope.answer = function() {
         $log.info("answer is clicked ");
@@ -15,7 +16,7 @@ angular.module('call')
       };
 
       $scope.end = function() {
-        $log.info("decline is clicked ");
+        $log.info("end is clicked ");
         callService.end({
           callId: $stateParams.callId
         });
@@ -45,6 +46,10 @@ angular.module('call')
       callService.onRemoteStreamAdded = function(stream) {
         $log.info("remote stream added: ", stream);
         angular.element("#remoteStream")[0].srcObject = stream;
+      };
+
+      callService.onStateChange = function(state) {
+        $scope.callState = state;
       };
 
       if (callService.isIncomingCall({

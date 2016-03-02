@@ -17,9 +17,15 @@ angular.module('util.location', ['ui.router', 'util.pubsub'])
         });
       };
 
-      function handleChangeUrlToHome() {
+      function handleChangeUrlToHome(data) {
         changeUrlTo({
-          to: "home"
+          to: "home",
+          params: {
+            errorCode: data.msg.error ? data.msg.error.errorCode : null,
+            errorText: data.msg.error ? data.msg.error.errorText : null,
+            httpCode: data.msg.error ? data.msg.error.httpCode : null,
+            state: data.msg.state
+          }
         });
       };
 

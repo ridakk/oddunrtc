@@ -1,26 +1,43 @@
 var logger = require('bunyan').createLogger({
     name: 'routes.Connection'
   }),
-  userContacts = require('./../models/UserContacts'),
-  authCtrl = require('./../controllers/AuthController'),
-  user = require('./../models/User');
+  Contacts = require('./../models/Contacts'),
+  ContactsCtrl = require('./../controllers/ContactsController'),
+  AuthCtrl = require('./../controllers/AuthController'),
+  User = require('./../models/User');
 
 module.exports = function(app) {
 
-  app.post('/contacts', authCtrl.ensureAuthenticated, function(request, response) {
-    var email = request.user.uuid;
-    logger.info("NOT IMPLEMENTED: /contacts post from %s", uuid);
-
-    response.status(200).send();
+  app.post('/contacts', AuthCtrl.ensureAuthenticated, function(req, res) {
+    ContactsCtrl.add({
+      uuid: req.user.uuid,
+      contact_uuid: req.body.contact_uuid
+    }).then(function(data) {
+      res.status(data.httpCode).send();
+    }, function(err) {
+      res.status(err.httpCode).send(JSON.stringify(err));
+    });
   });
 
-  app.get('/contacts/:uuid', authCtrl.ensureAuthenticated, function(request, response) {
-    var contacts = [],
-      uuid = request.user.uuid;
-    logger.info("NOT IMPLEMENTED: /contacts get from %s", uuid);
+  app.get('/contacts', AuthCtrl.ensureAuthenticated, function(req, res) {
+    ContactsCtrl.get({
+      uuid: req.user.uuid
+    }).then(function(data) {
+      res.status(data.httpCode).send(JSON.stringify(data.result));
+    }, function(err) {
+      res.status(err.httpCode).send(JSON.stringify(err));
+    });
+  });
 
-    response.status(200).send(JSON.stringify(contacts));
-
+  app.delete('/contacts', AuthCtrl.ensureAuthenticated, function(req, res) {
+    ContactsCtrl.delete({
+      uuid: req.user.uuid,
+      contact_uuid: req.body.contact_uuid
+    }).then(function(data) {
+      res.status(data.httpCode).send();
+    }, function(err) {
+      res.status(err.httpCode).send(JSON.stringify(err));
+    });
   });
 
 };

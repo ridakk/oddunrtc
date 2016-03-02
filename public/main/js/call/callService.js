@@ -7,6 +7,7 @@ angular.module('call')
 
       self.onLocalStreamAdded = function() {};
       self.onRemoteStreamAdded = function() {};
+      self.onStateChange = function() {};
 
       self.isIncomingCall = function(data) {
         return calls[data.callId].type === callType.incoming;
@@ -52,7 +53,7 @@ angular.module('call')
         });
       };
 
-      self.mute = function(data){
+      self.mute = function(data) {
         pubsub.publish({
           publisher: pubsubSubscriber.call_service,
           subscriber: pubsubSubscriber.peer_service,
@@ -70,6 +71,10 @@ angular.module('call')
 
       self.handleOnRemoteStream = function(data) {
         self.onRemoteStreamAdded(data.msg.stream);
+      };
+
+      self.handleCallState = function(data) {
+        self.onStateChange(data.msg.state);
       };
 
       self.sendCallRequest = function(data) {
@@ -180,6 +185,7 @@ angular.module('call')
       eventHandlers[pubsubEvent.send_accept_call_request] = self.handleSendAcceptCallRequest;
       eventHandlers[pubsubEvent.create_outgoing_call] = self.handleCreateOutgoingCall;
       eventHandlers[pubsubEvent.create_incoming_call] = self.handleCreateIncomingCall;
+      eventHandlers[pubsubEvent.call_state] = self.handleCallState;
 
       self.handleCallServiceEvent = function(data) {
         eventHandlers[data.event](data);
@@ -198,7 +204,7 @@ angular.module('call')
 
           delete calls[data.msg.callId];
 
-          locationService.toHome();
+          locationService.toHome(data);
         }
       });
     }

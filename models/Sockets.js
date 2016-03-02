@@ -48,7 +48,7 @@ exports.getSocketUrlList = function(params) {
   logger.info("getSocketUrlList %j", params);
 
   if (!sockets[params.owner]) {
-    return;
+    return toSocketUrlList;
   }
 
   for (var i = 0; i < sockets[params.owner].length; i++) {

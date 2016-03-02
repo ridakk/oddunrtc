@@ -1,24 +1,30 @@
 angular.module('contacts')
   .service('contactsService', ["$q", "httpService", "userService",
-  function($q, httpService, userService) {
-    var self = this,
-      contacts;
+    function($q, httpService, userService) {
+      var self = this,
+        contacts;
 
-    self.get = function(email) {
+      self.getContacts = function() {
+        return httpService.get({
+          url: window.location.origin + "/contacts"
+        });
+      };
 
-      if (contacts) {
+      self.addContact = function(contact_uuid) {
+        return httpService.post({
+          url: window.location.origin + "/contacts",
+          data: {
+            contact_uuid: contact_uuid
+          }
+        });
+      };
+
+      self.getUsers = function(name) {
         var deferred = $q.defer();
-        deferred.resolve(contacts);
-        return deferred.promise;
-      }
+        return httpService.get({
+          url: window.location.origin + "/users/" + name
+        });
 
-      return httpService.get({
-        url: window.location.origin + "/contacts/" + userService.uuid
-      });
-    };
-    self.getUsers = function (name) {
-      var deferred = $q.defer();
-        return httpService.get({url: window.location.origin +"/users/" + name});
-
-    };
-  }]);
+      };
+    }
+  ]);

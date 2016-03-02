@@ -7,6 +7,12 @@ angular.module('anonymous', ['anonymousHome', 'ui.router', 'call', 'user', 'conn
       $stateProvider
         .state('home', {
           url: '/end',
+          params: {
+            errorCode: null,
+            errorText: null,
+            httpCode: null,
+            state: null
+          },
           templateUrl: '/main/js/home/anonymous_home.html',
           controller: 'anonymousHomeCtrl'
         })

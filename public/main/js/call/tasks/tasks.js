@@ -108,6 +108,70 @@ angular.module('tasks', ['util.pubsub'])
           pubsubMethod: pubsubMethods.publish,
           subscriber: pubsubSubscriber.peer_service,
           event: pubsubEvent.add_local_stream
+        },
+        publish_call_state_init: {
+          pubsubMethod: pubsubMethods.publish,
+          subscriber: pubsubSubscriber.call_service,
+          event: pubsubEvent.call_state,
+          params: {
+            state: "Initializing"
+          }
+        },
+        publish_call_state_ringing: {
+          pubsubMethod: pubsubMethods.publish,
+          subscriber: pubsubSubscriber.call_service,
+          event: pubsubEvent.call_state,
+          params: {
+            state: "Ringing"
+          }
+        },
+        publish_call_state_in_call: {
+          pubsubMethod: pubsubMethods.publish,
+          subscriber: pubsubSubscriber.call_service,
+          event: pubsubEvent.call_state,
+          params: {
+            state: "In Call"
+          }
+        },
+        publish_call_state_declined: {
+          pubsubMethod: pubsubMethods.publish,
+          subscriber: pubsubSubscriber.call_service,
+          event: pubsubEvent.call_state,
+          params: {
+            state: "Declined"
+          }
+        },
+        publish_call_state_ended: {
+          pubsubMethod: pubsubMethods.publish,
+          subscriber: pubsubSubscriber.call_service,
+          event: pubsubEvent.call_state,
+          params: {
+            state: "Ended"
+          }
+        },
+        publish_call_state_no_answer: {
+          pubsubMethod: pubsubMethods.publish,
+          subscriber: pubsubSubscriber.call_service,
+          event: pubsubEvent.call_state,
+          params: {
+            state: "No Answer"
+          }
+        },
+        publish_call_state_ice_faiure: {
+          pubsubMethod: pubsubMethods.publish,
+          subscriber: pubsubSubscriber.call_service,
+          event: pubsubEvent.call_state,
+          params: {
+            state: "Connection Failure"
+          }
+        },
+        publish_call_state_setup_faiure: {
+          pubsubMethod: pubsubMethods.publish,
+          subscriber: pubsubSubscriber.call_service,
+          event: pubsubEvent.call_state,
+          params: {
+            state: "Call setup failure"
+          }
         }
       };
     }

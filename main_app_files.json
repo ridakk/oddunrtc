@@ -1,0 +1,19 @@
+[
+  "public/main/js/main/main.js",
+  "public/main/js/home/userHomeCtrl.js",
+  "public/main/js/user/user.js",
+  "public/main/js/util/httpService.js",
+  "public/main/js/util/locationService.js",
+  "public/main/js/util/pubsub.js",
+  "public/main/js/connection/connection.js",
+  "public/main/js/connection/connectionService.js",
+  "public/main/js/contacts/contacts.js",
+  "public/main/js/contacts/contactsService.js",
+  "public/main/js/call/call.js",
+  "public/main/js/call/callCtrl.js",
+  "public/main/js/call/callService.js",
+  "public/main/js/call/callFSM.js",
+  "public/main/js/call/tasks/tasks.js",
+  "public/main/js/webrtc/mediaService.js",
+  "public/main/js/webrtc/peerService.js"
+]
