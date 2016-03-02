@@ -19,9 +19,6 @@
           <a class="navbar-brand" href="#">OdunRtc</a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-5">
-          <form class="navbar-form navbar-left" role="search">
-            <input ng-change="searchInputChange()" ng-model="searchInput" type="text" placeholder="username, email" class="search-input">
-          </form>
           <p class="navbar-text navbar-right">Signed in
             <i class="fa fa-{{user.type}}">
               {{user.displayName}}</i>
@@ -34,21 +31,9 @@
       </div>
     </nav>
 
-    <ul ng-if="userList" class="list-group">
-      <div ng-repeat="user in userList">
-        <li class="list-group-item"><i class="fa fa-{{user.type}} fa-fw"></i> {{user.displayName}} {{user.username}} {{user.email}}</li>
-      </div>
-    </ul>
-
     <div class="container-fluid">
       <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-          <div class="text-center">
-            <i class="fa fa-external-link">
-              Share your link -
-              {{user.link}}</i>
-          </div>
-
           <div ui-view></div>
         </div>
       </div>

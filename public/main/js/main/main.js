@@ -1,10 +1,15 @@
-angular.module('main', ['ui.router', 'call', 'user', 'connection', 'contacts', 'util.pubsub', 'webrtc.mediaService', 'webrtc.peerService'])
+angular.module('main', ['userHome', 'ui.router', 'call', 'user', 'connection', 'webrtc.mediaService', 'webrtc.peerService'])
   .config(['$stateProvider', '$urlRouterProvider',
     function($stateProvider, $urlRouterProvider) {
 
       $urlRouterProvider.otherwise('/');
 
       $stateProvider
+        .state('home', {
+          url: '/',
+          templateUrl: '/main/js/home/user_home.html',
+          controller: 'userHomeCtrl'
+        })
         .state('call', {
           url: '/call',
           params: {
@@ -15,36 +20,14 @@ angular.module('main', ['ui.router', 'call', 'user', 'connection', 'contacts', '
         });
     }
   ])
-  .controller('mainCtrl', ["$scope", "$log", "userService", "connectionService", "contactsService", "pubsub",
-    function($scope, $log, userService, connectionService, contactsService, pubsub) {
+  .controller('mainCtrl', ["$scope", "$log", "userService", "connectionService",
+    function($scope, $log, userService, connectionService) {
       $log.info("mainCtrl initialized...");
 
       $scope.user = userService;
       $scope.contacts = [];
 
-      connectionService.getConnection().then(function() {
-        contactsService.get().then(function(res) {
-          $scope.contacts = res;
-        });
-      });
-
-      $scope.startCallTo = function(contact) {
-        pubsub.publish({
-          publisher: pubsubSubscriber.home_ctrl,
-          subscriber: pubsubSubscriber.call_fsm,
-          event: pubsubEvent.start_call_gui,
-          msg: {
-            from: contact
-          }
-        });
-      };
-
-      $scope.searchInputChange = function() {
-        contactsService.getUsers($scope.searchInput).then(function(res) {
-          $scope.userList = res;
-        });
-      };
-
+      connectionService.getConnection();
 
     }
   ])
