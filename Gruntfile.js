@@ -5,18 +5,23 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     concat: {
       main_app: {
-        src: ['public/main/js/**/*.js'],
-        dest: 'public/dist/main/main_app.js',
+        src: grunt.file.readJSON('main_app_files.json'),
+        dest: 'public/dist/main_app.js'
+      },
+      anonymous_app: {
+        src: grunt.file.readJSON('anonymous_app_files.json'),
+        dest: 'public/dist/anonymous_app.js'
       }
     },
     uglify: {
       main_app: {
-        options: {
-          sourceMap: true,
-          sourceMapName: 'public/dist/main/sourcemap.map'
-        },
         files: {
-          'public/dist/main/main_app.min.js': ['public/dist/main/main_app.js']
+          'public/dist/main_app.min.js': ['public/dist/main_app.js']
+        }
+      },
+      anonymous_app: {
+        files: {
+          'public/dist/anonymous_app.min.js': ['public/dist/anonymous_app.js']
         }
       }
     }

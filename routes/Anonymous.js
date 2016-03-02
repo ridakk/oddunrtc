@@ -8,7 +8,7 @@ var logger = require('bunyan').createLogger({
 module.exports = function(app) {
 
   // =====================================
-  // HOME PAGE (with login links) ========
+  // HOME PAGE (with Anonymous login link)
   // =====================================
   app.get('/a/:link/', function(req, res) {
     var link = req.params.link,
@@ -76,7 +76,7 @@ module.exports = function(app) {
         value: req.body.username
       })
 
-      res.render('pages/anonymous_home.ejs');
+      res.render('pages/anonymous_home_' + process.env.PRIV_ENV + '.ejs');
     });
   });
 

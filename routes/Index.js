@@ -1,5 +1,4 @@
 module.exports = function(app) {
-
   // =====================================
   // HOME PAGE (with login links) ========
   // =====================================
@@ -10,16 +9,13 @@ module.exports = function(app) {
   });
 
   app.get('/home', function(req, res) {
-    res.render('pages/home.ejs'); // load the index.ejs file
+    res.render('pages/home_' + process.env.PRIV_ENV + '.ejs');
   });
 
   // =====================================
   // LOGIN ===============================
   // =====================================
-  // show the login form
   app.get('/login', function(req, res) {
-
-    // render the page and pass in any flash data if it exists
     res.render('pages/login.ejs', {
       message: req.flash('loginMessage')
     });
@@ -30,8 +26,6 @@ module.exports = function(app) {
   // =====================================
   // show the signup form
   app.get('/signup', function(req, res) {
-
-    // render the page and pass in any flash data if it exists
     res.render('pages/signup.ejs', {
       message: req.flash('signupMessage')
     });

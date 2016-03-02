@@ -4,6 +4,7 @@
   "description": "Node.js server with Socket.io and angularjs",
   "main": "index.js",
   "scripts": {
+    "postinstall": "grunt default",
     "start": "node index.js"
   },
   "dependencies": {
