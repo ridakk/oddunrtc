@@ -7,7 +7,7 @@ angular.module('connection')
       self.getConnection = function() {
         var i;
         return httpService.get({
-          url: window.location.href.replace("/home", "") + "/connection"
+          url: window.location.href.replace(/\/home.*/, "") + "/connection"
         }).then(function(data) {
           userService.connected = true
 

@@ -29,7 +29,7 @@ angular.module('call')
           internalCall = calls[callId];
 
         httpService.delete({
-          url: window.location.href.replace("/home#/call", "") + "/call/" + callId,
+          url: window.location.href.replace(/\/home.*/, "") + "/call/" + callId,
           //timeout: 30000,
           data: {
             type: "call",
@@ -81,7 +81,7 @@ angular.module('call')
         var internalCall = calls[data.msg.callId];
 
         return httpService[data.method]({
-          url: window.location.href.replace("/home#/call", "") + "/call/" + data.msg.callId,
+          url: window.location.href.replace(/\/home.*/, "") + "/call/" + data.msg.callId,
           //timeout: 30000,
           data: {
             type: data.type,
@@ -147,7 +147,7 @@ angular.module('call')
         var internalCall = calls[data.msg.callId];
 
         httpService.put({
-          url: window.location.href.replace("/home#/call", "") + "/call/" + data.msg.callId,
+          url: window.location.href.replace(/\/home.*/, "") + "/call/" + data.msg.callId,
           //timeout: 30000,
           data: {
             type: "call",

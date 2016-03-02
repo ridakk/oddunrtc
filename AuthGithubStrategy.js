@@ -7,9 +7,9 @@ var logger = require('bunyan').createLogger({
   GithubStrategy = require('passport-github').Strategy;
 
 passport.use(new GithubStrategy({
-    clientID: "211bb79a90de4749b7e0",
-    clientSecret: "aea9cfa37ca4e06a71963820e3d695d1b04fa9aa",
-    callbackURL: "http://localhost:5000/auth/github/callback",
+    clientID: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    callbackURL: process.env.GITHUB_CLIENT_CALLBACKURL,
     passReqToCallback: true
   },
   function(req, accessToken, refreshToken, profile, done) {
