@@ -25,7 +25,6 @@ angular.module('main', ['userHome', 'ui.router', 'call', 'user', 'connection', '
       $log.info("mainCtrl initialized...");
 
       $scope.user = userService;
-      $scope.contacts = [];
 
       connectionService.getConnection();
 

@@ -1,21 +1,32 @@
-<div class="text-center">
-  <form class="form-inline">
-    <div class="form-group">
-      <label for="searchInputField">Search for friends: </label>
-      <input ng-change="searchInputChange()" ng-model="searchInput" type="text" class="form-control" id="searchInputField" placeholder="username, email">
-    </div>
-  </form>
+<div class="row">
+  <div class="text-center">
+    <form class="form-inline">
+      <div class="form-group">
+        <label for="searchInputField">Search for friends: </label>
+        <input ng-change="searchInputChange()" ng-model="searchInput" type="text" class="form-control" id="searchInputField" placeholder="username, email">
+      </div>
+    </form>
 
-  <ul ng-if="userList" class="list-group">
-    <div ng-repeat="user in userList">
-      <li class="list-group-item" style="height:50px">
-        <img ng-if="user.photo" style="height:100%" src="{{user.photo}}" />
-        <i class="fa fa-{{user.type}} fa-fw"></i> {{user.displayName}} {{user.username}} {{user.email}}
-      </li>
-    </div>
-  </ul>
+    <ul ng-if="userList" class="list-group">
+      <div ng-repeat="user in userList">
+        <li ng-click="addToContacts(user)" class="list-group-item" style="height:50px">
+          <img ng-if="user.photo" style="height:100%" ng-src="{{user.photo}}" />
+          <i class="fa fa-{{user.type}} fa-fw"></i> {{user.displayName}} {{user.username}} {{user.email}}
+        </li>
+      </div>
+    </ul>
 
-  <i class="fa fa-external-link">
+    <i class="fa fa-external-link">
     Share your link -
     {{user.link}}</i>
+  </div>
+</div>
+
+<div class="row" style="margin-top:10px">
+  <div ng-if="contacts.length > 0" ng-repeat="contact in contacts">
+    <div ng-click="startCallTo(contact)" class="contact-item text-center col-lg-3 col-md-4 col-sm-4 col-xs-6">
+      <img class="contact-item-img img-thumbnail img-circle" style="width:100px" ng-if="contact.photo" style="height:100%" ng-src="{{contact.photo}}" />
+      <div class="contact-item-displayName">{{contact.displayName}}</div>
+    </div>
+  </div>
 </div>

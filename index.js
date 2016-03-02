@@ -10,7 +10,6 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var mongoose = require('mongoose');
 var User = require('./models/User');
-var UserContacts = require('./models/UserContacts');
 var flash = require('connect-flash');
 
 var connections = {};
@@ -51,7 +50,12 @@ require('./AuthLocalSignupStrategy');
 // load app routes
 require('./routes/Index')(app);
 require('./routes/Anonymous')(app);
+
+// load users routes
 require('./routes/Users')(app);
+
+// load contacts routes
+require('./routes/Contacts')(app);
 
 // load connection routes
 require('./routes/Connection')(app);

@@ -36,7 +36,7 @@ module.exports.sendToAll = function(to, data) {
     owner: to
   });
 
-  if (socketUrlList.length === 0) {
+  if (socketUrlList && socketUrlList.length === 0) {
     return false;
   }
 

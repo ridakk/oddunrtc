@@ -4,6 +4,13 @@ angular.module('userHome', ['contacts', 'util.pubsub'])
       $log.info("userHomeCtrl initialized...");
 
       $scope.userList = null;
+      $scope.contacts = [];
+
+      contactsService.getContacts().then(function(res) {
+        if (res.length > 0) {
+          $scope.contacts = res;
+        }
+      });
 
       $scope.startCallTo = function(contact) {
         pubsub.publish({
@@ -11,7 +18,7 @@ angular.module('userHome', ['contacts', 'util.pubsub'])
           subscriber: pubsubSubscriber.call_fsm,
           event: pubsubEvent.start_call_gui,
           msg: {
-            from: contact
+            to: contact.uuid
           }
         });
       };
@@ -19,6 +26,16 @@ angular.module('userHome', ['contacts', 'util.pubsub'])
       $scope.searchInputChange = function() {
         contactsService.getUsers($scope.searchInput).then(function(res) {
           $scope.userList = res;
+        });
+      };
+
+      $scope.addToContacts = function(user) {
+        contactsService.addContact(user.uuid).then(function(res) {
+          $scope.contacts.push({
+            uuid: user.uuid,
+            photo: user.photo,
+            displayName: user.displayName || user.username || user.email
+          });
         });
       };
 

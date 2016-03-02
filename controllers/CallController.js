@@ -82,8 +82,6 @@ exports.handlePut = function(params) {
     socketUrl = internalCall.ownerSocketId;
   }
 
-  console.log("int call %j", internalCall)
-
   retVal = SocketIoCtrl.sendToSocketUrl(socketUrl, params.reqData);
 
   if (retVal) {
