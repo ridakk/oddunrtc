@@ -25,7 +25,8 @@
 <div class="row" style="margin-top:10px">
   <div ng-if="contacts.length > 0" ng-repeat="contact in contacts">
     <div ng-click="startCallTo(contact)" class="contact-item text-center col-lg-3 col-md-4 col-sm-4 col-xs-6">
-      <img class="contact-item-img img-thumbnail img-circle" style="width:100px" ng-if="contact.photo" style="height:100%" ng-src="{{contact.photo}}" />
+      <img ng-if="contact.photo" class="contact-item-img img-thumbnail img-circle" style="width:100px" style="height:100%" ng-src="{{contact.photo}}" />
+      <i ng-if="!contact.photo" class="fa fa-{{contact.type}}" style="font-size:100px"></i>
       <div class="contact-item-displayName">{{contact.displayName}}</div>
     </div>
   </div>

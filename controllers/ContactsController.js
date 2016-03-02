@@ -45,7 +45,8 @@ exports.add = function(params) {
       userToAdd = {
         uuid: user.uuid,
         photo: user.photo,
-        displayName: user.displayName || user.username || user.email
+        displayName: user.displayName || user.username || user.email,
+        type: user.type
       };
 
       if (!contacts) {
