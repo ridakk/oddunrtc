@@ -7,6 +7,12 @@ angular.module('main', ['userHome', 'ui.router', 'call', 'user', 'connection', '
       $stateProvider
         .state('home', {
           url: '/',
+          params: {
+            errorCode: null,
+            errorText: null,
+            httpCode: null,
+            state: null
+          },
           templateUrl: '/main/js/home/user_home.html',
           controller: 'userHomeCtrl'
         })

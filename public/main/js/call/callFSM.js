@@ -16,6 +16,7 @@ angular.module('call')
             callFsmTasks.publish_create_outgoing_call,
             callFsmTasks.publish_location_change_to_call,
             // TODO may be there is a glare condition between url change and permission request
+            callFsmTasks.publish_call_state_init,
             callFsmTasks.publish_request_media_permission
           ]
         }],
@@ -41,7 +42,10 @@ angular.module('call')
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.create_offer_failure,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_setup_faiure,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }, {
           event: pubsubEvent.create_offer_success,
           performs: [callFsmTasks.publish_send_start_call_request]
@@ -53,7 +57,10 @@ angular.module('call')
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.send_start_call_request_failure,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_setup_faiure,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }, {
           event: pubsubEvent.send_start_call_request_success,
           performs: []
@@ -68,7 +75,10 @@ angular.module('call')
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_end_notify,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_declined,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }, {
           event: pubsubEvent.call_accepted_notify,
           performs: [callFsmTasks.publish_set_local_offer]
@@ -80,10 +90,16 @@ angular.module('call')
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_end_notify,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_ended,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }, {
           event: pubsubEvent.set_local_offer_failure,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_setup_faiure,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }, {
           event: pubsubEvent.set_local_offer_success,
           performs: []
@@ -95,7 +111,10 @@ angular.module('call')
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_end_notify,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_ended,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }, {
           event: pubsubEvent.call_answered_notify,
           performs: [callFsmTasks.publish_set_remote_answer]
@@ -107,10 +126,16 @@ angular.module('call')
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_end_notify,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_ended,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }, {
           event: pubsubEvent.set_remote_answer_failure,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_setup_faiure,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }, {
           event: pubsubEvent.set_remote_answer_success,
           performs: []
@@ -120,13 +145,19 @@ angular.module('call')
         loop: true,
         when: [{
           event: pubsubEvent.on_ice_connection_failed,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_ice_faiure,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }, {
           event: pubsubEvent.end_call_gui,
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_end_notify,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_ended,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }],
       };
 
@@ -144,7 +175,10 @@ angular.module('call')
       transitionsHashTable[pubsubEvent.on_incoming_call_notify][1] = {
         when: [, {
           event: pubsubEvent.call_end_notify,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_ended,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }, {
           event: pubsubEvent.create_peer_completed,
           performs: []
@@ -156,7 +190,10 @@ angular.module('call')
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_end_notify,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_ended,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }, {
           event: pubsubEvent.answer_call_gui,
           performs: [callFsmTasks.publish_send_accept_call_request]
@@ -168,10 +205,16 @@ angular.module('call')
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_end_notify,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_ended,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }, {
           event: pubsubEvent.send_accept_call_request_failure,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_setup_faiure,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }, {
           event: pubsubEvent.send_accept_call_request_success,
           performs: [callFsmTasks.publish_request_media_permission]
@@ -183,7 +226,10 @@ angular.module('call')
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_end_notify,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_ended,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }, {
           event: pubsubEvent.media_permission_rejected,
           performs: [callFsmTasks.broadcast_clear_resources]
@@ -201,10 +247,15 @@ angular.module('call')
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_end_notify,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_ended,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }, {
           event: pubsubEvent.set_remote_offer_failure,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [callFsmTasks.publish_call_state_setup_faiure,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }, {
           event: pubsubEvent.set_remote_offer_success,
           performs: [callFsmTasks.publish_create_answer]
@@ -216,7 +267,10 @@ angular.module('call')
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_end_notify,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_ended,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }, {
           event: pubsubEvent.create_answer_failure,
           performs: [callFsmTasks.broadcast_clear_resources]
@@ -231,10 +285,16 @@ angular.module('call')
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_end_notify,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_ended,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }, {
           event: pubsubEvent.send_answer_call_request_failure,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_setup_faiure,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }, {
           event: pubsubEvent.send_answer_call_request_success,
           performs: [callFsmTasks.publish_set_local_answer]
@@ -246,10 +306,16 @@ angular.module('call')
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_end_notify,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_ended,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }, {
           event: pubsubEvent.set_local_answer_failure,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_setup_faiure,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }, {
           event: pubsubEvent.set_local_answer_success,
           performs: []
@@ -259,13 +325,19 @@ angular.module('call')
         loop: true,
         when: [{
           event: pubsubEvent.on_ice_connection_failed,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_ice_faiure,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }, {
           event: pubsubEvent.end_call_gui,
           performs: [callFsmTasks.broadcast_clear_resources]
         }, {
           event: pubsubEvent.call_end_notify,
-          performs: [callFsmTasks.broadcast_clear_resources]
+          performs: [
+            callFsmTasks.publish_call_state_ended,
+            callFsmTasks.broadcast_clear_resources
+          ]
         }],
       };
 
@@ -361,6 +433,14 @@ angular.module('call')
     publish_set_remote_offer: "publish_set_remote_offer",
     publish_set_remote_answer: "publish_set_remote_answer",
     publish_location_change_to_call: "publish_location_change_to_call",
-    publish_add_local_stream: "publish_add_local_stream"
+    publish_add_local_stream: "publish_add_local_stream",
+    publish_call_state_init: "publish_call_state_init",
+    publish_call_state_ringing: "publish_call_state_ringing",
+    publish_call_state_in_call: "publish_call_state_in_call",
+    publish_call_state_declined: "publish_call_state_declined",
+    publish_call_state_ended: "publish_call_state_ended",
+    publish_call_state_no_answer: "publish_call_state_no_answer",
+    publish_call_state_ice_faiure: "publish_call_state_ice_faiure",
+    publish_call_state_setup_faiure: "publish_call_state_setup_faiure"
   })
   .run(['callFSM', function() {}]);
