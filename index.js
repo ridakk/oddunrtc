@@ -45,6 +45,7 @@ app.set('view engine', 'ejs');
 // load auth strategies
 require('./AuthGithubStrategy');
 require('./AuthFacebookStrategy');
+require('./AuthTwitterStrategy');
 require('./AuthLocalLoginStrategy');
 require('./AuthLocalSignupStrategy');
 
@@ -64,6 +65,7 @@ require('./routes/Connection')(app);
 // load auth routes
 require('./routes/AuthGithub')(app);
 require('./routes/AuthFacebook')(app);
+require('./routes/AuthTwitter')(app);
 require('./routes/AuthLocal')(app);
 
 // load contact routes

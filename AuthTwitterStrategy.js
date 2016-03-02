@@ -1,20 +1,19 @@
 var logger = require('bunyan').createLogger({
-    name: 'AuthFacebookStrategy'
+    name: 'AuthTwitterStrategy'
   }),
   passport = require('passport'),
   User = require('./models/User'),
   uuid = require('node-uuid'),
-  FacebookStrategy = require('passport-facebook').Strategy;
+  FacebookStrategy = require('passport-twitter').Strategy;
 
 passport.use(new FacebookStrategy({
-    clientID: process.env.FACEBOOK_CLIENT_ID,
-    clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-    callbackURL: process.env.FACEBOOK_CLIENT_CALLBACKURL,
-    profileFields: ['id', 'displayName', 'photos'],
+    consumerKey: process.env.TWITTER_CONSUMER_KEY,
+    consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
+    callbackURL: process.env.TWITTER_CONSUMER_CALLBACKURL,
     passReqToCallback: true
   },
   function(req, accessToken, refreshToken, profile, done) {
-    logger.info("facebook profile: %j", profile);
+    logger.info("twitter profile: %j", profile);
 
     // check if the user is already logged in
     if (!req.user) {
@@ -39,7 +38,7 @@ passport.use(new FacebookStrategy({
           newUser.uuid = uuid.v1();
           newUser.id = profile.id;
           newUser.link = "c2c_" + uuid.v1();
-          newUser.type = "facebook";
+          newUser.type = "twitter";
           newUser.token = accessToken;
           newUser.username = profile.username;
           newUser.displayName = profile.displayName;
