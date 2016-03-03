@@ -46,6 +46,7 @@ app.set('view engine', 'ejs');
 require('./AuthGithubStrategy');
 require('./AuthFacebookStrategy');
 require('./AuthTwitterStrategy');
+require('./AuthGoogleStrategy');
 require('./AuthLocalLoginStrategy');
 require('./AuthLocalSignupStrategy');
 
@@ -66,6 +67,7 @@ require('./routes/Connection')(app);
 require('./routes/AuthGithub')(app);
 require('./routes/AuthFacebook')(app);
 require('./routes/AuthTwitter')(app);
+require('./routes/AuthGoogle')(app);
 require('./routes/AuthLocal')(app);
 
 // load contact routes
