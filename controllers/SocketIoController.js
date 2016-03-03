@@ -47,11 +47,11 @@ module.exports.sendToAll = function(to, data) {
   return true;
 };
 
-module.exports.sendToAllExceptOwner = function(to, ownerSocket, data) {
+module.exports.sendToAllExceptOwner = function(data) {
   var socketUrlList;
 
   socketUrlList = sockets.getSocketUrlList({
-    owner: to
+    owner: data.targetUuid
   });
 
   if (socketUrlList.length === 0) {
@@ -59,8 +59,17 @@ module.exports.sendToAllExceptOwner = function(to, ownerSocket, data) {
   }
 
   for (var i = 0; i < socketUrlList.length; i++) {
-    if (socketUrlList[i] !== ownerSocket) {
-      io.to(socketUrlList[i]).emit('message', data);
+    if (socketUrlList[i] !== data.targetSocketId) {
+      io.to(socketUrlList[i]).emit('message', {
+        type: "call",
+        action: "end",
+        to: data.targetUuid,
+        data: {
+          msg: {
+            callId: data.callId
+          }
+        }
+      });
     }
   }
 

@@ -76,8 +76,7 @@ exports.handlePut = function(params) {
     internalCall.targetSocketId = params.reqData.socketId;
     exports.handleDelete({
       callId: params.callId,
-      reqUser: params.reqUser,
-      cancelToOtherSockets: true
+      sendCancelToOtherSockets: true
     });
   }
 
@@ -116,8 +115,8 @@ exports.handleDelete = function(params) {
     callId: params.callId
   });
 
-  if (cancelToOtherSockets) {
-    SocketIoCtrl.sendToAllExceptOwner(socketUrl, internalCall.targetSocketId, params.reqData);
+  if (params.sendCancelToOtherSockets) {
+    SocketIoCtrl.sendToAllExceptOwner(internalCall);
   } else {
     if (internalCall.ownerUuid === params.reqUser.uuid) {
       socketUrl = internalCall.targetSocketId;
