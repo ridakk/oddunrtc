@@ -1,25 +1,25 @@
 var logger = require('bunyan').createLogger({
-    name: 'AuthInstagramStrategy'
+    name: 'AuthGoogleStrategy'
   }),
   passport = require('passport'),
-  User = require('./models/User'),
+  User = require('./../models/User'),
   uuid = require('node-uuid'),
-  InstagramStrategy = require('passport-instagram').Strategy;
+  GoogleStrategy = require('passport-google-oauth20').Strategy;
 
-passport.use(new InstagramStrategy({
-    clientID: process.env.INSTAGRAM_CLIENT_ID,
-    clientSecret: process.env.INSTAGRAM_CLIENT_SECRET,
-    callbackURL: process.env.INSTAGRAM_CLIENT_CALLBACKURL,
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: process.env.GOOGLE_CLIENT_CALLBACKURL,
     passReqToCallback: true
   },
   function(req, accessToken, refreshToken, profile, done) {
-    logger.info("instagram profile: %j", profile);
+    logger.info("google profile: %j", profile);
 
     // check if the user is already logged in
     if (!req.user) {
       logger.info("user in the request : %j", req.user);
 
-      // find the user in the database based on their instagram id
+      // find the user in the database based on their github id
       User.findOne({
         'id': profile.id
       }, function(err, user) {
@@ -40,11 +40,11 @@ passport.use(new InstagramStrategy({
           newUser.uuid = uuid.v1();
           newUser.id = profile.id;
           newUser.link = "c2c_" + uuid.v1();
-          newUser.type = "instagram";
+          newUser.type = "google";
           newUser.token = accessToken;
           newUser.username = profile.username;
           newUser.displayName = profile.displayName;
-          newUser.photo = profile._json.data.profile_picture;
+          newUser.photo = profile.photos[0].value;
 
           logger.info("new user to be persisted in db : %j", newUser);
           // save our user to the database

@@ -43,13 +43,13 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 // load auth strategies
-require('./AuthGithubStrategy');
-require('./AuthFacebookStrategy');
-require('./AuthTwitterStrategy');
-require('./AuthGoogleStrategy');
-require('./AuthInstagramStrategy');
-require('./AuthLocalLoginStrategy');
-require('./AuthLocalSignupStrategy');
+require('./auth/AuthGithubStrategy');
+require('./auth/AuthFacebookStrategy');
+require('./auth/AuthTwitterStrategy');
+require('./auth/AuthGoogleStrategy');
+require('./auth/AuthInstagramStrategy');
+require('./auth/AuthLocalLoginStrategy');
+require('./auth/AuthLocalSignupStrategy');
 
 // load app routes
 require('./routes/Index')(app);

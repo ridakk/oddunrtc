@@ -1,25 +1,25 @@
 var logger = require('bunyan').createLogger({
-    name: 'AuthFacebookStrategy'
+    name: 'AuthInstagramStrategy'
   }),
   passport = require('passport'),
-  User = require('./models/User'),
+  User = require('./../models/User'),
   uuid = require('node-uuid'),
-  FacebookStrategy = require('passport-facebook').Strategy;
+  InstagramStrategy = require('passport-instagram').Strategy;
 
-passport.use(new FacebookStrategy({
-    clientID: process.env.FACEBOOK_CLIENT_ID,
-    clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-    callbackURL: process.env.FACEBOOK_CLIENT_CALLBACKURL,
-    profileFields: ['id', 'displayName', 'photos'],
+passport.use(new InstagramStrategy({
+    clientID: process.env.INSTAGRAM_CLIENT_ID,
+    clientSecret: process.env.INSTAGRAM_CLIENT_SECRET,
+    callbackURL: process.env.INSTAGRAM_CLIENT_CALLBACKURL,
     passReqToCallback: true
   },
   function(req, accessToken, refreshToken, profile, done) {
-    logger.info("facebook profile: %j", profile);
+    logger.info("instagram profile: %j", profile);
 
     // check if the user is already logged in
     if (!req.user) {
+      logger.info("user in the request : %j", req.user);
 
-      // find the user in the database based on their facebook id
+      // find the user in the database based on their instagram id
       User.findOne({
         'id': profile.id
       }, function(err, user) {
@@ -34,17 +34,19 @@ passport.use(new FacebookStrategy({
           return done(null, user); // user found, return that user
         } else {
           // if there is no user found with that github id
+
           var newUser = new User();
 
           newUser.uuid = uuid.v1();
           newUser.id = profile.id;
           newUser.link = "c2c_" + uuid.v1();
-          newUser.type = "facebook";
+          newUser.type = "instagram";
           newUser.token = accessToken;
           newUser.username = profile.username;
           newUser.displayName = profile.displayName;
-          newUser.photo = profile.photos[0].value;
+          newUser.photo = profile._json.data.profile_picture;
 
+          logger.info("new user to be persisted in db : %j", newUser);
           // save our user to the database
           newUser.save(function(err) {
             if (err)
