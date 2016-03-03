@@ -1,6 +1,6 @@
-angular.module('userHome', ['contacts', 'util.pubsub'])
-  .controller('userHomeCtrl', ["$scope", "$log", "$stateParams", "contactsService", "pubsub", "pubsubSubscriber", "pubsubEvent",
-    function($scope, $log, $stateParams, contactsService, pubsub, pubsubSubscriber, pubsubEvent) {
+angular.module('userHome', ['contacts', 'util.pubsub', 'user'])
+  .controller('userHomeCtrl', ["$scope", "$log", "$stateParams", "contactsService", "userService", "pubsub", "pubsubSubscriber", "pubsubEvent",
+    function($scope, $log, $stateParams, contactsService, userService, pubsub, pubsubSubscriber, pubsubEvent) {
       var call_state_type = "info",
         call_state_text;
       $log.info("userHomeCtrl initialized...");
@@ -22,6 +22,7 @@ angular.module('userHome', ['contacts', 'util.pubsub'])
 
       $scope.userList = null;
       $scope.contacts = [];
+      $scope.user = userService;
 
       contactsService.getContacts().then(function(res) {
         if (res.length > 0) {
@@ -41,20 +42,38 @@ angular.module('userHome', ['contacts', 'util.pubsub'])
       };
 
       $scope.searchInputChange = function() {
-        contactsService.getUsers($scope.searchInput).then(function(res) {
-          $scope.userList = res;
-        });
+        if ($scope.searchInput &&
+          $scope.searchInput.trim().length > 2) {
+          contactsService.getUsers($scope.searchInput).then(function(res) {
+            $scope.userList = res;
+          });
+        }
       };
 
       $scope.addToContacts = function(user) {
-        contactsService.addContact(user.uuid).then(function(res) {
-          $scope.contacts.push({
-            uuid: user.uuid,
-            photo: user.photo,
-            displayName: user.displayName || user.username || user.email,
-            type: user.type
+        var i, userExists = false;
+
+        for (var i in $scope.contacts) {
+          if ($scope.contacts.hasOwnProperty(i)) {
+            if ($scope.contacts[i].uuid === user.uuid) {
+              userExists = true;
+            }
+          }
+        }
+
+        if (!userExists) {
+          contactsService.addContact(user.uuid).then(function(res) {
+            $scope.contacts.push({
+              uuid: user.uuid,
+              photo: user.photo,
+              displayName: user.displayName || user.username || user.email,
+              type: user.type
+            });
           });
-        });
+        }
+
+        $scope.userList = null;
+        $scope.searchInput = "";
       };
 
     }
