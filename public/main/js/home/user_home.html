@@ -2,16 +2,16 @@
   <div class="text-center">
     <form class="form-inline">
       <div class="form-group">
-        <label for="searchInputField">Search for friends: </label>
+        <label for="searchInputField">Search users and add to your list: </label>
         <input ng-change="searchInputChange()" ng-model="searchInput" type="text" class="form-control" id="searchInputField" placeholder="username, email">
       </div>
     </form>
 
     <ul ng-if="userList" class="list-group">
-      <div ng-repeat="user in userList">
-        <li ng-click="addToContacts(user)" class="list-group-item" style="height:50px">
-          <img ng-if="user.photo" style="height:100%" ng-src="{{user.photo}}" />
-          <i class="fa fa-{{user.type}} fa-fw"></i> {{user.displayName}} {{user.username}} {{user.email}}
+      <div ng-repeat="item in userList">
+        <li ng-if="item.uuid !== user.uuid" ng-click="addToContacts(item)" class="list-group-item" style="height:50px">
+          <img ng-if="item.photo" style="height:100%" ng-src="{{item.photo}}" />
+          <i class="fa fa-{{item.type}} fa-fw"></i> {{item.displayName}} {{item.username}} {{item.email}}
         </li>
       </div>
     </ul>
@@ -28,9 +28,9 @@
 
 <div class="row" style="margin-top:10px">
   <div ng-if="contacts.length > 0" ng-repeat="contact in contacts">
-    <div ng-click="startCallTo(contact)" class="contact-item text-center col-lg-3 col-md-4 col-sm-4 col-xs-6">
-      <img ng-if="contact.photo" class="contact-item-img img-thumbnail img-circle" style="width:100px" style="height:100%" ng-src="{{contact.photo}}" />
-      <i ng-if="!contact.photo" class="fa fa-{{contact.type}}" style="font-size:100px"></i>
+    <div class="contact-item text-center col-lg-3 col-md-4 col-sm-4 col-xs-6">
+      <img ng-if="contact.photo" ng-click="startCallTo(contact)" class="contact-item-img img-thumbnail img-circle" style="width:100px" style="height:100%" ng-src="{{contact.photo}}" />
+      <i ng-if="!contact.photo" ng-click="startCallTo(contact)" class="fa fa-{{contact.type}}" style="font-size:100px"></i>
       <div class="contact-item-displayName">{{contact.displayName}}</div>
     </div>
   </div>

@@ -1,24 +1,25 @@
 var logger = require('bunyan').createLogger({
-    name: 'AuthTwitterStrategy'
+    name: 'AuthGithubStrategy'
   }),
   passport = require('passport'),
-  User = require('./models/User'),
+  User = require('./../models/User'),
   uuid = require('node-uuid'),
-  FacebookStrategy = require('passport-twitter').Strategy;
+  GithubStrategy = require('passport-github').Strategy;
 
-passport.use(new FacebookStrategy({
-    consumerKey: process.env.TWITTER_CONSUMER_KEY,
-    consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
-    callbackURL: process.env.TWITTER_CONSUMER_CALLBACKURL,
+passport.use(new GithubStrategy({
+    clientID: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    callbackURL: process.env.GITHUB_CLIENT_CALLBACKURL,
     passReqToCallback: true
   },
   function(req, accessToken, refreshToken, profile, done) {
-    logger.info("twitter profile: %j", profile);
+    logger.info("github profile: %j", profile);
 
     // check if the user is already logged in
     if (!req.user) {
+      logger.info("user in the request : %j", req.user);
 
-      // find the user in the database based on their facebook id
+      // find the user in the database based on their github id
       User.findOne({
         'id': profile.id
       }, function(err, user) {
@@ -33,17 +34,19 @@ passport.use(new FacebookStrategy({
           return done(null, user); // user found, return that user
         } else {
           // if there is no user found with that github id
+
           var newUser = new User();
 
           newUser.uuid = uuid.v1();
           newUser.id = profile.id;
           newUser.link = "c2c_" + uuid.v1();
-          newUser.type = "twitter";
+          newUser.type = "github";
           newUser.token = accessToken;
           newUser.username = profile.username;
           newUser.displayName = profile.displayName;
           newUser.photo = profile.photos[0].value;
 
+          logger.info("new user to be persisted in db : %j", newUser);
           // save our user to the database
           newUser.save(function(err) {
             if (err)

@@ -33,6 +33,8 @@ angular.module('webrtc.peerService', ['util.pubsub'])
           },
           "optional": [{
             "googIPv6": true
+          }, {
+            "DtlsSrtpKeyAgreement": true
           }]
         });
 
@@ -335,20 +337,22 @@ angular.module('webrtc.peerService', ['util.pubsub'])
         event: pubsubEvent.clear_resources,
         callback: function(data) {
           $log.info("peer service: deleting call object: " + data.msg.callId);
-          calls[data.msg.callId].pc.onicecandidate = null;
-          calls[data.msg.callId].pc.oniceconnectionstatechange = null;
-          calls[data.msg.callId].pc.onaddstream = null;
+          if (calls[data.msg.callId].pc) {
+            calls[data.msg.callId].pc.onicecandidate = null;
+            calls[data.msg.callId].pc.oniceconnectionstatechange = null;
+            calls[data.msg.callId].pc.onaddstream = null;
 
-          // TODO release local stream if peer has one
-          // adaptor shim does not handle media stop
-          if (calls[data.msg.callId].pc.getLocalStreams() &&
-            calls[data.msg.callId].pc.getLocalStreams()[0]) {
-            calls[data.msg.callId].pc.getLocalStreams()[0].getTracks()[0].stop();
-            calls[data.msg.callId].pc.getLocalStreams()[0].getTracks()[1].stop();
+            // TODO release local stream if peer has one
+            // adaptor shim does not handle media stop
+            if (calls[data.msg.callId].pc.getLocalStreams() &&
+              calls[data.msg.callId].pc.getLocalStreams()[0]) {
+              calls[data.msg.callId].pc.getLocalStreams()[0].getTracks()[0].stop();
+              calls[data.msg.callId].pc.getLocalStreams()[0].getTracks()[1].stop();
+            }
+
+            calls[data.msg.callId].pc.close();
+            calls[data.msg.callId].pc = null;
           }
-
-          calls[data.msg.callId].pc.close();
-          calls[data.msg.callId].pc = null;
 
           delete calls[data.msg.callId];
         }

@@ -1,5 +1,5 @@
 var passport = require('passport'),
-  User = require('./models/User'),
+  User = require('./../models/User'),
   uuid = require('node-uuid'),
   LocalStrategy = require('passport-local').Strategy;
 
