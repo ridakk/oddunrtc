@@ -9,6 +9,8 @@ angular.module('userHome', ['contacts', 'util.pubsub', 'user'])
       $log.info("stateParams httpCode: " + $stateParams.httpCode);
       $log.info("stateParams state: " + $stateParams.state);
 
+      //TODO: all controllers should also wait for /connection response
+
       if ($stateParams.state) {
         if ($stateParams.errorCode) {
           call_state_type = "warning"

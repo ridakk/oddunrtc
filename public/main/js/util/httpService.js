@@ -1,5 +1,5 @@
 angular.module('util.http', [])
-  .service('httpService', ["$http", "$q", function($http, $q) {
+  .service('httpService', ["$http", "$q", "$log",function($http, $q, $log) {
     var self = this;
 
     self.request = function(params) {
@@ -11,6 +11,13 @@ angular.module('util.http', [])
       then(function(response) {
         deferred.resolve(response.data);
       }, function(response) {
+
+        if(response.status ===  401) {
+          $log.info("Unauthorized, hard restarting client...");
+          window.location.href = ".";
+          return;
+        }
+
         deferred.reject(response.data);
       });
       return deferred.promise;
