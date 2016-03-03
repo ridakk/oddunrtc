@@ -1,12 +1,12 @@
 angular.module('connection')
-  .service('connectionService', ["$rootScope", "$log", "httpService", "userService", "locationService", "pubsub", "pubsubSubscriber", "pubsubEvent",
-    function($rootScope, $log, httpService, userService, locationService, pubsub, pubsubSubscriber, pubsubEvent) {
+  .service('connectionService', ["$q", "$rootScope", "$log", "httpService", "userService", "locationService", "pubsub", "pubsubSubscriber", "pubsubEvent",
+    function($q, $rootScope, $log, httpService, userService, locationService, pubsub, pubsubSubscriber, pubsubEvent) {
       var self = this,
         socket;
 
       self.getConnection = function() {
-        var i;
-        return httpService.get({
+        var i, deferred = $q.defer();
+        httpService.get({
           url: window.location.href.replace(/\/home.*/, "") + "/connection"
         }).then(function(data) {
           userService.connected = true
@@ -85,6 +85,7 @@ angular.module('connection')
 
           socket.on('session', function(data) {
             userService.socketId = data.id;
+            deferred.resolve();
           });
 
           socket.on('disconnect', function() {
@@ -94,6 +95,8 @@ angular.module('connection')
             locationService.toLogin();
           });
         });
+
+        return deferred.promise;
       };
 
       self.sendMessage = function() {
