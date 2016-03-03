@@ -33,6 +33,8 @@ angular.module('webrtc.peerService', ['util.pubsub'])
           },
           "optional": [{
             "googIPv6": true
+          }, {
+            "DtlsSrtpKeyAgreement": true
           }]
         });
 
