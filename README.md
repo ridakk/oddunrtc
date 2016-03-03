@@ -34,6 +34,9 @@ TWITTER_CONSUMER_CALLBACKURL='http://localhost:5000/auth/twitter/callback'
 GOOGLE_CLIENT_ID='Google app. client id'
 GOOGLE_CLIENT_SECRET='Google app. client secret'
 GOOGLE_CLIENT_CALLBACKURL='http://localhost:5000/auth/google/callback'
+INSTAGRAM_CLIENT_ID='Google app. client id'
+INSTAGRAM_CLIENT_SECRET='Google app. client secret'
+INSTAGRAM_CLIENT_CALLBACKURL='http://localhost:5000/auth/instagram/callback'
 ```
 
 ### Standalone usage
