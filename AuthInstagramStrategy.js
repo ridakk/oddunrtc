@@ -44,7 +44,7 @@ passport.use(new InstagramStrategy({
           newUser.token = accessToken;
           newUser.username = profile.username;
           newUser.displayName = profile.displayName;
-          newUser.photo = profile.photos[0].value;
+          newUser.photo = profile._json.data.profile_picture;
 
           logger.info("new user to be persisted in db : %j", newUser);
           // save our user to the database
