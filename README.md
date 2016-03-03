@@ -31,6 +31,9 @@ FACEBOOK_CLIENT_CALLBACKURL='http://localhost:5000/auth/facebook/callback'
 TWITTER_CONSUMER_KEY='Twitter app. consumer key'
 TWITTER_CONSUMER_SECRET='Twitter app. consumer secret'
 TWITTER_CONSUMER_CALLBACKURL='http://localhost:5000/auth/twitter/callback'
+GOOGLE_CLIENT_ID='Google app. client id'
+GOOGLE_CLIENT_SECRET='Google app. client secret'
+GOOGLE_CLIENT_CALLBACKURL='http://localhost:5000/auth/google/callback'
 ```
 
 ### Standalone usage
