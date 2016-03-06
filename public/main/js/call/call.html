@@ -2,9 +2,20 @@
 <div id="videoContainer">
   <video class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="localStream" autoplay muted></video>
   <video class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="remoteStream" autoplay></video>
-  <div class="callControlButtons btn-group" role="group" aria-label="...">
-    <button ng-click="mute()" type="button" class="btn btn-default">{{muteState}}</button>
-    <button ng-click="end()" type="button" class="btn btn-danger">End</button>
+  <div class="text-center callControlButtons">
+    <span ng-if="muteState === 'mute'" ng-click="mute()" class="mute-icon fa-stack fa-2x">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-microphone-slash fa-stack-1x fa-inverse"></i>
+    </span>
+    <span ng-if="muteState === 'unmute'" ng-click="mute()" class="mute-icon fa-stack fa-2x">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-microphone fa-stack-1x fa-inverse"></i>
+    </span>
+    <span ng-click="end()" class="end-icon fa-stack fa-2x">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-phone fa-stack-1x fa-inverse"></i>
+    </span>
+
   </div>
 </div>
 <div id="incomingCallModal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
