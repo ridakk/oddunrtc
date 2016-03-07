@@ -12,6 +12,9 @@ angular.module('util.location', ['ui.router', 'util.pubsub'])
         changeUrlTo({
           to: "call",
           params: {
+            from: data.msg.from,
+            fromPhoto: data.msg.fromPhoto,
+            fromType: data.msg.fromType,
             callId: data.msg.callId
           }
         });

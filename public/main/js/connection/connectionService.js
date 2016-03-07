@@ -34,6 +34,8 @@ angular.module('connection')
                   event: pubsubEvent.on_incoming_call_notify,
                   msg: {
                     from: data.from,
+                    fromPhoto: data.fromPhoto,
+                    fromType: data.fromType,
                     // TODO who is adding second data object in message
                     remoteSdp: data.data.msg.sdp,
                     callId: data.data.msg.callId

@@ -53,16 +53,14 @@
   color: slategrey;
   opacity: 0.5;
 }
-
-.mute-icon:hover {
-  opacity: 1;
-}
-
 .end-icon {
   color: red;
   opacity: 0.5;
 }
-
-.end-icon:hover {
+.answer-icon {
+  color: green;
+  opacity: 0.5;
+}
+.mute-icon:hover, .end-icon:hover, .answer-icon:hover {
   opacity: 1;
 }

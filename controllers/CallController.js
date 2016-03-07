@@ -31,12 +31,16 @@ exports.handlePost = function(params) {
     callId: params.callId,
     ownerUuid: params.reqUser.uuid,
     ownerDisplayName: reqUserDisplayName,
+    ownerPhoto: params.reqUser.photo,
+    ownerType: params.reqUser.type,
     ownerSocketId: params.reqData.socketId,
     targetUuid: params.reqData.to,
     targetSocketId: null,
   });
 
   params.reqData.from = reqUserDisplayName;
+  params.reqData.fromPhoto = params.reqUser.photo;
+  params.reqData.fromType = params.reqUser.type;
   retVal = SocketIoCtrl.sendToAll(params.reqData.to, params.reqData);
 
   if (retVal) {
