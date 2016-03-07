@@ -11,6 +11,9 @@ function isCallIdExists(callId) {
   }) ? true : false;
 }
 
+//TODO need to figure out a proper way of colleting call metrics
+//TODO answered call count, declined call count etc...
+
 exports.handlePost = function(params) {
   var deferred = Q.defer(),
     retVal,
@@ -38,6 +41,8 @@ exports.handlePost = function(params) {
     targetSocketId: null,
   });
 
+  //TODO do we need to check is reqData.to exists in db or not?
+
   params.reqData.from = reqUserDisplayName;
   params.reqData.fromPhoto = params.reqUser.photo;
   params.reqData.fromType = params.reqUser.type;
@@ -48,6 +53,8 @@ exports.handlePost = function(params) {
       httpCode: 201
     });
   } else {
+    //TODO create a missed call entry for reqUser.uuid
+    //TODO store from, fromPhoto, fromType and Date
     deferred.reject({
       httpCode: 404,
       errorCode: 1002,
@@ -75,6 +82,12 @@ exports.handlePut = function(params) {
   internalCall = Calls.get({
     callId: params.callId
   });
+
+  //TODO check is owner of call object and reqUser is same, send 405 otherwise
+  //TODO how to authorize put requests from target ?
+  //TODO validating with owner or target uuid will lead other instance of same
+  //TODO user to interact with call that is running on a different instance
+  //TODO if ok, this can be considered a way of call grab?
 
   if (params.reqData.action === "accept") {
     internalCall.targetSocketId = params.reqData.socketId;
@@ -118,6 +131,11 @@ exports.handleDelete = function(params) {
   internalCall = Calls.get({
     callId: params.callId
   });
+
+  //TODO check is owner of call object and reqUser is same, send 405 otherwise
+  //TODO how to authorize put requests from target ?
+  //TODO validating with owner or target uuid will lead other instance of same
+  //TODO user to end a call that is running on a different instance
 
   if (params.sendCancelToOtherSockets) {
     SocketIoCtrl.sendToAllExceptOwner(internalCall);
