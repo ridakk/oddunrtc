@@ -140,6 +140,7 @@ exports.handleDelete = function(params) {
   if (params.sendCancelToOtherSockets) {
     SocketIoCtrl.sendToAllExceptOwner(internalCall);
   } else {
+    //TODO duplicate lines in handle
     if (internalCall.ownerUuid === params.reqUser.uuid) {
       socketUrl = internalCall.targetSocketId;
     } else {
