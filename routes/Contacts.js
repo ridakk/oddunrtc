@@ -1,5 +1,5 @@
 var logger = require('bunyan').createLogger({
-    name: 'routes.Connection'
+    name: 'routes.Contacts'
   }),
   Contacts = require('./../models/Contacts'),
   ContactsCtrl = require('./../controllers/ContactsController'),

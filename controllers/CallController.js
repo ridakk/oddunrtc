@@ -2,6 +2,7 @@ var logger = require('bunyan').createLogger({
     name: 'controllers.CallController'
   }),
   SocketIoCtrl = require('./../controllers/SocketIoController'),
+  MissedCallsCtrl = require('./../controllers/MissedCallsController'),
   Q = require("q"),
   Calls = require('./../models/Calls');
 
@@ -53,8 +54,18 @@ exports.handlePost = function(params) {
       httpCode: 201
     });
   } else {
-    //TODO create a missed call entry for reqUser.uuid
-    //TODO store from, fromPhoto, fromType and Date
+    MissedCallsCtrl.add({
+      uuid: params.reqData.to,
+      missedCall: {
+        fromUuid: params.reqUser.uuid,
+        fromDisplayName: reqUserDisplayName,
+        fromPhoto: params.reqUser.photo,
+        fromType: params.reqUser.type,
+        date: Date(),
+        reason: 1002
+      }
+    })
+
     deferred.reject({
       httpCode: 404,
       errorCode: 1002,

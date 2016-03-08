@@ -11,15 +11,19 @@
         </button>
         <a class="navbar-brand" href="#">OdunRtc</a>
       </div>
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-5">
-        <p class="navbar-text navbar-right">Signed in
-          <i class="fa fa-{{user.type}}">
-            {{user.displayName}}</i>
-          <a href="/logout">
-            <i class="fa fa-sign-out"></i>
-          </a>
+      <div class="navbar-collapse collapse" id="bs-example-navbar-collapse-5" aria-expanded="false" style="height: 1px;">
 
-        </p>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#">Inbox <span class="badge">{{missedCalls.length}}</span></a></li>
+
+          <li style="display: inline-block;margin: 0px 0px 0px 15px;">Signed in
+            <i class="fa fa-user">
+              test@test.com</i>
+            <a href="/logout" style="display: inline-block;">
+              <i class="fa fa-sign-out fa-2x"></i>
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
   </nav>
