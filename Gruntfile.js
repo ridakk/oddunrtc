@@ -23,6 +23,11 @@ module.exports = function(grunt) {
         files: {
           'public/dist/anonymous_app.min.js': ['public/dist/anonymous_app.js']
         }
+      },
+      widget: {
+        files: {
+          'public/dist/widget.min.js': ['public/main/js/widget/widget.js']
+        }
       }
     }
   });
