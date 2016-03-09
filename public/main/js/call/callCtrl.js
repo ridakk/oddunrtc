@@ -65,6 +65,9 @@ angular.module('call')
         $scope.showCallButtons = false;
         $("#incomingCallModal").modal();
       }
+      else {
+        $scope.showCallButtons = true;
+      }
 
       $scope.$on("$destroy", function() {
         $('#incomingCallModal').remove();
