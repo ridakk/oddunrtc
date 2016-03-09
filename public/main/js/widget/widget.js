@@ -1,4 +1,4 @@
-(function() {
+(function(window, document) {
   var button = document.createElement('button');
   button.type = "submit";
   button.id = "odun-rtc-video-widget-button";
@@ -20,4 +20,4 @@
     window.open('http://localhost:5000/a/c2c_bc7ba9a0-dec6-11e5-8bac-753c65bebdb9', '_blank', 'width=640,height=480');
   });
 
-})();
+})(window, document);
