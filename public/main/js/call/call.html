@@ -24,11 +24,11 @@
         <img ng-if="fromPhoto" class="img-thumbnail img-circle" style="width:100px" style="height:100%" ng-src="{{fromPhoto}}" />
         <i ng-if="!fromPhoto" class="fa fa-{{fromType}}" style="font-size:100px"></i>
         <div>{{from}} is calling...</div>
-        <span ng-click="answer()" class="answer-icon fa-stack fa-2x">
+        <span ng-click="end()" class="end-icon fa-stack fa-2x">
             <i class="fa fa-circle fa-stack-2x"></i>
             <i class="fa fa-phone fa-stack-1x fa-inverse"></i>
         </span>
-        <span ng-click="end()" class="end-icon fa-stack fa-2x">
+        <span ng-click="answer()" class="answer-icon fa-stack fa-2x">
             <i class="fa fa-circle fa-stack-2x"></i>
             <i class="fa fa-phone fa-stack-1x fa-inverse"></i>
         </span>
