@@ -2,6 +2,7 @@
   "public/main/js/main/main.js",
   "public/main/js/home/userHomeCtrl.js",
   "public/main/js/user/user.js",
+  "public/main/js/user/userCtrl.js",
   "public/main/js/util/httpService.js",
   "public/main/js/util/locationService.js",
   "public/main/js/util/pubsub.js",

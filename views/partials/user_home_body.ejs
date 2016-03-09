@@ -17,10 +17,11 @@
           <li ng-if="missedCalls.length > 0"><a href="#">Inbox <span class="badge">{{missedCalls.length}}</span></a></li>
 
           <li style="display: inline-block;margin: 0px 0px 0px 15px;">Signed in
-            <i class="fa fa-user">
-              test@test.com</i>
+            <a href="#/user">
+              <i class="fa fa-{{user.type}}"> {{user.displayName}} </i>
+            </a>
             <a href="/logout" style="display: inline-block;">
-              <i class="fa fa-sign-out fa-2x"></i>
+              <iclass="fa fa-sign-out fa-2x"></i>
             </a>
           </li>
         </ul>

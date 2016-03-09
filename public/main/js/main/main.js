@@ -16,6 +16,11 @@ angular.module('main', ['userHome', 'ui.router', 'call', 'user', 'connection', '
           templateUrl: '/main/js/home/user_home.html',
           controller: 'userHomeCtrl'
         })
+        .state('user', {
+          url: '/user',
+          templateUrl: '/main/js/user/user.html',
+          controller: 'userCtrl'
+        })
         .state('call', {
           url: '/call',
           params: {

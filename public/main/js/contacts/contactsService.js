@@ -1,6 +1,6 @@
 angular.module('contacts')
-  .service('contactsService', ["$q", "httpService", "userService",
-    function($q, httpService, userService) {
+  .service('contactsService', ["$q", "httpService",
+    function($q, httpService) {
       var self = this,
         contacts;
 

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+    <title>odunRTC - Call Page</title>
+    <link href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link href="../css/main.css" rel="stylesheet">
+    <link href="../css/lib.css" rel="stylesheet">
+    <script src="../js/lib.js"></script>
+    <script>
+        jQuery(document).ready(function() {
+            jQuery('.callArea').hover(function() {
+                jQuery('.callButton').animate({
+                    top: '20px'
+                }, 10, "linear");
+            }, function() {
+                jQuery('.callButton').animate({
+                    top: '-40px'
+                }, 10, "linear");
+            });
+        });
+    </script>
+</head>
+
+<body class="callPage">
+    <div class="container">
+        <div class="row header">
+            <div class="col span_1 logoDiv"><a href="index.html"><i class="fa fa-opera fa-3x"></i></a></div>
+            <div class="col span_8 talkingWith">Talking with Chrysanthos Lefteris</div>
+            <div class="col span_3 profileDiv">
+                <div class="profileName">Thanasis Mihalis</div>
+                <img src="../img/profile.jpg">
+            </div>
+        </div>
+
+        <div class="clr"></div>
+
+        <div class="row pageContent">
+            <div class="col span_1 sidebar">
+                <ul>
+                    <li title="Home"><a href="javascript:void(0)"><i class="fa fa-home fa-2x"></i></a></li>
+                    <li title="Favorites"><a href="javascript:void(0)"><i class="fa fa-bookmark-o fa-2x"></i></a></li>
+                    <li title="Contact List"><a href="javascript:void(0)"><i class="fa fa-user fa-2x"></i></a></li>
+                </ul>
+            </div>
+            <div class="col span_11 callArea">
+                <div class="callButtons">
+                    <div class="callEndButton callButton" title="Call End"><i class="fa fa-phone fa-2x"></i></div>
+                    <div class="callMuteButton callButton" title="Microphone Mute"><i class="fa fa-microphone-slash fa-2x"></i></div>
+                    <div class="callUnmuteButton callButton" title="Microphone Unmute"><i class="fa fa-microphone fa-2x"></i></div>
+                    <div class="callHoldButton callButton" title="Call Hold"><i class="fa fa-pause fa-2x"></i></div>
+                    <div class="callUnholdButton callButton" title="Call Unhold"><i class="fa fa-play fa-2x"></i></div>
+                    <div class="callStartVideoButton callButton" title="Start Video"><i class="fa fa-video-camera fa-2x"></i></div>
+                    <div class="callStopVideoButton callButton" title="Stop Video"><i class="fa fa-video-camera fa-2x"></i></div>
+                </div>
+                <div class="remoteVideo">
+                    <video src="http://ak4.picdn.net/shutterstock/videos/4395500/preview/stock-footage-portrait-of-beautiful-mature-woman-in-soft-natural-light.mp4" type="video/mp4"></video>
+                </div>
+                <div class="localVideo">
+                    <video src="http://ak3.picdn.net/shutterstock/videos/4023262/preview/stock-footage-portrait-of-happy-young-man-in-the-city.mp4" type="video/mp4"></video>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
