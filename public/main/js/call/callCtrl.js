@@ -1,6 +1,6 @@
 angular.module('call')
-  .controller('CallCtrl', ["$scope", "$log", "$stateParams", "callService", "userService",
-    function($scope, $log, $stateParams, callService, userService) {
+  .controller('CallCtrl', ["$scope", "$log", "$stateParams", "callService",
+    function($scope, $log, $stateParams, callService) {
       $log.info("CallCtrl initialized... callId: " + $stateParams.callId);
 
       $scope.callId = $stateParams.callId;
