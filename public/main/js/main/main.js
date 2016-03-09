@@ -1,4 +1,4 @@
-angular.module('main', ['userHome', 'ui.router', 'call', 'user', 'connection', 'webrtc.mediaService', 'webrtc.peerService'])
+angular.module('main', ['userHome', 'ui.router', 'call', 'user', 'connection', 'webrtc.mediaService', 'webrtc.peerService', 'missedCall'])
   .config(['$stateProvider', '$urlRouterProvider',
     function($stateProvider, $urlRouterProvider) {
 
@@ -24,6 +24,9 @@ angular.module('main', ['userHome', 'ui.router', 'call', 'user', 'connection', '
         .state('call', {
           url: '/call',
           params: {
+            from: undefined,
+            fromPhoto: undefined,
+            fromType: undefined,
             callId: undefined
           },
           templateUrl: '/main/js/call/call.html',
@@ -31,14 +34,18 @@ angular.module('main', ['userHome', 'ui.router', 'call', 'user', 'connection', '
         });
     }
   ])
-  .controller('mainCtrl', ["$scope", "$log", "userService", "connectionService",
-    function($scope, $log, userService, connectionService) {
+  .controller('mainCtrl', ["$scope", "$log", "userService", "connectionService", "missedCallService",
+    function($scope, $log, userService, connectionService, missedCallService) {
       $log.info("mainCtrl initialized...");
 
       $scope.user = userService;
+      $scope.missedCalls = [];
 
       connectionService.getConnection();
 
+      missedCallService.get().then(function(res){
+        $scope.missedCalls = res;
+      });
     }
   ])
   .run(["$rootScope", "$state", "userService", "locationService", function($rootScope, $state, userService, locationService) {

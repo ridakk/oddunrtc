@@ -19,6 +19,9 @@ angular.module('anonymous', ['anonymousHome', 'ui.router', 'call', 'user', 'conn
         .state('call', {
           url: '/call',
           params: {
+            from: undefined,
+            fromPhoto: undefined,
+            fromType: undefined,
             callId: undefined
           },
           templateUrl: '/main/js/call/call.html',

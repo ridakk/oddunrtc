@@ -6,12 +6,17 @@ angular.module('call')
       $scope.callId = $stateParams.callId;
       $scope.muteState = "mute";
       $scope.callState;
+      $scope.from;
+      $scope.fromPhoto;
+      $scope.fromType;
+      $scope.showCallButtons = false;
 
       $scope.answer = function() {
         $log.info("answer is clicked ");
         callService.answer({
           callId: $stateParams.callId
         });
+        $scope.showCallButtons = true;
         $('#incomingCallModal').modal('hide');
       };
 
@@ -23,7 +28,7 @@ angular.module('call')
         $('#incomingCallModal').modal('hide');
       };
 
-      $scope.mute = function(){
+      $scope.mute = function() {
         $log.info("mute is clicked : " + $scope.muteState);
         callService.mute({
           callId: $stateParams.callId,
@@ -32,8 +37,7 @@ angular.module('call')
 
         if ($scope.muteState === "mute") {
           $scope.muteState = "unmute";
-        }
-        else {
+        } else {
           $scope.muteState = "mute";
         }
       }
@@ -55,7 +59,14 @@ angular.module('call')
       if (callService.isIncomingCall({
           callId: $stateParams.callId
         })) {
+        $scope.from = $stateParams.from;
+        $scope.fromPhoto = $stateParams.fromPhoto;
+        $scope.fromType = $stateParams.fromType;
+        $scope.showCallButtons = false;
         $("#incomingCallModal").modal();
+      }
+      else {
+        $scope.showCallButtons = true;
       }
 
       $scope.$on("$destroy", function() {

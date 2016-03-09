@@ -1,22 +1,66 @@
 #videoContainer {
-  width: 100%;
-  padding-bottom: 75%;
+  position: fixed;
+  top: 0px;
+  padding: 0px;
+  margin: 0px;
+  right: 0px;
+  left: 0px;
+  bottom: 0px;
+  background-color: black;
 }
 #videoContainer #remoteStream {
   position: absolute;
-  width: 100%;
+  padding: 0px;
+  margin: 0% 0% 0% 0%;
   height: 100%;
+  width: 100%;
 }
 #videoContainer #localStream {
   position: absolute;
+  padding: 0px;
+  margin: 0px;
+  height: 100%;
   width: 25%;
-  bottom: 10px;
-  right: 10px;
+  margin: -21% 0% 0% 66%;
   z-index: 1;
 }
 #videoContainer .callControlButtons {
   position: absolute;
   bottom: 10px;
-  right: 30%;
-  opacity: .8;
+  position: absolute;
+  left: 0;
+  right: 0px;
+}
+@media (max-width: 940px) {
+  #videoContainer #localStream {
+    width: 30%;
+    margin: -24% 0% 0% 67%;
+  }
+}
+@media (min-width: 1055px) {
+  #videoContainer #localStream {
+    width: 20%;
+    margin: -17% 0% 0% 63%;
+  }
+}
+@media (min-width: 1300px) {
+  #videoContainer #localStream {
+    width: 20%;
+    margin: -15% 0% 0% 61%;
+  }
+}
+.mute-icon {
+  color: slategrey;
+  opacity: 0.5;
+}
+.end-icon {
+  color: red;
+  opacity: 0.5;
+}
+.answer-icon {
+  color: green;
+  opacity: 0.5;
+}
+.mute-icon:hover, .end-icon:hover, .answer-icon:hover {
+  opacity: 1;
 }
