@@ -1,0 +1,213 @@
+.callPage {
+    padding-top: 40px;
+    background: #f8f8f8;
+    font-family: Roboto, 'Trebuchet MS', Arial;
+    .container {
+    max-width: 1020px;
+    -webkit-box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.25);
+    -moz-box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.25);
+    box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.25);
+        .row {
+            width: 100%;
+        }
+    }
+}
+.header {
+    height: 80px;
+    width: 100%;
+    background: #FFF;
+    position: relative;
+}
+.talkingWith {
+    line-height: 80px;
+    padding-left: 40px;
+    color: #7f8c8d;
+}
+.profileDiv {
+    position: relative;
+    .profileName {
+        line-height: 80px;
+        position: absolute;
+        right: 60px;
+        color: #2c3e50;
+    }
+    img  {
+        position: absolute;
+        right: 10px;
+        top: 20px;
+        border-radius: 50%;
+        width: 40px;
+    }
+}
+.sidebar {
+    background: #323A3D;
+    min-height: 527px;
+    ul {
+        li {
+            height: 100px;
+            line-height: 100px;
+            -webkit-transition: all 0.3s ease-in-out;
+            -moz-transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+            a {
+                text-align: center;
+                display: block;
+                i {
+                    color: #bdc3c7;
+                    line-height: 100px;
+                }
+            }
+        }
+        li:hover {
+            background: #495559;
+            -webkit-transition: all 0.3s ease-in-out;
+            -moz-transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+            i {
+                color: #FFF;
+            }
+        }
+    }
+}
+.logoDiv {
+    background: #56C8A2;
+    text-align: center;
+    i {
+        color: #FFF;
+        line-height: 80px;
+    }
+}
+
+.callArea {
+    position: relative;
+    .remoteVideo {
+        height: 527px;
+        video {
+            width: 100%;
+            height: 100%;
+        }
+    }
+    .localVideo {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        width: 25%;
+        video {
+            width: 100%;
+            height: 100%;
+        }
+    }
+    .callButtons {
+        overflow: hidden;
+        position: absolute;
+        top: 0;
+        left: 20px;
+        z-index: 1;
+        width: 80%;
+        height: 60px;
+        .callButton {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            line-height: 40px;
+            background: #ecf0f1;
+            position: absolute;
+            top: -40px;
+            cursor: pointer;
+            -webkit-transition: all 0.3s ease-in-out;
+            -moz-transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+            i {
+                line-height: 40px;
+                color: #7f8c8d;
+            }
+        }
+        .callButton:hover {
+            background: #FFF;
+            -webkit-transition: all 0.3s ease-in-out;
+            -moz-transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+        }
+        .callEndButton {
+            background: #e74c3c;
+            left: 0;
+            i {
+                transform: rotate(135deg);
+                color: #FFF;
+                margin-left: 6px;
+            }
+        }
+        .callEndButton:hover {
+            background: #c0392b;
+        }
+        .callMuteButton {
+            text-align: center;
+            left: 60px;
+            i {
+                font-size: 24px;
+            }
+        }
+        .callUnmuteButton {
+            left: 60px;
+            display: none;
+            i {
+                font-size: 24px;
+            }
+        }
+        .callHoldButton {
+            left: 120px;
+            text-align: center;
+            i {
+                font-size: 20px;
+            }
+        }
+        .callUnholdButton {
+            left: 120px;
+            display: none;
+            i {
+                font-size: 20px;
+            }
+        }
+        .callStartVideoButton {
+            left: 180px;
+            text-align: center;
+            i {
+                font-size: 24px;
+                color: #56C8A2;
+            }
+        }
+        .callStopVideoButton {
+            left: 180px;
+            display: none;
+            i {
+                font-size: 24px;
+            }
+        }
+    }
+}
+
+@media screen and ( max-width : 1019px ) {
+    .callPage {
+        padding-top: 0px;
+    }
+    .sidebar {
+        display: none !important;
+    }
+    .talkingWith {
+        padding-left: 0px;
+        text-align: center;
+    }
+    .logoDiv {
+        text-align: left;
+        padding-left: 20px;
+    }
+    .profileDiv {
+        position: absolute;
+    }
+    .header {
+        height: auto;
+    }
+    .callArea .remoteVideo {
+        height: auto;
+    }
+}
