@@ -75,3 +75,16 @@ module.exports.sendToAllExceptOwner = function(data) {
 
   return true;
 };
+
+module.exports.sendToList = function(toList, data) {
+  logger.info("sendToList %j", toList);
+  if (toList && toList.length === 0) {
+    return false;
+  }
+
+  for (var i = 0; i < toList.length; i++) {
+    io.to(toList[i]).emit('message', data);
+  }
+
+  return true;
+}

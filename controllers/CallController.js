@@ -4,6 +4,7 @@ var logger = require('bunyan').createLogger({
   SocketIoCtrl = require('./../controllers/SocketIoController'),
   MissedCallsCtrl = require('./../controllers/MissedCallsController'),
   Q = require("q"),
+  Sockets = require('./../models/Sockets'),
   Calls = require('./../models/Calls');
 
 function isCallIdExists(callId) {
@@ -18,7 +19,11 @@ function isCallIdExists(callId) {
 exports.handlePost = function(params) {
   var deferred = Q.defer(),
     retVal,
-    reqUserDisplayName;
+    reqUserDisplayName,
+    socketListForPost = Sockets.getSocketUrlList({owner: params.reqData.to}),
+    socketListForDelete = Sockets.getSocketUrlList({owner: params.reqData.to});
+
+  socketListForDelete[socketListForDelete.length] = params.reqData.socketId;
 
   if (isCallIdExists(params.callId)) {
     deferred.reject({
@@ -40,6 +45,35 @@ exports.handlePost = function(params) {
     ownerSocketId: params.reqData.socketId,
     targetUuid: params.reqData.to,
     targetSocketId: null,
+    sendCancelTimeout: setTimeout(function() {
+      MissedCallsCtrl.add({
+        uuid: params.reqData.to,
+        missedCall: {
+          fromUuid: params.reqUser.uuid,
+          fromDisplayName: reqUserDisplayName,
+          fromPhoto: params.reqUser.photo,
+          fromType: params.reqUser.type,
+          date: Date(),
+          reason: 1002
+        }
+      });
+
+      exports.handleDelete({
+        callId: params.callId,
+        reqData: {
+          type: "call",
+          action: "end",
+          to: params.reqData.to,
+          data: {
+            msg: {
+              callId: params.callId
+            }
+          }
+        },
+        socketUrlList: socketListForDelete,
+        serverCancel: true
+      });
+    }, 120000, MissedCallsCtrl, exports.handleDelete, params)
   });
 
   //TODO do we need to check is reqData.to exists in db or not?
@@ -47,7 +81,7 @@ exports.handlePost = function(params) {
   params.reqData.from = reqUserDisplayName;
   params.reqData.fromPhoto = params.reqUser.photo;
   params.reqData.fromType = params.reqUser.type;
-  retVal = SocketIoCtrl.sendToAll(params.reqData.to, params.reqData);
+  retVal = SocketIoCtrl.sendToList(socketListForPost, params.reqData);
 
   if (retVal) {
     deferred.resolve({
@@ -64,7 +98,7 @@ exports.handlePost = function(params) {
         date: Date(),
         reason: 1002
       }
-    })
+    });
 
     deferred.reject({
       httpCode: 404,
@@ -101,10 +135,15 @@ exports.handlePut = function(params) {
   //TODO if ok, this can be considered a way of call grab?
 
   if (params.reqData.action === "accept") {
+    clearTimeout(internalCall.sendCancelTimeout);
     internalCall.targetSocketId = params.reqData.socketId;
     exports.handleDelete({
       callId: params.callId,
-      sendCancelToOtherSockets: true
+      socketUrlList: Sockets.getAllExceptOwner({
+        owner: internalCall.targetUuid,
+        ownerSocketId: internalCall.targetSocketId
+      }),
+      serverCancel: true
     });
   }
 
@@ -132,8 +171,8 @@ exports.handlePut = function(params) {
 };
 
 exports.handleDelete = function(params) {
-  var internalCall,
-    socketUrl;
+  var internalCall, i = 0;
+      socketUrlList = [];
 
   if (!isCallIdExists(params.callId)) {
     return;
@@ -142,22 +181,22 @@ exports.handleDelete = function(params) {
   internalCall = Calls.get({
     callId: params.callId
   });
-
   //TODO check is owner of call object and reqUser is same, send 405 otherwise
   //TODO how to authorize put requests from target ?
   //TODO validating with owner or target uuid will lead other instance of same
   //TODO user to end a call that is running on a different instance
 
-  if (params.sendCancelToOtherSockets) {
-    SocketIoCtrl.sendToAllExceptOwner(internalCall);
+  if (params.serverCancel) {
+    socketUrlList = params.socketUrlList;
   } else {
     //TODO duplicate lines in handle
     if (internalCall.ownerUuid === params.reqUser.uuid) {
-      socketUrl = internalCall.targetSocketId;
+      socketUrlList[i] = internalCall.targetSocketId;
     } else {
-      socketUrl = internalCall.ownerSocketId;
+      socketUrlList[i] = internalCall.ownerSocketId;
     }
-    SocketIoCtrl.sendToSocketUrl(socketUrl, params.reqData);
   }
+  SocketIoCtrl.sendToList(socketUrlList, params.reqData);
+
   return;
 };

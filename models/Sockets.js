@@ -58,3 +58,15 @@ exports.getSocketUrlList = function(params) {
   logger.info("toSocketUrlList %s", toSocketUrlList.toString());
   return toSocketUrlList;
 };
+
+exports.getAllExceptOwner = function(params) {
+  var toSocketUrlList = exports.getSocketUrlList(params);
+  logger.info("getAllExceptOwner %j", params);
+
+  for (var i = 0; i < toSocketUrlList.length; i++) {
+    if (toSocketUrlList[i] === params.ownerSocketId) {
+      toSocketUrlList.splice(i, 1);
+    }
+  }
+  return toSocketUrlList;
+}
