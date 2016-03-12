@@ -7,4 +7,4 @@ var missedCallsSchema = new Schema({
   missed: Array
 });
 
-module.exports = mongoose.model('missedCalls', missedCallsSchema);
+module.exports = mongoose.model('MissedCalls', missedCallsSchema);
