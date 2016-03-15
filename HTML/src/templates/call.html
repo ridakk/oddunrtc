@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,13 +16,45 @@
     <script>
         jQuery(document).ready(function() {
             jQuery('.callArea').hover(function() {
-                jQuery('.callButton').animate({
-                    top: '20px'
-                }, 10, "linear");
+                jQuery('.callButtons').fadeIn();
             }, function() {
-                jQuery('.callButton').animate({
-                    top: '-40px'
-                }, 10, "linear");
+                jQuery('.callButtons').fadeOut();
+            });
+
+            function launchIntoFullscreen(element) {
+                if(element.requestFullscreen) {
+                    element.requestFullscreen();
+                } else if(element.mozRequestFullScreen) {
+                    element.mozRequestFullScreen();
+                } else if(element.webkitRequestFullscreen) {
+                    element.webkitRequestFullscreen();
+                } else if(element.msRequestFullscreen) {
+                    element.msRequestFullscreen();
+                }
+            }
+
+            function exitFullscreen() {
+                if(document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if(document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if(document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
+            }
+
+            jQuery('.makeFullScreen').click(function(){
+                jQuery(this).hide();
+                launchIntoFullscreen(document.getElementById("callArea"));
+                jQuery('#callArea').addClass('fullScreenCallArea');
+                jQuery('.makeNormalScreen').show();
+            });
+
+            jQuery('.makeNormalScreen').click(function(){
+                jQuery(this).hide();
+                exitFullscreen();
+                jQuery('#callArea').removeClass('fullScreenCallArea');
+                jQuery('.makeFullScreen').show();
             });
         });
     </script>
@@ -50,7 +81,9 @@
                     <li title="Contact List"><a href="javascript:void(0)"><i class="fa fa-user fa-2x"></i></a></li>
                 </ul>
             </div>
-            <div class="col span_11 callArea">
+            <div class="col span_11 callArea" id="callArea">
+                <div class="makeFullScreen"><i class="fa fa-expand fa-2x"></i></div>
+                <div class="makeNormalScreen"><i class="fa fa-compress fa-2x"></i></div>
                 <div class="callButtons">
                     <div class="callEndButton callButton" title="Call End"><i class="fa fa-phone fa-2x"></i></div>
                     <div class="callMuteButton callButton" title="Microphone Mute"><i class="fa fa-microphone-slash fa-2x"></i></div>

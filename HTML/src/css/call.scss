@@ -100,19 +100,22 @@
     .callButtons {
         overflow: hidden;
         position: absolute;
-        top: 0;
-        left: 20px;
+        top: 20px;
         z-index: 1;
-        width: 80%;
+        width: 100%;
         height: 60px;
+        text-align: center;
+        display: none;
         .callButton {
             height: 40px;
             width: 40px;
             border-radius: 50%;
             line-height: 40px;
             background: #ecf0f1;
-            position: absolute;
-            top: -40px;
+            position: relative;
+            display: inline-block;
+            margin-left: 10px;
+            margin-right: 10px;
             cursor: pointer;
             -webkit-transition: all 0.3s ease-in-out;
             -moz-transition: all 0.3s ease-in-out;
@@ -142,34 +145,29 @@
         }
         .callMuteButton {
             text-align: center;
-            left: 60px;
             i {
                 font-size: 24px;
             }
         }
         .callUnmuteButton {
-            left: 60px;
             display: none;
             i {
                 font-size: 24px;
             }
         }
         .callHoldButton {
-            left: 120px;
             text-align: center;
             i {
                 font-size: 20px;
             }
         }
         .callUnholdButton {
-            left: 120px;
             display: none;
             i {
                 font-size: 20px;
             }
         }
         .callStartVideoButton {
-            left: 180px;
             text-align: center;
             i {
                 font-size: 24px;
@@ -177,13 +175,32 @@
             }
         }
         .callStopVideoButton {
-            left: 180px;
             display: none;
             i {
                 font-size: 24px;
             }
         }
     }
+}
+
+.makeFullScreen, .makeNormalScreen {
+    position: absolute;
+    top: 20px;
+    height: 40px;
+    width: 40px;
+    right: 20px;
+    z-index: 2;
+    i {
+        color: #FFF;
+    }
+}
+.makeNormalScreen {
+    display: none;
+}
+
+.fullScreenCallArea {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 @media screen and ( max-width : 1019px ) {
