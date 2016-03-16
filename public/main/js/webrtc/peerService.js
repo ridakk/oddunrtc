@@ -26,11 +26,9 @@ angular.module('webrtc.peerService', ['util.pubsub'])
           }, {
             "url": "stun:stun.services.mozilla.com",
             "hasCredentials": false
-          }]
+          }],
+          "iceTransportPolicy": "all"
         }, {
-          "mandatory": {
-            "IceTransports": "all"
-          },
           "optional": [{
             "googIPv6": true
           }, {
