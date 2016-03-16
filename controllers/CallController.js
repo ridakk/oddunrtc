@@ -139,6 +139,16 @@ exports.handlePut = function(params) {
     internalCall.targetSocketId = params.reqData.socketId;
     exports.handleDelete({
       callId: params.callId,
+      reqData: {
+        type: "call",
+        action: "end",
+        to: internalCall.targetUuid,
+        data: {
+          msg: {
+            callId: params.callId
+          }
+        }
+      },
       socketUrlList: Sockets.getAllExceptOwner({
         owner: internalCall.targetUuid,
         ownerSocketId: internalCall.targetSocketId
