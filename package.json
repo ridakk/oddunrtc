@@ -55,5 +55,7 @@
     "passport"
   ],
   "license": "MIT",
-  "devDependencies": {}
+  "devDependencies": {
+    "webrtc-adapter": "^1.0.4"
+  }
 }
