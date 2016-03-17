@@ -14,6 +14,7 @@
   "public/main/js/call/callCtrl.js",
   "public/main/js/call/callService.js",
   "public/main/js/call/callFSM.js",
+  "public/main/js/missedCall/missedCallService.js",
   "public/main/js/call/tasks/tasks.js",
   "public/main/js/webrtc/mediaService.js",
   "public/main/js/webrtc/peerService.js"
