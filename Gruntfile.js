@@ -28,6 +28,11 @@ module.exports = function(grunt) {
         files: {
           'public/dist/widget.min.js': ['public/main/js/widget/widget.js']
         }
+      },
+      webrtc_adapter: {
+        files: {
+          'public/lib/webrtc/adaptor_no_global.min.js': ['node_modules/webrtc-adapter/out/adapter_no_global.js']
+        }
       }
     }
   });
@@ -35,6 +40,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
 
-  // Default task(s).
+  grunt.registerTask('webrtc', ['uglify:webrtc_adapter']);
   grunt.registerTask('default', ['concat', 'uglify']);
 };

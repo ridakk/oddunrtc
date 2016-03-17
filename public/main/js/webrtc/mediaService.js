@@ -7,7 +7,7 @@ angular.module('webrtc.mediaService', ['util.pubsub'])
         subscriber: pubsubSubscriber.media_service,
         event: pubsubMessage.request_media_permission,
         callback: function(data) {
-          getUserMedia(data.msg.constraints, function(stream) {
+          navigator.getUserMedia(data.msg.constraints, function(stream) {
             pubsub.publish({
               publisher: pubsubSubscriber.media_service,
               subscriber: pubsubSubscriber.call_fsm,
