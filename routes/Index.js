@@ -1,4 +1,12 @@
 module.exports = function(app) {
+
+  // =====================================
+  // EMOTION TEST PAGE ========
+  // =====================================
+  app.get('/emotion', function(req, res) {
+    res.render('pages/emotion.ejs');
+  });
+
   // =====================================
   // HOME PAGE (with login links) ========
   // =====================================
