@@ -13,7 +13,7 @@ var flash = require('connect-flash');
 
 require('dotenv').config();
 
-mongoose.connect('mongodb://' + process.env.MONGO_USER + ':' + process.env.MONGO_PASSWORD + process.env.MONGO_URL);
+//mongoose.connect('mongodb://' + process.env.MONGO_USER + ':' + process.env.MONGO_PASSWORD + process.env.MONGO_URL, {server:{auto_reconnect:true}});
 
 app.set('port', (process.env.PORT || 5000));
 

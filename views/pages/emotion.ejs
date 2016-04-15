@@ -3,8 +3,14 @@
 <html>
 
 <head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.1.1/normalize.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/dev_artifacts/emotion.css">
 </head>
 
 <body>
@@ -13,12 +19,7 @@
     <div class="row">
       <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
         <div class="camera">
-          <video id="video">Video stream not available.</video>
-        </div>
-        <canvas id="canvas" style="display: none">
-        </canvas>
-        <div class="output" style="display: none">
-          <img id="photo" alt="The screen capture will appear in this box.">
+          <video id="video" style="width: 320px">Video stream not available.</video>
         </div>
       </div>
       <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
@@ -62,15 +63,81 @@
             surprise
           </div>
         </div>
-        <i class="fa fa-spinner fa-pulse fa-3x fa-fw margin-bottom"></i>
-        <span class="sr-only">Processing...</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <button type="submit" class="btn btn-success btn-lg btn-block">Take a photo</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <canvas id="canvas" style="display: none">
+        </canvas>
+        <div class="output">
+          <img id="photo" alt="The screen capture will appear in this box.">
+        </div>
+      </div>
 
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <div class="progress">
+          <div class="emotion-anger photo progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="color:black; width: 100%">
+            anger
+          </div>
+        </div>
+        <div class="progress">
+          <div class="emotion-contempt photo progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="color:black; width: 100%">
+            contempt
+          </div>
+        </div>
+        <div class="progress">
+          <div class="emotion-disgust photo progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="color:black; width: 100%">
+            disgust
+          </div>
+        </div>
+        <div class="progress">
+          <div class="emotion-fear photo progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="color:black; width: 100%">
+            fear
+          </div>
+        </div>
+        <div class="progress">
+          <div class="emotion-happiness photo progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="color:black; width: 100%">
+            happiness
+          </div>
+        </div>
+        <div class="progress">
+          <div class="emotion-neutral photo progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="color:black; width: 100%">
+            neutral
+          </div>
+        </div>
+        <div class="progress">
+          <div class="emotion-sadness photo progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="color:black; width: 100%">
+            sadness
+          </div>
+        </div>
+        <div class="progress">
+          <div class="emotion-surprise photo progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="color:black; width: 100%">
+            surprise
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <div class="flotr-container"></div>
+        </div>
       </div>
     </div>
   </div>
 
   <script src="/dev_artifacts/canvas-to-blob.min.js"></script>
   <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.1.4/math.min.js"></script>
+  <script src="/dev_artifacts/lib/base64.js"></script>
+  <script src="/dev_artifacts/lib/canvas2image.js"></script>
+  <script src="/dev_artifacts/lib/canvastext.js"></script>
+  <script src="/dev_artifacts/lib/excanvas.js"></script>
+  <script src="/dev_artifacts/lib/prototype-1.6.0.2.js"></script>
+  <script src="/dev_artifacts/flotr-0.2.0-alpha.js"></script>
   <script src="/dev_artifacts/emotion.js"></script>
 
 </body>
