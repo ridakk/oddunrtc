@@ -5,3 +5,4 @@ docker-compose.yml
 public/dist
 HTML/www
 HTML/.sass-cache
+oddjs/dist
