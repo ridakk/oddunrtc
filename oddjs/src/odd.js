@@ -1,8 +1,27 @@
+require('webrtc-adapter');
+
+import Media from './webrtc/media';
+
 export default class OddJS {
-  constructor() {
-    this._name = 'OddJS';
+
+  static init() {
+    return;
   }
-  get name() {
-    return this._name;
+
+  static ready() {
+    return;
   }
+
+  static offline() {
+    return;
+  }
+
+  static connect() {
+    return;
+  }
+
+  static get media() {
+    return Media;
+  }
+
 }

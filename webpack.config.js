@@ -3,15 +3,13 @@ var UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 var path = require('path');
 var env = require('yargs').argv.mode;
 
-var libraryName = 'odd';
-
 var plugins = [], outputFile;
 
 if (env === 'build') {
   plugins.push(new UglifyJsPlugin({ minimize: true }));
-  outputFile = libraryName + '.min.js';
+  outputFile = 'odd.min.js';
 } else {
-  outputFile = libraryName + '.js';
+  outputFile = 'odd.js';
 }
 
 var config = {
@@ -20,7 +18,7 @@ var config = {
   output: {
     path: __dirname + '/oddjs/dist',
     filename: outputFile,
-    library: libraryName,
+    library: "ODD",
     libraryTarget: 'umd',
     umdNamedDefine: true
   },
