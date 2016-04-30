@@ -28,7 +28,7 @@ class PubSub {
   };
 
   broadcast(params) {
-    let i, subsribers = listeners.get(params.subscriber), childListeners;
+    let i, subsribers = listeners.get(SUBSCRIBER_GLOBAL), childListeners;
 
     if (!subsribers) {
       return;
