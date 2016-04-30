@@ -1,5 +1,7 @@
 export default class Media {
 
+  // TODO: add method to check input output device availability
+
   static deviceList() {
     return new Promise((resolve, reject) => {
       navigator.mediaDevices.enumerateDevices()

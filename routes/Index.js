@@ -7,6 +7,10 @@ module.exports = function(app) {
     res.render('pages/emotion.ejs');
   });
 
+  app.get('/odd_test', function(req, res) {
+    res.render('pages/odd_test.ejs');
+  });
+
   // =====================================
   // HOME PAGE (with login links) ========
   // =====================================
