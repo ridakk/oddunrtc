@@ -1,8 +1,11 @@
 require('webrtc-adapter');
+require('node-uuid');
 
-import Media from './webrtc/media';
+import MediaApi from './webrtc/mediaApi';
 import Config from './config/config';
 import PubSub from './pubsub/pubsub';
+import ConnectionApi from './connection/connectionApi';
+
 import {
   SUBSCRIBER_API
 } from './pubsub/subscribers';
@@ -53,12 +56,12 @@ export default class ODD {
     });
   }
 
-  static createConnection() {
-    return;
+  static get connection() {
+    return ConnectionApi;
   }
 
   static get media() {
-    return Media;
+    return MediaApi;
   }
 
 }

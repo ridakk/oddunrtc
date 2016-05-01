@@ -1,7 +1,7 @@
 class Config {
 
   constructor() {
-    this.capabilities = new Map();
+    this.profie = {};
   }
 
   validate(keys) {
@@ -10,7 +10,7 @@ class Config {
   }
 
   get capabilities() {
-    return this.capabilities;
+    return this.profie.capabilities;
   }
 
 }

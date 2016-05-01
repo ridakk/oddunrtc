@@ -13,7 +13,7 @@ if (env === 'build') {
 }
 
 var config = {
-  entry: __dirname + '/oddjs/src/odd.js',
+  entry: ['babel-polyfill', __dirname + '/oddjs/src/odd.js'],
   devtool: 'source-map',
   output: {
     path: __dirname + '/oddjs/dist',

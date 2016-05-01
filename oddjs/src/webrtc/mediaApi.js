@@ -1,4 +1,4 @@
-export default class Media {
+export default class MediaApi {
 
   // TODO: add method to check input output device availability
 
